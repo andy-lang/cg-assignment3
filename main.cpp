@@ -57,7 +57,7 @@ void render() {
         objects.at(i)->render(programID);
     }
 
-    glutSwapBuffers();
+    //glutSwapBuffers();
     glFlush();
 }
 

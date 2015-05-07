@@ -101,7 +101,7 @@ void Object::render(unsigned int programID) {
     glDrawElements(GL_TRIANGLES, mIndicesSize, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0); // unbind VAO
-    //glutSwapBuffers();
+    glutSwapBuffers();
 
 }
 
