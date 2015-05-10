@@ -1,5 +1,5 @@
-- Translation
-- Scaling, rotating
+- Camera class
+    - "attach to object"
 - Buffer class
 - Normals
 - Texturing

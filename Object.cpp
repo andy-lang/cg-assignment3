@@ -8,19 +8,23 @@ Object::Object(int programID, const char* objfile) {
     objectInit(programID, objfile, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
 }
 
-Object::Object(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scaleFactor) {
-    objectInit(programID, objfile, rotate, translate, scaleFactor);
+Object::Object(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale) {
+    objectInit(programID, objfile, rotate, translate, scale);
 }
 
-void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scaleFactor) {
+Object::~Object() {
+    //?? TODO: stub
+}
+
+void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale) {
     // initialise values
     mVerticesSize = 0;
     mIndicesSize = 0;
     mCentres = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    mScale = scaleFactor;
-    mRotate = rotate;
-    mTranslate = translate;
+    setScale(scale);
+    setRotation(rotate);
+    setTranslation(translate);
 
     // get directory of passed parameter
     std::string directory = objfile;
@@ -57,15 +61,12 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     mCentres.y /= (mVerticesSize/VALS_PER_VERT);
     mCentres.z /= (mVerticesSize/VALS_PER_VERT);
 
-    std::cout << "mCentres = " << mCentres.x << ", " << mCentres.y << ", " << mCentres.z << std::endl;
-
     glGenBuffers(mBufSize, mBuffer);
 
     // generate vertex arrays
     glGenVertexArrays(1, &mVertexVaoHandle);
     glBindVertexArray(mVertexVaoHandle);
     int vertLoc = glGetAttribLocation(programID, "a_vertex");
-
 
 
     // here's where the fun begins. Buffers awaaaay~
@@ -100,8 +101,22 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     // and we're done!
 }
 
-Object::~Object() {
-    //?? TODO: stub
+void Object::calcModelMatrix() {
+    if (mModelMatrixChanged) {
+        // create model matrix
+        mModelMatrix = glm::mat4();
+        // rotate by desired amounts
+        mModelMatrix = glm::rotate(mModelMatrix, mRotate.x, glm::vec3(1.0f, 0.0f, 0.0f));
+        mModelMatrix = glm::rotate(mModelMatrix, mRotate.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        mModelMatrix = glm::rotate(mModelMatrix, mRotate.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        // scale
+        mModelMatrix = glm::scale(mModelMatrix, glm::vec3(mScale, mScale, mScale));
+        //translate to the origin, then by the translate amount
+        mModelMatrix = glm::translate(mModelMatrix, glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z));
+    }
+    mModelMatrixChanged = false; // set flag back to false, so function isn't called again on next render
+    // else do nothing
+
 }
 
 void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
@@ -116,20 +131,10 @@ void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
         exit(1);
     }
 
-    // create model matrix
-    glm::mat4 modelMatrix;
-    // rotate by desired amounts
-    modelMatrix = glm::rotate(modelMatrix, mRotate.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    modelMatrix = glm::rotate(modelMatrix, mRotate.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    modelMatrix = glm::rotate(modelMatrix, mRotate.z, glm::vec3(0.0f, 0.0f, 1.0f));
-    // scale
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(mScale, mScale, mScale));
-    //translate to the origin, then by the translate amount
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z));
-
+    calcModelMatrix();
 
     glBindVertexArray(mVertexVaoHandle);
-    glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(modelMatrix));
+    glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(mModelMatrix));
     glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(viewMatrix));
 
     glDrawElements(GL_TRIANGLES, mIndicesSize, GL_UNSIGNED_INT, 0);
@@ -137,6 +142,21 @@ void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
     glBindVertexArray(0); // unbind VAO
     glutSwapBuffers();
 
+}
+
+void Object::setRotation(glm::vec3 rotation) {
+    mRotate = rotation;
+    mModelMatrixChanged = true;
+}
+
+void Object::setScale(float scale) {
+    mScale = scale;
+    mModelMatrixChanged = true;
+}
+
+void Object::setTranslation(glm::vec3 translation) {
+    mTranslate = translation;
+    mModelMatrixChanged = true;
 }
 
 unsigned int Object::getVerticesSize() const {
