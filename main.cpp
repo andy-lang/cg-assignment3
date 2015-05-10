@@ -56,12 +56,17 @@ void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
 
+    int viewHandle = glGetUniformLocation(programID, "view_matrix");
+    if (viewHandle == -1) {
+        std::cerr << "Could not find uniform variable 'view_matrix'" << std::endl;
+    }
     glm::mat4 viewMatrix;
     viewMatrix = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     viewMatrix = glm::rotate(viewMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
+    glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(viewMatrix));
 
     for (int i = 0; i < objects.size(); i++) {
-        objects.at(i)->render(programID, viewMatrix);
+        objects.at(i)->render(programID);
     }
 
     //glutSwapBuffers();

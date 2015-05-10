@@ -46,7 +46,7 @@ public:
     /** Renders the vertex data associated with this Object.
      * @param   programID   The shader program to buffer the object data to.
      * @param   &viewMatrix Matrix of the player camera's current view. */
-    void render(unsigned int programID, glm::mat4 &viewMatrix);
+    void render(unsigned int programID);
 
     /* Sets values for rotation, scale and translation, and notifies the model matrix so it can be recalculated. */
     void setRotation(glm::vec3 rotation);
@@ -59,7 +59,7 @@ public:
     unsigned int getIndicesSize() const;
     /* Returns the scale factor for the object, as a percentage of its original size. */
     float getScaleFactor() const;
-    /* Returns the translation of the object from the world origin. */
+    /* Returns the translation of the object, relative to the world's position. */
     glm::vec3 getTranslation();
 
 private:

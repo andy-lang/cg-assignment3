@@ -119,24 +119,18 @@ void Object::calcModelMatrix() {
 
 }
 
-void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
+void Object::render(unsigned int programID) {
     int modelHandle = glGetUniformLocation(programID, "model_matrix");
-    int viewHandle = glGetUniformLocation(programID, "view_matrix");
     if (modelHandle == -1) {
         std::cerr << "Could not find uniform variable 'model_matrix'" << std::endl;
-        exit(1);
-    }
-    if (viewHandle == -1) {
-        std::cerr << "Could not find uniform variable 'view_matrix'" << std::endl;
         exit(1);
     }
 
     calcModelMatrix();
 
-    glBindVertexArray(mVertexVaoHandle);
     glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(mModelMatrix));
-    glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(viewMatrix));
 
+    glBindVertexArray(mVertexVaoHandle);
     glDrawElements(GL_TRIANGLES, mIndicesSize, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0); // unbind VAO
