@@ -27,7 +27,7 @@ public:
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
      * @param   scaleFactor Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
      */
-    Object(int programID, const char* objfile, double scaleFactor = 1.0f);
+    Object(int programID, const char* objfile, float scaleFactor = 1.0f);
 
     /* Basic Object destructor. */
     ~Object();
@@ -42,6 +42,8 @@ public:
     /** Returns total size of index data. */
     unsigned int getIndicesSize() const;
 
+    //double m
+
 private:
     static const unsigned int mBufSize = 2; // total number of buffers
     unsigned int mBuffer[mBufSize]; // the buffers
@@ -51,7 +53,8 @@ private:
     unsigned int mVerticesSize; // total number of vertices of the object
     unsigned int mIndicesSize; // total number of indices of the object
 
-    double mScale; // the amount to scale the object's initial size by.
+    float mScale; // the amount to scale the object's initial size by.
+    glm::mat3 mTrans; // translation from the world origin
     float yRot; // y rotation factor of the object
     unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
 };

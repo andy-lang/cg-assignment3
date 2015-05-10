@@ -17,7 +17,7 @@ Object::Object(int programID) {
     */
 }
 
-Object::Object(int programID, const char* objfile, double scaleFactor) : mScale(scaleFactor), mVerticesSize(0), mIndicesSize(0), yRot(20.0f) {
+Object::Object(int programID, const char* objfile, float scaleFactor) : mScale(scaleFactor), mVerticesSize(0), mIndicesSize(0), yRot(20.0f) {
     // get directory of passed parameter
     std::string directory = objfile;
     directory = directory.substr(0, directory.find_last_of('/'));
