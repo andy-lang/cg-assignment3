@@ -31,10 +31,10 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    Object* tet = new Object("geom/tetra/tetra.obj", programID);
+    Object* tet = new Object(programID, "geom/tetra/tetra.obj", 0.5f);
     objects.push_back(tet);
 
-    Object* cube = new Object("geom/cube-simple/cube-simple.obj", programID);
+    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj");
     objects.push_back(cube);
     return 0;
 }

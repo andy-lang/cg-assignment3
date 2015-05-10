@@ -23,15 +23,18 @@ public:
 
     /** More complex Object constructor.
      * Takes in a filename corresponding to an OBJ file, which it reads in and sets up the necessary data.
-     * @param   objfile The filename where the data of an OBJ file is stored. 
      * @param   programID   The shader program to buffer the object data to.
+     * @param   objfile     The filename of where the data of an OBJ file is stored. 
+     * @param   scaleFactor Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
      */
-    Object(const char* objfile, int programID);
+    Object(int programID, const char* objfile, double scaleFactor = 1.0f);
 
     /* Basic Object destructor. */
     ~Object();
 
-    /** Renders the vertex data associated with this Object. */
+    /** Renders the vertex data associated with this Object.
+     * @param   programID   The shader program to buffer the object data to.
+     * @param   &viewMatrix Matrix of the player camera's current view. */
     void render(unsigned int programID, glm::mat4 &viewMatrix);
 
     /** Returns total size of vertex data. */
@@ -40,16 +43,17 @@ public:
     unsigned int getIndicesSize() const;
 
 private:
-    static const unsigned int mBufSize = 2;
-    unsigned int mBuffer[mBufSize];
-    static const unsigned int mVerticesBufPos = 0;
-    static const unsigned int mIndicesBufPos = 1;
+    static const unsigned int mBufSize = 2; // total number of buffers
+    unsigned int mBuffer[mBufSize]; // the buffers
+    static const unsigned int mVerticesBufPos = 0; // index position of vertices in buffer
+    static const unsigned int mIndicesBufPos = 1; // index position of indices in buffer
 
-    unsigned int mVerticesSize;
-    unsigned int mIndicesSize;
+    unsigned int mVerticesSize; // total number of vertices of the object
+    unsigned int mIndicesSize; // total number of indices of the object
 
-    float yRot;
-    unsigned int mVertexVaoHandle;
+    double mScale; // the amount to scale the object's initial size by.
+    float yRot; // y rotation factor of the object
+    unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
 };
 
 #endif

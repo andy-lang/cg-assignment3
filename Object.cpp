@@ -17,7 +17,7 @@ Object::Object(int programID) {
     */
 }
 
-Object::Object(const char* objfile, int programID) : mVerticesSize(0), mIndicesSize(0), yRot(20.0f) {
+Object::Object(int programID, const char* objfile, double scaleFactor) : mScale(scaleFactor), mVerticesSize(0), mIndicesSize(0), yRot(20.0f) {
     // get directory of passed parameter
     std::string directory = objfile;
     directory = directory.substr(0, directory.find_last_of('/'));
@@ -96,6 +96,7 @@ void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
 
     glm::mat4 modelMatrix;
     modelMatrix = glm::rotate(modelMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(mScale, mScale, mScale));
     //modelMatrix = glm::rotate(modelMatrix, yRot, glm::vec3(1.0f, 0.0f, 0.0f));
 
 
