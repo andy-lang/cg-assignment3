@@ -32,12 +32,12 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    /*
+    // tetrahedron at the world origin
     Object* tet = new Object(programID, "geom/tetra/tetra.obj");
     objects.push_back(tet);
-    */
 
-    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 20.0f, 0.0f), 0.5f);
+    // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
+    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     objects.push_back(cube);
     return 0;
 }

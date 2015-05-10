@@ -5,18 +5,23 @@ Object::Object(int programID) {
 }
 
 Object::Object(int programID, const char* objfile) {
-    objectInit(programID, objfile, glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
+    objectInit(programID, objfile, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
 }
 
-Object::Object(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor) {
-    objectInit(programID, objfile, rotations, scaleFactor);
+Object::Object(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scaleFactor) {
+    objectInit(programID, objfile, rotate, translate, scaleFactor);
 }
 
-void Object::objectInit(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor) {
-    mScale = scaleFactor;
+void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scaleFactor) {
+    // initialise values
     mVerticesSize = 0;
     mIndicesSize = 0;
-    mRotations = rotations;
+    mCentres = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    mScale = scaleFactor;
+    mRotate = rotate;
+    mTranslate = translate;
+
     // get directory of passed parameter
     std::string directory = objfile;
     directory = directory.substr(0, directory.find_last_of('/'));
@@ -32,9 +37,27 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotations,
             shapes.at(i).mesh.indices.at(j) += mVerticesSize/VALS_PER_VERT;
         }
 
+        for (int j = 0; j < shapes.at(i).mesh.positions.size(); j++) {
+            if (j%VALS_PER_VERT == 0) {
+                mCentres.x += shapes.at(i).mesh.positions.at(j);
+            }
+            else if (j%VALS_PER_VERT == 1) {
+                mCentres.y += shapes.at(i).mesh.positions.at(j);
+            }
+            else if (j%VALS_PER_VERT == 2) {
+                mCentres.z += shapes.at(i).mesh.positions.at(j);
+            }
+        }
+
         mVerticesSize += shapes.at(i).mesh.positions.size();
         mIndicesSize += shapes.at(i).mesh.indices.size();
     }
+
+    mCentres.x /= (mVerticesSize/VALS_PER_VERT);
+    mCentres.y /= (mVerticesSize/VALS_PER_VERT);
+    mCentres.z /= (mVerticesSize/VALS_PER_VERT);
+
+    std::cout << "mCentres = " << mCentres.x << ", " << mCentres.y << ", " << mCentres.z << std::endl;
 
     glGenBuffers(mBufSize, mBuffer);
 
@@ -96,11 +119,13 @@ void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
     // create model matrix
     glm::mat4 modelMatrix;
     // rotate by desired amounts
-    modelMatrix = glm::rotate(modelMatrix, mRotations.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    modelMatrix = glm::rotate(modelMatrix, mRotations.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    modelMatrix = glm::rotate(modelMatrix, mRotations.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    modelMatrix = glm::rotate(modelMatrix, mRotate.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, mRotate.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, mRotate.z, glm::vec3(0.0f, 0.0f, 1.0f));
     // scale
     modelMatrix = glm::scale(modelMatrix, glm::vec3(mScale, mScale, mScale));
+    //translate to the origin, then by the translate amount
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z));
 
 
     glBindVertexArray(mVertexVaoHandle);
@@ -127,5 +152,5 @@ float Object::getScaleFactor() const {
 }
 
 glm::vec3 Object::getTranslation() {
-    return mTrans;
+    return mTranslate;
 }

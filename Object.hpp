@@ -35,9 +35,10 @@ public:
      * @param   programID   The shader program to buffer the object data to.
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
      * @param   rotations   The amount in the x, y, and z planes that the object will be rotated by.
+     * @param   translate The amount in the x, y, and z planes that the object will be translated, relative to the origin of the world.
      * @param   scaleFactor Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
      */
-    Object(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor);
+    Object(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scaleFactor);
 
     /* Basic Object destructor. */
     ~Object();
@@ -61,10 +62,11 @@ private:
      * Thus it should be called ONLY ONCE, and will be done by all constructors.
      * @param   programID   The shader program to buffer the object data to.
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
-     * @param   rotations   The amount in the x, y, and z planes that the object will be rotated by.
+     * @param   rotate   The amount in the x, y, and z planes that the object will be rotated by.
+     * @param   translate The amount in the x, y, and z planes that the object will be translated, relative to the origin of the world.
      * @param   scaleFactor Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
      */
-    void objectInit(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor);
+    void objectInit(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scaleFactor);
 
     static const unsigned int mBufSize = 2; // total number of buffers
     unsigned int mBuffer[mBufSize]; // the buffers
@@ -73,10 +75,11 @@ private:
 
     unsigned int mVerticesSize; // total number of vertices of the object
     unsigned int mIndicesSize; // total number of indices of the object
+    glm::vec3 mCentres; // the centre of the object in the X, Y and Z axes.
 
     float mScale; // the amount to scale the object's initial size by.
-    glm::vec3 mTrans; // translation from the world origin
-    glm::vec3 mRotations; // rotation factors of the object
+    glm::vec3 mTranslate; // translation from the world origin
+    glm::vec3 mRotate; // rotation factors of the object
 
     unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
 };
