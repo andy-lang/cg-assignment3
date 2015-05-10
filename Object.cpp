@@ -168,3 +168,7 @@ float Object::getScaleFactor() const {
 glm::vec3 Object::getTranslation() {
     return mTranslate;
 }
+
+glm::vec3 Object::getPosition() {
+     return glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z);
+}

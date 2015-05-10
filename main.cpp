@@ -14,6 +14,7 @@
 
 unsigned int programID;
 std::vector<Object*> objects;
+Camera cam;
 
 double FOV = 45.0;
 float yRot = 0.0f;
@@ -38,8 +39,11 @@ int objectSetup() {
     objects.push_back(tet);
 
     // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
-    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(10.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -5.0f), 0.5f);
     objects.push_back(cube);
+
+    cam = Camera();
+    cam.attachToObject(cube);
     return 0;
 }
 
@@ -57,18 +61,11 @@ void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
 
-    int viewHandle = glGetUniformLocation(programID, "view_matrix");
-    if (viewHandle == -1) {
-        std::cerr << "Could not find uniform variable 'view_matrix'" << std::endl;
-    }
-    glm::mat4 viewMatrix;
-    viewMatrix = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    viewMatrix = glm::rotate(viewMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
-    glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(viewMatrix));
-
+    cam.render(programID);
     for (int i = 0; i < objects.size(); i++) {
         objects.at(i)->render(programID);
     }
+
 
     //glutSwapBuffers();
     glFlush();
@@ -98,6 +95,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 }
 
 void specialFunc(int key, int x, int y) {
+    /*
     switch (key) {
         case GLUT_KEY_LEFT:
             yRot -= 2.0f;
@@ -107,6 +105,7 @@ void specialFunc(int key, int x, int y) {
             break;
     }
     glutPostRedisplay();
+    */
 }
 
 int main(int argc, char** argv) {

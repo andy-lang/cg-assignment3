@@ -57,10 +57,14 @@ public:
     unsigned int getVerticesSize() const;
     /** Returns total size of index data. */
     unsigned int getIndicesSize() const;
+
     /* Returns the scale factor for the object, as a percentage of its original size. */
     float getScaleFactor() const;
-    /* Returns the translation of the object, relative to the world's position. */
+    /* Returns the translation of the object. */
     glm::vec3 getTranslation();
+
+    /* Returns the world position of the object. */
+    glm::vec3 getPosition();
 
 private:
     /** The actual routine called by constructors etc to set up data and so forth on creation.

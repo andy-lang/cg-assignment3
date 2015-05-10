@@ -10,15 +10,35 @@
 
 #include "libs/Lib.h"
 #include "Object.hpp"
+
 #include <iostream>
+#include <cstdlib>
 
 class Camera {
 public:
+    /* Basic Camera constructor. */
     Camera();
+    /* Basic Camera destructor. */
     ~Camera();
 
+    /* Sets the Camera so that its movement is attached to a particular Object. Thus when the Object moves the Camera moves with it. 
+     * @param   obj     The object to which the Camera will be attached. */
     void attachToObject(Object* obj);
+
+    /* More advanced version of above function.
+     * This version of the method allows for a translation to take place, so that the Camera can look somewhere relative to an Object.
+     * Useful for third person mode, etc.
+     * @param   obj     The object to which the Camera will be attached.
+     * @param   translate The translation vector for the Camera's placement.
+     */
     void attachToObject(Object* obj, glm::vec3 translate);
+
+    /* "Renders" the camera.
+     * In essence all this does is recalculate the view matrix, then send it to the specified shader program.
+     * @param   programID   The shader program to which the Camera will be "rendered".
+     */
+    void render(int programID);
+
 private:
     Object* mObj;
     glm::vec3 mTranslate;
