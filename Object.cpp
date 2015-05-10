@@ -1,23 +1,22 @@
 #include "Object.hpp"
 
 Object::Object(int programID) {
-    /*
-    //?? TODO: anything else?
-
-    glGenVertexArrays(1, &mVertexVaoHandle);
-    glBindVertexArray(mVertexVaoHandle);
-
-    mVerticesSize = 0;
-    mIndicesSize = 0;
-
-    glGenBuffers(mBufSize, mBuffer);
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    */
+    //?? TODO: stub
 }
 
-Object::Object(int programID, const char* objfile, float scaleFactor) : mScale(scaleFactor), mVerticesSize(0), mIndicesSize(0), yRot(20.0f) {
+Object::Object(int programID, const char* objfile) {
+    objectInit(programID, objfile, glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
+}
+
+Object::Object(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor) {
+    objectInit(programID, objfile, rotations, scaleFactor);
+}
+
+void Object::objectInit(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor) {
+    mScale = scaleFactor;
+    mVerticesSize = 0;
+    mIndicesSize = 0;
+    mRotations = rotations;
     // get directory of passed parameter
     std::string directory = objfile;
     directory = directory.substr(0, directory.find_last_of('/'));
@@ -94,10 +93,14 @@ void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
         exit(1);
     }
 
+    // create model matrix
     glm::mat4 modelMatrix;
-    modelMatrix = glm::rotate(modelMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
+    // rotate by desired amounts
+    modelMatrix = glm::rotate(modelMatrix, mRotations.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, mRotations.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, mRotations.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    // scale
     modelMatrix = glm::scale(modelMatrix, glm::vec3(mScale, mScale, mScale));
-    //modelMatrix = glm::rotate(modelMatrix, yRot, glm::vec3(1.0f, 0.0f, 0.0f));
 
 
     glBindVertexArray(mVertexVaoHandle);
@@ -117,4 +120,12 @@ unsigned int Object::getVerticesSize() const {
 
 unsigned int Object::getIndicesSize() const {
     return mIndicesSize;
+}
+
+float Object::getScaleFactor() const {
+    return mScale;
+}
+
+glm::vec3 Object::getTranslation() {
+    return mTrans;
 }

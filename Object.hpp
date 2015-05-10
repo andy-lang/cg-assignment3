@@ -23,11 +23,21 @@ public:
 
     /** More complex Object constructor.
      * Takes in a filename corresponding to an OBJ file, which it reads in and sets up the necessary data.
+     * All other parameters are set to sensibly default values.
      * @param   programID   The shader program to buffer the object data to.
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
+     */
+    Object(int programID, const char* objfile);
+
+    /** Advanced Object constructor.
+     * Takes in a filename corresponding to an OBJ file, which it reads in and sets up the necessary data.
+     * Also contains parameters for more advanced stuff, like scaling, translation, etc.
+     * @param   programID   The shader program to buffer the object data to.
+     * @param   objfile     The filename of where the data of an OBJ file is stored. 
+     * @param   rotations   The amount in the x, y, and z planes that the object will be rotated by.
      * @param   scaleFactor Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
      */
-    Object(int programID, const char* objfile, float scaleFactor = 1.0f);
+    Object(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor);
 
     /* Basic Object destructor. */
     ~Object();
@@ -41,10 +51,21 @@ public:
     unsigned int getVerticesSize() const;
     /** Returns total size of index data. */
     unsigned int getIndicesSize() const;
-
-    //double m
+    /* Returns the scale factor for the object, as a percentage of its original size. */
+    float getScaleFactor() const;
+    /* Returns the translation of the object from the world origin. */
+    glm::vec3 getTranslation();
 
 private:
+    /** The actual routine called by constructors etc to set up data and so forth on creation.
+     * Thus it should be called ONLY ONCE, and will be done by all constructors.
+     * @param   programID   The shader program to buffer the object data to.
+     * @param   objfile     The filename of where the data of an OBJ file is stored. 
+     * @param   rotations   The amount in the x, y, and z planes that the object will be rotated by.
+     * @param   scaleFactor Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
+     */
+    void objectInit(int programID, const char* objfile, glm::vec3 rotations, float scaleFactor);
+
     static const unsigned int mBufSize = 2; // total number of buffers
     unsigned int mBuffer[mBufSize]; // the buffers
     static const unsigned int mVerticesBufPos = 0; // index position of vertices in buffer
@@ -54,8 +75,9 @@ private:
     unsigned int mIndicesSize; // total number of indices of the object
 
     float mScale; // the amount to scale the object's initial size by.
-    glm::mat3 mTrans; // translation from the world origin
-    float yRot; // y rotation factor of the object
+    glm::vec3 mTrans; // translation from the world origin
+    glm::vec3 mRotations; // rotation factors of the object
+
     unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
 };
 

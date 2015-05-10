@@ -15,6 +15,7 @@ unsigned int programID;
 std::vector<Object*> objects;
 
 double FOV = 45.0;
+float yRot = 0.0f;
 
 void setCamera() {
     glm::mat4 projection;
@@ -31,10 +32,12 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    Object* tet = new Object(programID, "geom/tetra/tetra.obj", 0.5f);
+    /*
+    Object* tet = new Object(programID, "geom/tetra/tetra.obj");
     objects.push_back(tet);
+    */
 
-    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj");
+    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 20.0f, 0.0f), 0.5f);
     objects.push_back(cube);
     return 0;
 }
@@ -54,7 +57,9 @@ void render() {
     glUseProgram(programID);
 
     glm::mat4 viewMatrix;
-    viewMatrix = glm::lookAt(glm::vec3(0.0f, 4.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    viewMatrix = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    //viewMatrix = glm::lookAt(glm::vec3(0.0f, 4.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    viewMatrix = glm::rotate(viewMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
 
     for (int i = 0; i < objects.size(); i++) {
         objects.at(i)->render(programID, viewMatrix);
@@ -85,6 +90,18 @@ void keyboardFunc(unsigned char key, int x, int y) {
             */
 
     }
+}
+
+void specialFunc(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_LEFT:
+            yRot -= 2.0f;
+            break;
+        case GLUT_KEY_RIGHT:
+            yRot += 2.0f;
+            break;
+    }
+    glutPostRedisplay();
 }
 
 int main(int argc, char** argv) {
@@ -126,6 +143,7 @@ int main(int argc, char** argv) {
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
+    glutSpecialFunc(specialFunc);
     glutDisplayFunc(render);
 
     glutMainLoop();
