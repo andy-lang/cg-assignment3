@@ -26,14 +26,17 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Shader.o tiny_obj_loader.o
-	$(CC) $(DEFS) -o assign3 main.o Object.o tiny_obj_loader.o Shader.o $(GL_LIBS)
+assign3: main.o Object.o Shader.o tiny_obj_loader.o Camera.o
+	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS)
 
-main.o: main.cpp Shader.o tiny_obj_loader.o Object.o
+main.o: main.cpp Shader.o tiny_obj_loader.o Object.o Camera.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
 Shader.o: Shader.cpp Shader.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shader.cpp
+
+Camera.o: Camera.cpp Camera.hpp
+	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Camera.cpp
 
 Object.o: Object.cpp Object.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Object.cpp

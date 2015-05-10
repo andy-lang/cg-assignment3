@@ -5,6 +5,7 @@
 
 #include "Shader.hpp"
 #include "Object.hpp"
+#include "Camera.hpp"
 #include "libs/Lib.h"
 
 #include <iostream>
