@@ -32,7 +32,7 @@ public:
     ~Object();
 
     /** Renders the vertex data associated with this Object. */
-    void render(unsigned int programID);
+    void render(unsigned int programID, glm::mat4 &viewMatrix);
 
     /** Returns total size of vertex data. */
     unsigned int getVerticesSize() const;

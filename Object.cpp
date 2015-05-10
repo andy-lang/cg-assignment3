@@ -82,21 +82,26 @@ Object::~Object() {
     //?? TODO: stub
 }
 
-void Object::render(unsigned int programID) {
-    int modelviewHandle = glGetUniformLocation(programID, "modelview_matrix");
-    if (modelviewHandle == -1) {
-        std::cerr << "Could not find uniform variable 'modelview_matrix'" << std::endl;
+void Object::render(unsigned int programID, glm::mat4 &viewMatrix) {
+    int modelHandle = glGetUniformLocation(programID, "model_matrix");
+    int viewHandle = glGetUniformLocation(programID, "view_matrix");
+    if (modelHandle == -1) {
+        std::cerr << "Could not find uniform variable 'model_matrix'" << std::endl;
+        exit(1);
+    }
+    if (viewHandle == -1) {
+        std::cerr << "Could not find uniform variable 'view_matrix'" << std::endl;
         exit(1);
     }
 
-    glm::mat4 modelviewMatrix;
-    modelviewMatrix = glm::lookAt(glm::vec3(0.0f, 4.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    modelviewMatrix = glm::rotate(modelviewMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
-    //modelviewMatrix = glm::rotate(modelviewMatrix, yRot, glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 modelMatrix;
+    modelMatrix = glm::rotate(modelMatrix, yRot, glm::vec3(0.0f, 1.0f, 0.0f));
+    //modelMatrix = glm::rotate(modelMatrix, yRot, glm::vec3(1.0f, 0.0f, 0.0f));
 
 
     glBindVertexArray(mVertexVaoHandle);
-    glUniformMatrix4fv(modelviewHandle, 1, false, glm::value_ptr(modelviewMatrix));
+    glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(modelMatrix));
+    glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(viewMatrix));
 
     glDrawElements(GL_TRIANGLES, mIndicesSize, GL_UNSIGNED_INT, 0);
 

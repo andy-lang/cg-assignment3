@@ -53,8 +53,11 @@ void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
 
+    glm::mat4 viewMatrix;
+    viewMatrix = glm::lookAt(glm::vec3(0.0f, 4.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
     for (int i = 0; i < objects.size(); i++) {
-        objects.at(i)->render(programID);
+        objects.at(i)->render(programID, viewMatrix);
     }
 
     //glutSwapBuffers();
