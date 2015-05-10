@@ -105,14 +105,14 @@ void Object::calcModelMatrix() {
     if (mModelMatrixChanged) {
         // create model matrix
         mModelMatrix = glm::mat4();
+        //translate to the origin, then by the translate amount
+        mModelMatrix = glm::translate(mModelMatrix, glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z));
         // rotate by desired amounts
         mModelMatrix = glm::rotate(mModelMatrix, mRotate.x, glm::vec3(1.0f, 0.0f, 0.0f));
         mModelMatrix = glm::rotate(mModelMatrix, mRotate.y, glm::vec3(0.0f, 1.0f, 0.0f));
         mModelMatrix = glm::rotate(mModelMatrix, mRotate.z, glm::vec3(0.0f, 0.0f, 1.0f));
         // scale
         mModelMatrix = glm::scale(mModelMatrix, glm::vec3(mScale, mScale, mScale));
-        //translate to the origin, then by the translate amount
-        mModelMatrix = glm::translate(mModelMatrix, glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z));
     }
     mModelMatrixChanged = false; // set flag back to false, so function isn't called again on next render
     // else do nothing
