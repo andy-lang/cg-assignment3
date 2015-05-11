@@ -1,5 +1,6 @@
 - Camera class
     - mouse movement
+    - freecam
 - Buffer class
 - Normals
 - Texturing

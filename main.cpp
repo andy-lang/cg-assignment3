@@ -57,8 +57,6 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 0.6f, -2.0f));
     cameras.push_back(thirdPerson);
 
-    Camera freeCam = Camera();
-    cameras.push_back(freeCam);
     return 0;
 }
 
@@ -111,6 +109,12 @@ void keyboardFunc(unsigned char key, int x, int y) {
             break;
         case 'f':
             camIdx = (camIdx+1)%cameras.size();
+            if (camIdx == 0) {
+                std::cout << "first person" << std::endl;
+            }
+            else if (camIdx == 1) {
+                std::cout << "third person" << std::endl;
+            }
             glutPostRedisplay();
             break;
 
