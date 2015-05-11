@@ -38,7 +38,7 @@ void setCamera() {
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
     // tetrahedron at the world origin
-    Object* tet = new Object(programID, "geom/tetra/tetra.obj");
+    Object* tet = new Object(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
 
     // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
@@ -46,7 +46,7 @@ int objectSetup() {
     //objects.push_back(player);
 
     cam = Camera();
-    cam.attachToObject(player, glm::vec3(0.0f, 0.0f, -2.0f));
+    cam.attachToObject(player, glm::vec3(0.0f, 0.7f, -2.0f));
     return 0;
 }
 
@@ -195,6 +195,7 @@ int main(int argc, char** argv) {
     glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
 
+    std::cout << "WASD keys to move" << std::endl;
     glutMainLoop();
     return 0;
 }

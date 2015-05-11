@@ -38,7 +38,7 @@ void Camera::render(int programID) {
         mViewMatrix = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     }
     else {
-        mViewMatrix = glm::lookAt(mObj->getTranslation()+mTranslate, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        mViewMatrix = glm::lookAt(mObj->getTranslation()+mTranslate, glm::vec3(mObj->getPosition().x, mObj->getPosition().y, mObj->getPosition().z), glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
     glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(mViewMatrix));
