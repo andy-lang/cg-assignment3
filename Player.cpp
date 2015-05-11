@@ -23,3 +23,11 @@ void Player::moveLeft() {
 void Player::moveRight() {
     setTranslation(glm::vec3(mTranslate.x-PLAYER_SPEED, mTranslate.y, mTranslate.z));
 }
+
+void Player::moveForward() {
+    setTranslation(glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z+PLAYER_SPEED));
+}
+
+void Player::moveBackward() {
+    setTranslation(glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z-PLAYER_SPEED));
+}

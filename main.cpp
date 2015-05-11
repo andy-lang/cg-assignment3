@@ -46,7 +46,7 @@ int objectSetup() {
     //objects.push_back(player);
 
     cam = Camera();
-    cam.attachToObject(player, glm::vec3(0.0f, 0.0f, -1.0f));
+    cam.attachToObject(player, glm::vec3(0.0f, 0.0f, -2.0f));
     return 0;
 }
 
@@ -87,6 +87,14 @@ void keyboardFunc(unsigned char key, int x, int y) {
             break;
         case 'd':
             player->moveRight();
+            glutPostRedisplay();
+            break;
+        case 'w':
+            player->moveForward();
+            glutPostRedisplay();
+            break;
+        case 's':
+            player->moveBackward();
             glutPostRedisplay();
             break;
 

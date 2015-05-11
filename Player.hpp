@@ -24,7 +24,7 @@ public:
     void moveLeft();
     void moveRight();
     void moveForward();
-    void moveBack();
+    void moveBackward();
 
 private:
     static const float PLAYER_SPEED = 0.5f;
