@@ -4,6 +4,7 @@ uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 
 in vec3 a_vertex;
+in vec3 a_normal;
 
 out vec4 colour;
 

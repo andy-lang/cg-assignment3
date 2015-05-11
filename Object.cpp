@@ -24,6 +24,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     // initialise values
     mVerticesSize = 0;
     mIndicesSize = 0;
+    mNormalsSize = 0;
     mCentres = glm::vec3(0.0f, 0.0f, 0.0f);
 
     setScale(scale);
@@ -59,6 +60,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
 
         mVerticesSize += shapes.at(i).mesh.positions.size();
         mIndicesSize += shapes.at(i).mesh.indices.size();
+        mNormalsSize += shapes.at(i).mesh.normals.size();
     }
 
     mCentres.x /= (mVerticesSize/VALS_PER_VERT);
@@ -71,12 +73,13 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     glGenVertexArrays(1, &mVertexVaoHandle);
     glBindVertexArray(mVertexVaoHandle);
     int vertLoc = glGetAttribLocation(programID, "a_vertex");
+    int normLoc = glGetAttribLocation(programID, "a_normal");
 
 
     // here's where the fun begins. Buffers awaaaay~
     //
     // buffer vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mBuffer[mVerticesBufPos]);
+    glBindBuffer(GL_ARRAY_BUFFER, mBuffer[VERTICES_BUF_POS]);
     glBufferData(GL_ARRAY_BUFFER, mVerticesSize*sizeof(float), 0, GL_STATIC_DRAW);
 
     unsigned int szCount = 0;
@@ -90,12 +93,23 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
 
     // buffer indices
     szCount = 0;
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer[mIndicesBufPos]);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer[INDICES_BUF_POS]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndicesSize*sizeof(unsigned int), 0, GL_STATIC_DRAW);
     for (int i = 0; i < shapes.size(); i++) {
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, szCount*sizeof(unsigned int), shapes.at(i).mesh.indices.size()*sizeof(unsigned int), &shapes.at(i).mesh.indices.front());
         szCount += shapes.at(i).mesh.indices.size();
     }
+    
+    // buffer normals
+    szCount = 0;
+    glBindBuffer(GL_ARRAY_BUFFER, mBuffer[NORMALS_BUF_POS]);
+    glBufferData(GL_ARRAY_BUFFER, mNormalsSize*sizeof(float), 0, GL_STATIC_DRAW);
+    for (int i = 0; i < shapes.size(); i++) {
+        glBufferSubData(GL_ARRAY_BUFFER, szCount*sizeof(float), shapes.at(i).mesh.normals.size()*sizeof(float), &shapes.at(i).mesh.normals.front());
+        szCount += shapes.at(i).mesh.normals.size();
+    }
+    glEnableVertexAttribArray(normLoc);
+    glVertexAttribPointer(normLoc, VALS_PER_NORM, GL_FLOAT, GL_FALSE, 0, 0);
 
     // unbind vertex array
     glBindVertexArray(0);

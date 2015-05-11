@@ -118,19 +118,17 @@ void keyboardFunc(unsigned char key, int x, int y) {
             glutPostRedisplay();
             break;
 
-        /*
-        case 's':
+        case 'l':
             int pMode;
             glGetIntegerv(GL_POLYGON_MODE, &pMode);
-            if (pMode == GL_FILL) {
+            if (pMode == GL_POINT) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             }
             else {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
             }
             glutPostRedisplay();
             break;
-            */
 
     }
 }
