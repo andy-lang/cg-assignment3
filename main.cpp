@@ -14,8 +14,11 @@
 //#include <string>
 
 unsigned int programID;
+
 std::vector<Object*> objects;
-Camera cam;
+std::vector<Camera> cameras;
+int camIdx;
+
 Player* player;
 
 double FOV = 45.0;
@@ -45,8 +48,17 @@ int objectSetup() {
     player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     //objects.push_back(player);
 
-    cam = Camera();
-    cam.attachToObject(player, glm::vec3(0.0f, 0.7f, -2.0f));
+    camIdx = 1;
+    Camera firstPerson = Camera();
+    firstPerson.attachToObject(player);
+    cameras.push_back(firstPerson);
+
+    Camera thirdPerson = Camera();
+    thirdPerson.attachToObject(player, glm::vec3(0.0f, 0.6f, -2.0f));
+    cameras.push_back(thirdPerson);
+
+    Camera freeCam = Camera();
+    cameras.push_back(freeCam);
     return 0;
 }
 
@@ -64,7 +76,7 @@ void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
 
-    cam.render(programID);
+    cameras.at(camIdx).render(programID);
     player->render(programID);
     for (int i = 0; i < objects.size(); i++) {
         objects.at(i)->render(programID);
@@ -95,6 +107,10 @@ void keyboardFunc(unsigned char key, int x, int y) {
             break;
         case 's':
             player->moveBackward();
+            glutPostRedisplay();
+            break;
+        case 'f':
+            camIdx = (camIdx+1)%cameras.size();
             glutPostRedisplay();
             break;
 
@@ -196,6 +212,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(render);
 
     std::cout << "WASD keys to move" << std::endl;
+    std::cout << "F to switch camera views" << std::endl;
     glutMainLoop();
     return 0;
 }
