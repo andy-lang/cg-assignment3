@@ -76,22 +76,19 @@ void render() {
 }
 
 void keyboardFunc(unsigned char key, int x, int y) {
-    Object* att = cam.getAttachedObject();
     switch (key) {
         case 27:
         case 'q':
             exit(0);
             break;
-        /*
         case 'a':
-            att->setTranslation(glm::vec3(att->getTranslation().x+0.5f, att->getTranslation().y, att->getTranslation().z));
+            player->moveLeft();
             glutPostRedisplay();
             break;
         case 'd':
-            att->setTranslation(glm::vec3(att->getTranslation().x-0.5f, att->getTranslation().y, att->getTranslation().z));
+            player->moveRight();
             glutPostRedisplay();
             break;
-        */
 
         /*
         case 's':

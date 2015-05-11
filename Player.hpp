@@ -21,7 +21,13 @@ public:
     Player(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale);
     ~Player();
 
+    void moveLeft();
+    void moveRight();
+    void moveForward();
+    void moveBack();
+
 private:
+    static const float PLAYER_SPEED = 0.5f;
 
 };
 

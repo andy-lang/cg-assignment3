@@ -16,3 +16,10 @@ Player::~Player() {
     //?? TODO: stub
 }
 
+void Player::moveLeft() {
+    setTranslation(glm::vec3(mTranslate.x+PLAYER_SPEED, mTranslate.y, mTranslate.z));
+}
+
+void Player::moveRight() {
+    setTranslation(glm::vec3(mTranslate.x-PLAYER_SPEED, mTranslate.y, mTranslate.z));
+}
