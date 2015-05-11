@@ -5,6 +5,7 @@
 
 #include "Shader.hpp"
 #include "Object.hpp"
+#include "Player.hpp"
 #include "Camera.hpp"
 #include "libs/Lib.h"
 
@@ -15,6 +16,7 @@
 unsigned int programID;
 std::vector<Object*> objects;
 Camera cam;
+Player* player;
 
 double FOV = 45.0;
 bool lMousePressed;
@@ -40,11 +42,11 @@ int objectSetup() {
     objects.push_back(tet);
 
     // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
-    Object* cube = new Object(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
-    objects.push_back(cube);
+    player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+    //objects.push_back(player);
 
     cam = Camera();
-    cam.attachToObject(cube, glm::vec3(0.0f, 0.0f, -1.0f));
+    cam.attachToObject(player, glm::vec3(0.0f, 0.0f, -1.0f));
     return 0;
 }
 
@@ -63,6 +65,7 @@ void render() {
     glUseProgram(programID);
 
     cam.render(programID);
+    player->render(programID);
     for (int i = 0; i < objects.size(); i++) {
         objects.at(i)->render(programID);
     }

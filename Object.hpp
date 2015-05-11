@@ -66,7 +66,10 @@ public:
     /* Returns the world position of the object. */
     glm::vec3 getPosition();
 
-private:
+protected:
+    /* We keep the most basic Object creator private, so that it's not erroneously called. */
+    Object();
+
     /** The actual routine called by constructors etc to set up data and so forth on creation.
      * Thus it should be called ONLY ONCE, and will be done by all constructors.
      * @param   programID   The shader program to buffer the object data to.

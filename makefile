@@ -26,10 +26,10 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Shader.o tiny_obj_loader.o Camera.o
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS)
 
-main.o: main.cpp Shader.o tiny_obj_loader.o Object.o Camera.o
+main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
 Shader.o: Shader.cpp Shader.hpp
@@ -37,6 +37,9 @@ Shader.o: Shader.cpp Shader.hpp
 
 Camera.o: Camera.cpp Camera.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Camera.cpp
+
+Player.o: Player.cpp Player.hpp Object.o
+	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Player.cpp
 
 Object.o: Object.cpp Object.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Object.cpp

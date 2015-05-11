@@ -1,5 +1,9 @@
 #include "Object.hpp"
 
+Object::Object() {
+    //?? TODO: stub
+}
+
 Object::Object(int programID) {
     //?? TODO: stub
 }
