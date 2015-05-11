@@ -17,7 +17,8 @@ std::vector<Object*> objects;
 Camera cam;
 
 double FOV = 45.0;
-float yRot = 0.0f;
+bool lMousePressed;
+bool rMousePressed;
 
 void setCamera() {
     glm::mat4 projection;
@@ -72,12 +73,24 @@ void render() {
 }
 
 void keyboardFunc(unsigned char key, int x, int y) {
+    Object* att = cam.getAttachedObject();
     switch (key) {
         case 27:
         case 'q':
             exit(0);
             break;
-            /*
+        /*
+        case 'a':
+            att->setTranslation(glm::vec3(att->getTranslation().x+0.5f, att->getTranslation().y, att->getTranslation().z));
+            glutPostRedisplay();
+            break;
+        case 'd':
+            att->setTranslation(glm::vec3(att->getTranslation().x-0.5f, att->getTranslation().y, att->getTranslation().z));
+            glutPostRedisplay();
+            break;
+        */
+
+        /*
         case 's':
             int pMode;
             glGetIntegerv(GL_POLYGON_MODE, &pMode);
@@ -106,6 +119,29 @@ void specialFunc(int key, int x, int y) {
     }
     glutPostRedisplay();
     */
+}
+
+void mouseFunc(int button, int state, int x, int y) {
+    switch (button) {
+        case GLUT_LEFT_BUTTON:
+            if (state == GLUT_DOWN) {
+                lMousePressed = true;
+            }
+            else {
+                lMousePressed = false;
+            }
+            break;
+        case GLUT_RIGHT_BUTTON:
+            if (state == GLUT_DOWN) {
+                rMousePressed = true;
+            }
+            else {
+                rMousePressed = false;
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 int main(int argc, char** argv) {
@@ -148,6 +184,7 @@ int main(int argc, char** argv) {
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
     glutSpecialFunc(specialFunc);
+    glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
 
     glutMainLoop();

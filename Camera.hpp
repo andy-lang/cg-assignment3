@@ -33,6 +33,9 @@ public:
      */
     void attachToObject(Object* obj, glm::vec3 translate);
 
+    /* Returns the object to which the Camera is attached, or NULL if no such object exists. */
+    Object* getAttachedObject() const;
+
     /* "Renders" the camera.
      * In essence all this does is recalculate the view matrix, then send it to the specified shader program.
      * @param   programID   The shader program to which the Camera will be "rendered".

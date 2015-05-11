@@ -1,5 +1,5 @@
 - Camera class
-    - "attach to object"
+    - mouse movement
 - Buffer class
 - Normals
 - Texturing

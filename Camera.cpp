@@ -21,6 +21,10 @@ void Camera::attachToObject(Object* obj, glm::vec3 translate) {
     mTranslate = translate;
 }
 
+Object* Camera::getAttachedObject() const {
+    return mObj;
+}
+
 void Camera::render(int programID) {
     int viewHandle = glGetUniformLocation(programID, "view_matrix");
     if (viewHandle == -1) {
@@ -35,8 +39,6 @@ void Camera::render(int programID) {
     }
     else {
         mViewMatrix = glm::lookAt(mObj->getTranslation()+mTranslate, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        std::cout << "obj position = " << mObj->getTranslation().x << ", " << mObj->getTranslation().y << ", " << mObj->getTranslation().z << std::endl;
-        std::cout << "so total position = " << (mObj->getTranslation()+mTranslate).x << ", " << (mObj->getTranslation()+mTranslate).y << ", " << (mObj->getTranslation()+mTranslate).z << std::endl;
     }
 
     glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(mViewMatrix));
