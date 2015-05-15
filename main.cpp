@@ -44,8 +44,7 @@ int objectSetup() {
     Object* tet = new Object(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
 
-    // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
-    player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+    player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     //objects.push_back(player);
 
     camIdx = 1;

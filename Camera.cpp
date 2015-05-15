@@ -38,6 +38,9 @@ void Camera::render(int programID) {
         mViewMatrix = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     }
     else {
+        // rotate the object
+        mViewMatrix = glm::rotate(mViewMatrix, mObj->getRotation().y, glm::vec3(0.0f, 1.0f, 0.0f));
+        // then translate it a little bit
         mViewMatrix = glm::lookAt(mObj->getTranslation()+mTranslate, glm::vec3(mObj->getPosition().x, mObj->getPosition().y, mObj->getPosition().z+0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
