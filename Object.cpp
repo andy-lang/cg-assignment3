@@ -165,6 +165,8 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
         }
     }
     else {
+        // no texture files whatsoever.
+        // we combat this by making a default white texture image, and binding it to each of the shapes
         mTextureHandle.resize(shapes.size());
         glGenTextures(shapes.size(), &mTextureHandle.front());
         unsigned char data[4] = {255, 255, 255, 255};

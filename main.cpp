@@ -15,7 +15,7 @@
 
 unsigned int programID;
 
-std::vector<Object*> objects;
+std::vector<Object> objects;
 std::vector<Camera> cameras;
 int camIdx;
 
@@ -40,8 +40,16 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    Object* tet = new Object(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
+    Object tet(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
+
+    /*
+    // test for a whole bunch of objects, for efficiency reasons
+    for (int i = 0; i < 5; i++) {
+        Object obj(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(i), 0.0f, 0.0f), 1.0f);
+        objects.push_back(obj); 
+    }
+    */
 
     player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     //objects.push_back(player);
@@ -76,7 +84,7 @@ void render() {
     cameras.at(camIdx).render(programID);
     player->render(programID);
     for (int i = 0; i < objects.size(); i++) {
-        objects.at(i)->render(programID);
+        objects.at(i).render(programID);
     }
 
 
