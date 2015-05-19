@@ -1,3 +1,5 @@
+#define GLM_FORCE_RADIANS
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
@@ -8,6 +10,7 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "libs/Lib.h"
+#include "LevelMap.hpp"
 
 #include <iostream>
 #include <cstdlib>
@@ -40,12 +43,14 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
+    //Generate level map
+    if(generateLevelMap(programID) != 0){
+        std::cout << "ERROR: map generation failed" << std::endl;
+    }
+
     // tetrahedron at the world origin
     Object* tet = new Object(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
-
-    Object* wall = new Object(programID, "geom/cube_wall/cube_wall.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f));
-    objects.push_back(wall);
 
     // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
     player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
