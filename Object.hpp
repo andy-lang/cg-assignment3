@@ -6,7 +6,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "tiny_obj_loader.h"
+#include "external_files/soil/src/SOIL.h"
+#include "tiny_obj_loader.h" // obj file reading
 
 #include <GL/glut.h>
 
@@ -72,7 +73,7 @@ protected:
     /* We keep the most basic Object creator private, so that it's not erroneously called. */
     Object();
 
-    /** The actual routine called by constructors etc to set up data and so forth on creation.
+    /** The actual routine called by constructors etc to set up data, textures, etc on creation.
      * Thus it should be called ONLY ONCE, and will be done by all constructors.
      * @param   programID   The shader program to buffer the object data to.
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
@@ -106,6 +107,9 @@ protected:
     glm::mat4 mModelMatrix; // the object's model matrix.
 
     unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
+    //unsigned int mTextureHandle; // handle for the object's texture image(s)
+    std::vector<unsigned int> mTextureHandle;
+
 };
 
 #endif
