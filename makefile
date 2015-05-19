@@ -29,6 +29,9 @@ endif
 all: assign3$(EXT)
 
 assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
+	mkdir -p ./$(EXTERNAL_FILES)/soil/projects/makefile/obj
+	mkdir -p ./$(EXTERNAL_FILES)/soil/lib
+	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
 main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o
@@ -50,4 +53,4 @@ tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc
 	$(CC) $(DEFS) -c tiny_obj_loader.cc
 
 clean:
-	rm -f *.o assign3$(EXT)
+	rm -f *.o ./$(EXTERNAL_FILES)/soil/projects/makefile/obj/*.o assign3$(EXT)
