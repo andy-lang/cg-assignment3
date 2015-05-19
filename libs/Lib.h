@@ -3,6 +3,7 @@
 
 #define VALS_PER_VERT   3
 #define VALS_PER_NORM   3
+#define VALS_PER_TEXCOORD 2
 
 static unsigned int WINDOW_WIDTH = 640;
 static unsigned int WINDOW_HEIGHT = 480;

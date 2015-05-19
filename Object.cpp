@@ -61,6 +61,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
         mVerticesSize += shapes.at(i).mesh.positions.size();
         mIndicesSize += shapes.at(i).mesh.indices.size();
         mNormalsSize += shapes.at(i).mesh.normals.size();
+        mTexCoordsSize += shapes.at(i).mesh.texcoords.size();
     }
 
     mCentres.x /= (mVerticesSize/VALS_PER_VERT);
@@ -74,6 +75,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     glBindVertexArray(mVertexVaoHandle);
     int vertLoc = glGetAttribLocation(programID, "a_vertex");
     int normLoc = glGetAttribLocation(programID, "a_normal");
+    int texLoc = glGetAttribLocation(programID, "a_tex_coord");
 
 
     // here's where the fun begins. Buffers awaaaay~
@@ -111,11 +113,33 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     glEnableVertexAttribArray(normLoc);
     glVertexAttribPointer(normLoc, VALS_PER_NORM, GL_FLOAT, GL_FALSE, 0, 0);
 
+    // buffer textures
+    szCount = 0;
+    glBindBuffer(GL_ARRAY_BUFFER, mBuffer[TEXCOORDS_BUF_POS]);
+    glBufferData(GL_ARRAY_BUFFER, mTexCoordsSize*sizeof(float), 0, GL_STATIC_DRAW);
+    for (int i = 0; i < shapes.size(); i++) {
+        glBufferSubData(GL_ARRAY_BUFFER, szCount*sizeof(float), shapes.at(i).mesh.texcoords.size()*sizeof(float), &shapes.at(i).mesh.texcoords.front());
+        szCount += shapes.at(i).mesh.texcoords.size();
+    }
+    glEnableVertexAttribArray(texLoc);
+    glVertexAttribPointer(texLoc, VALS_PER_TEXCOORD, GL_FLOAT, GL_FALSE, 0, 0);
+
     // unbind vertex array
     glBindVertexArray(0);
     // and unbind the buffer too
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
+    /*
+
+    // next, bind textures
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &mTextureHandle);
+    glBindTexture(GL_TEXTURE_2D, mTextureHandle);
+    for (int i = 0; i < shapes.size(); i++) {
+        int x, y, n;
+    }
+    */
     // and we're done!
 }
 

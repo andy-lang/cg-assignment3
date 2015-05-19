@@ -1,8 +1,11 @@
 PLATFORM := $(shell uname)
 CC = g++
 
+EXTERNAL_FILES = external_files
 PROJ_LIBS = libs
 LIB_FLAG = -I
+SOIL_LIBS = $(EXTERNAL_FILES)/soil/lib
+SOIL_FLAG = -L
 
 ifneq (, $(findstring CYGWIN, $(PLATFORM)))
     GL_LIBS = -lopengl32 -lglut32
@@ -27,7 +30,7 @@ endif
 all: assign3$(EXT)
 
 assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
-	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS)
+	$(CC) $(DEFS) $(SOIL_FLAG) $(SOIL_LIBS) -o assign3 $^ $(GL_LIBS)
 
 main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
