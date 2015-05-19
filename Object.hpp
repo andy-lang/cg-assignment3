@@ -6,7 +6,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "tiny_obj_loader.h"
+#include "external_files/soil/src/SOIL.h"
+#include "tiny_obj_loader.h" // obj file reading
 
 #include <GL/glut.h>
 
@@ -62,6 +63,8 @@ public:
     float getScaleFactor() const;
     /* Returns the translation of the object. */
     glm::vec3 getTranslation();
+    /* Returns the rotation of the object. */
+    glm::vec3 getRotation();
 
     /* Returns the world position of the object. */
     glm::vec3 getPosition();
@@ -70,7 +73,7 @@ protected:
     /* We keep the most basic Object creator private, so that it's not erroneously called. */
     Object();
 
-    /** The actual routine called by constructors etc to set up data and so forth on creation.
+    /** The actual routine called by constructors etc to set up data, textures, etc on creation.
      * Thus it should be called ONLY ONCE, and will be done by all constructors.
      * @param   programID   The shader program to buffer the object data to.
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
@@ -83,15 +86,17 @@ protected:
     /* Recalculates the object's model matrix, only if new values have been set. */
     void calcModelMatrix();
 
-    static const unsigned int mBufSize = 3; // total number of buffers
+    static const unsigned int mBufSize = 4; // total number of buffers
     unsigned int mBuffer[mBufSize]; // the buffers
     static const unsigned int VERTICES_BUF_POS = 0; // index position of vertices in buffer
     static const unsigned int INDICES_BUF_POS = 1; // index position of indices in buffer
     static const unsigned int NORMALS_BUF_POS = 2; // index position of normals in buffer
+    static const unsigned int TEXCOORDS_BUF_POS = 3; // index position of texture coordinates in buffer
 
     unsigned int mVerticesSize; // total number of vertices of the object
     unsigned int mIndicesSize; // total number of indices of the object
     unsigned int mNormalsSize; // total number of normals of the object
+    unsigned int mTexCoordsSize; // total number of tex coordinates of the object
     glm::vec3 mCentres; // the centre of the object in the X, Y and Z axes.
 
     glm::vec3 mRotate; // rotation factors of the object
@@ -102,6 +107,9 @@ protected:
     glm::mat4 mModelMatrix; // the object's model matrix.
 
     unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
+    //unsigned int mTextureHandle; // handle for the object's texture image(s)
+    std::vector<unsigned int> mTextureHandle;
+
 };
 
 #endif
