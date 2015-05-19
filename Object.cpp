@@ -34,6 +34,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     // get directory of passed parameter
     std::string directory = objfile;
     directory = directory.substr(0, directory.find_last_of('/'));
+    directory += '/';
 
     // read in obj file
     std::vector<tinyobj::shape_t> shapes;
@@ -130,16 +131,30 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
-    /*
 
     // next, bind textures
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &mTextureHandle);
     glBindTexture(GL_TEXTURE_2D, mTextureHandle);
-    for (int i = 0; i < shapes.size(); i++) {
+    for (int i = 0; i < materials.size(); i++) {
         int x, y, n;
+        if (!materials.at(i).diffuse_texname.empty()) {
+            unsigned char *img = SOIL_load_image((directory+materials.at(i).diffuse_texname).c_str(), &x, &y, &n, 0);
+            std::cout << "img " << i << ": " << x << "x" << y << std::endl;
+            if (n == 3) {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+            }
+            else if (n == 4) {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+            }
+            SOIL_free_image_data(img);
+        }
+        else {
+            float img[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+        }
     }
-    */
+
     // and we're done!
 }
 
