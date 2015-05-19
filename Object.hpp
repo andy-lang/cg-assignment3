@@ -107,7 +107,9 @@ protected:
     glm::mat4 mModelMatrix; // the object's model matrix.
 
     unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
-    unsigned int mTextureHandle; // handle for the object's texture image(s)
+    //unsigned int mTextureHandle; // handle for the object's texture image(s)
+    std::vector<unsigned int> mTextureHandle;
+
 };
 
 #endif

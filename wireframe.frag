@@ -9,6 +9,6 @@ out vec4 fragColour;
 uniform sampler2D tex_map;
 
 void main(void) {
-    //fragColour = colour * texture(tex_map, texCoord);
-    fragColour = colour;
+    fragColour = colour * texture(tex_map, texCoord);
+    //fragColour = colour;
 }

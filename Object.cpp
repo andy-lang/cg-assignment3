@@ -25,6 +25,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     mVerticesSize = 0;
     mIndicesSize = 0;
     mNormalsSize = 0;
+    mTexCoordsSize = 0;
     mCentres = glm::vec3(0.0f, 0.0f, 0.0f);
 
     setScale(scale);
@@ -68,6 +69,8 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     mCentres.x /= (mVerticesSize/VALS_PER_VERT);
     mCentres.y /= (mVerticesSize/VALS_PER_VERT);
     mCentres.z /= (mVerticesSize/VALS_PER_VERT);
+
+
 
     glGenBuffers(mBufSize, mBuffer);
 
@@ -114,46 +117,68 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     glEnableVertexAttribArray(normLoc);
     glVertexAttribPointer(normLoc, VALS_PER_NORM, GL_FLOAT, GL_FALSE, 0, 0);
 
-    // buffer textures
-    szCount = 0;
-    glBindBuffer(GL_ARRAY_BUFFER, mBuffer[TEXCOORDS_BUF_POS]);
-    glBufferData(GL_ARRAY_BUFFER, mTexCoordsSize*sizeof(float), 0, GL_STATIC_DRAW);
-    for (int i = 0; i < shapes.size(); i++) {
-        glBufferSubData(GL_ARRAY_BUFFER, szCount*sizeof(float), shapes.at(i).mesh.texcoords.size()*sizeof(float), &shapes.at(i).mesh.texcoords.front());
-        szCount += shapes.at(i).mesh.texcoords.size();
+    if (mTexCoordsSize > 0) {
+        // if there are any texcoords, then we buffer them, and map textures to them.
+        // buffer textures
+        szCount = 0;
+        glBindBuffer(GL_ARRAY_BUFFER, mBuffer[TEXCOORDS_BUF_POS]);
+        glBufferData(GL_ARRAY_BUFFER, mTexCoordsSize*sizeof(float), 0, GL_STATIC_DRAW);
+        for (int i = 0; i < shapes.size(); i++) {
+            glBufferSubData(GL_ARRAY_BUFFER, szCount*sizeof(float), shapes.at(i).mesh.texcoords.size()*sizeof(float), &shapes.at(i).mesh.texcoords.front());
+            szCount += shapes.at(i).mesh.texcoords.size();
+        }
+        glEnableVertexAttribArray(texLoc);
+        glVertexAttribPointer(texLoc, VALS_PER_TEXCOORD, GL_FLOAT, GL_FALSE, 0, 0);
+
+
+
+        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // next, bind textures
+        glActiveTexture(GL_TEXTURE0);
+        mTextureHandle.resize(shapes.size());
+        glGenTextures(shapes.size(), &mTextureHandle.front());
+
+        for (int i = 0; i < materials.size(); i++) {
+            int x, y, n;
+            if (!materials.at(i).diffuse_texname.empty()) {
+                unsigned char* img = SOIL_load_image((directory+materials.at(i).diffuse_texname).c_str(), &x, &y, &n, SOIL_LOAD_RGB);
+                if (n == 3) {
+                    glBindTexture(GL_TEXTURE_2D, mTextureHandle.at(i));
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+                }
+                else if (n == 4) {
+                    glBindTexture(GL_TEXTURE_2D, mTextureHandle.at(i));
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+                }
+                SOIL_free_image_data(img);
+            }
+            else {
+                // no texture file given, so make it a nice default shade of green.
+                unsigned char data[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+                glBindTexture(GL_TEXTURE_2D, mTextureHandle.at(i));
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            }
+        }
     }
-    glEnableVertexAttribArray(texLoc);
-    glVertexAttribPointer(texLoc, VALS_PER_TEXCOORD, GL_FLOAT, GL_FALSE, 0, 0);
+    else {
+        mTextureHandle.resize(shapes.size());
+        glGenTextures(shapes.size(), &mTextureHandle.front());
+        unsigned char data[4] = {255, 255, 255, 255};
+        for (int i = 0; i < shapes.size(); i++) {
+            glBindTexture(GL_TEXTURE_2D, mTextureHandle.at(i));
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        }
+    }
+
 
     // unbind vertex array
     glBindVertexArray(0);
     // and unbind the buffer too
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-
-    // next, bind textures
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1, &mTextureHandle);
-    glBindTexture(GL_TEXTURE_2D, mTextureHandle);
-    for (int i = 0; i < materials.size(); i++) {
-        int x, y, n;
-        if (!materials.at(i).diffuse_texname.empty()) {
-            unsigned char *img = SOIL_load_image((directory+materials.at(i).diffuse_texname).c_str(), &x, &y, &n, 0);
-            std::cout << "img " << i << ": " << x << "x" << y << std::endl;
-            if (n == 3) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-            }
-            else if (n == 4) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
-            }
-            SOIL_free_image_data(img);
-        }
-        else {
-            float img[4] = {0.0f, 1.0f, 0.0f, 1.0f};
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
-        }
-    }
 
     // and we're done!
 }
@@ -182,9 +207,18 @@ void Object::render(unsigned int programID) {
         std::cerr << "Could not find uniform variable 'model_matrix'" << std::endl;
         exit(1);
     }
+    int texMapHandle = glGetUniformLocation(programID, "tex_map");
+    if (texMapHandle == -1) {
+        std::cerr << "Could not find uniform variable 'tex_map'" << std::endl;
+        exit(1);
+    }
 
+
+    glActiveTexture(GL_TEXTURE0);
+    for (int i = 0; i < mTextureHandle.size(); i++) {
+        glBindTexture(GL_TEXTURE_2D, mTextureHandle.at(i));
+    }
     calcModelMatrix();
-
     glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(mModelMatrix));
 
     glBindVertexArray(mVertexVaoHandle);

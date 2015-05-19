@@ -40,12 +40,9 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    // tetrahedron at the world origin
     Object* tet = new Object(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
 
-
-    // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
     player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     //objects.push_back(player);
 
@@ -74,6 +71,7 @@ int setup() {
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     cameras.at(camIdx).render(programID);
     player->render(programID);
@@ -122,11 +120,11 @@ void keyboardFunc(unsigned char key, int x, int y) {
         case 'l':
             int pMode;
             glGetIntegerv(GL_POLYGON_MODE, &pMode);
-            if (pMode == GL_POINT) {
+            if (pMode == GL_FILL) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             }
             else {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
             glutPostRedisplay();
             break;
@@ -216,6 +214,7 @@ int main(int argc, char** argv) {
 
     std::cout << "WASD keys to move" << std::endl;
     std::cout << "F to switch camera views" << std::endl;
+    std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();
     return 0;
 }
