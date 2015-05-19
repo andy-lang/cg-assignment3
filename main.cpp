@@ -43,9 +43,7 @@ int objectSetup() {
     Object tet(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
 
-<<<<<<< HEAD
     player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 50.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
-=======
     /*
     // test for a whole bunch of objects, for efficiency reasons
     for (int i = 0; i < 5; i++) {
@@ -53,9 +51,6 @@ int objectSetup() {
         objects.push_back(obj); 
     }
     */
-
-    player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
->>>>>>> textures
     //objects.push_back(player);
 
     camIdx = 1;
