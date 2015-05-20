@@ -16,7 +16,7 @@ ifneq (, $(findstring Linux, $(PLATFORM)))
     GL_LIBS = -lGL -lglut -lGLEW 
 	GL_LIBS += -L/usr/lib/nvidia-304 # Needed for some linux drivers
 	EXT = 
-    DEFS =
+    DEFS = -I../glm-0.9.4.0/
 endif
 
 ifneq (, $(findstring Darwin, $(PLATFORM)))
