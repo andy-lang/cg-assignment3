@@ -2,9 +2,9 @@
 #define PLAYER_HPP
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "external_files/glm/glm/glm.hpp"
+#include "external_files/glm/glm/gtc/matrix_transform.hpp"
+#include "external_files/glm/glm/gtc/type_ptr.hpp"
 
 #include "tiny_obj_loader.h"
 

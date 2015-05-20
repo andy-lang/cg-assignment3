@@ -1,7 +1,7 @@
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "external_files/glm/glm/glm.hpp"
+#include "external_files/glm/glm/gtc/matrix_transform.hpp"
+#include "external_files/glm/glm/gtc/type_ptr.hpp"
 
 #include "Shader.hpp"
 #include "Object.hpp"
@@ -211,7 +211,7 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // wireframes for now
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);

@@ -53,4 +53,5 @@ tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc
 	$(CC) $(DEFS) -c tiny_obj_loader.cc
 
 clean:
-	rm -f *.o ./$(EXTERNAL_FILES)/soil/projects/makefile/obj/*.o assign3$(EXT)
+	rm -f *.o assign3$(EXT)
+	make clean -C ./$(EXTERNAL_FILES)/soil/projects/makefile
