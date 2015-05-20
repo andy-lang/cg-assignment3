@@ -1,8 +1,10 @@
 PLATFORM := $(shell uname)
 CC = g++
 
+EXTERNAL_FILES = external_files
 PROJ_LIBS = libs
 LIB_FLAG = -I
+SOIL_LIBS = ./$(EXTERNAL_FILES)/soil/lib
 
 ifneq (, $(findstring CYGWIN, $(PLATFORM)))
     GL_LIBS = -lopengl32 -lglut32
@@ -14,7 +16,7 @@ ifneq (, $(findstring Linux, $(PLATFORM)))
     GL_LIBS = -lGL -lglut -lGLEW 
 	GL_LIBS += -L/usr/lib/nvidia-304 # Needed for some linux drivers
 	EXT = 
-    DEFS =
+    DEFS = -I../glm-0.9.4.0/
 endif
 
 ifneq (, $(findstring Darwin, $(PLATFORM)))
@@ -26,8 +28,11 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o Wall.o LevelMap.o
-	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS)
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
+	mkdir -p ./$(EXTERNAL_FILES)/soil/projects/makefile/obj
+	mkdir -p ./$(EXTERNAL_FILES)/soil/lib
+	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
+	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
 main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o Wall.o LevelMap.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
@@ -55,3 +60,4 @@ tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc
 
 clean:
 	rm -f *.o assign3$(EXT)
+	make clean -C ./$(EXTERNAL_FILES)/soil/projects/makefile

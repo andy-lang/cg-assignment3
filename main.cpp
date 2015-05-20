@@ -1,9 +1,9 @@
 #define GLM_FORCE_RADIANS
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "external_files/glm/glm/glm.hpp"
+#include "external_files/glm/glm/gtc/matrix_transform.hpp"
+#include "external_files/glm/glm/gtc/type_ptr.hpp"
 
 #include "Shader.hpp"
 #include "Object.hpp"
@@ -18,7 +18,7 @@
 
 unsigned int programID;
 
-std::vector<Object*> objects;
+std::vector<Object> objects;
 std::vector<Camera> cameras;
 int camIdx;
 
@@ -43,17 +43,18 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    //Generate level map
-    if(generateLevelMap(programID) != 0){
-        std::cout << "ERROR: map generation failed" << std::endl;
-    }
 
-    // tetrahedron at the world origin
-    Object* tet = new Object(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
+    Object tet(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
     objects.push_back(tet);
 
-    // simple cube, rotated by 10 degrees in the x axis, translated by 2 units in the x axis and -5 units in the z axis, and scaled down by 50%.
-    player = new Player(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+    player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+    /*
+    // test for a whole bunch of objects, for efficiency reasons
+    for (int i = 0; i < 5; i++) {
+        Object obj(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(i), 0.0f, 0.0f), 1.0f);
+        objects.push_back(obj); 
+    }
+    */
     //objects.push_back(player);
 
     camIdx = 1;
@@ -81,11 +82,12 @@ int setup() {
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     cameras.at(camIdx).render(programID);
     player->render(programID);
     for (int i = 0; i < objects.size(); i++) {
-        objects.at(i)->render(programID);
+        objects.at(i).render(programID);
     }
 
 
@@ -129,11 +131,11 @@ void keyboardFunc(unsigned char key, int x, int y) {
         case 'l':
             int pMode;
             glGetIntegerv(GL_POLYGON_MODE, &pMode);
-            if (pMode == GL_POINT) {
+            if (pMode == GL_FILL) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             }
             else {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
             glutPostRedisplay();
             break;
@@ -213,7 +215,7 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // wireframes for now
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
@@ -223,6 +225,7 @@ int main(int argc, char** argv) {
 
     std::cout << "WASD keys to move" << std::endl;
     std::cout << "F to switch camera views" << std::endl;
+    std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();
     return 0;
 }
