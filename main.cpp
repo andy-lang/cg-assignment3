@@ -1,3 +1,5 @@
+#define GLM_FORCE_RADIANS
+
 #include <GL/glew.h>
 #include "external_files/glm/glm/glm.hpp"
 #include "external_files/glm/glm/gtc/matrix_transform.hpp"
@@ -8,6 +10,7 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "libs/Lib.h"
+#include "LevelMap.hpp"
 
 #include <iostream>
 #include <cstdlib>
@@ -40,8 +43,11 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    Object tet(programID, "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
-    objects.push_back(tet);
+
+    //Object tet(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 10.0f);
+    //objects.push_back(tet);
+
+    objects = generateLevelMap(programID, objects);
 
     player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     /*
