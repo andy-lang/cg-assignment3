@@ -2,10 +2,11 @@
 #define MAP_HPP
 
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "external_files/glm/glm/glm.hpp"
+#include "external_files/glm/glm/gtc/matrix_transform.hpp"
+#include "external_files/glm/glm/gtc/type_ptr.hpp"
 
+#include "external_files/soil/src/SOIL.h"
 #include "tiny_obj_loader.h"
 
 #include <GL/glut.h>
@@ -14,8 +15,8 @@
 #include "Object.hpp"
 #include "Wall.hpp"
 #include <iostream>
+#include <vector>
 
-int generateLevelMap(int programID);
-float coordToPos(int coord);
+std::vector<Object> generateLevelMap(int programID, std::vector<Object> objects);
 
 #endif

@@ -28,7 +28,7 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o Wall.o LevelMap.o
 	mkdir -p ./$(EXTERNAL_FILES)/soil/projects/makefile/obj
 	mkdir -p ./$(EXTERNAL_FILES)/soil/lib
 	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
