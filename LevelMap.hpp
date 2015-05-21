@@ -13,7 +13,6 @@
 
 #include "libs/Lib.h"
 #include "Object.hpp"
-#include "Wall.hpp"
 #include <iostream>
 #include <vector>
 

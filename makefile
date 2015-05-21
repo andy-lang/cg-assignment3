@@ -28,13 +28,13 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o Wall.o LevelMap.o
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o
 	mkdir -p ./$(EXTERNAL_FILES)/soil/projects/makefile/obj
 	mkdir -p ./$(EXTERNAL_FILES)/soil/lib
 	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
-main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o Wall.o LevelMap.o
+main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o LevelMap.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
 Shader.o: Shader.cpp Shader.hpp
@@ -48,9 +48,6 @@ Player.o: Player.cpp Player.hpp Object.o
 
 Object.o: Object.cpp Object.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Object.cpp
-
-Wall.o: Wall.cpp Wall.hpp
-	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Wall.cpp
 
 LevelMap.o: LevelMap.cpp LevelMap.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c LevelMap.cpp
