@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <string>
 
-
 /*
  * Play a sound file to the default system speakers.
  * Adapted from Tutorial 4 example.
