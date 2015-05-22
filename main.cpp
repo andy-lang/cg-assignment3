@@ -45,10 +45,12 @@ int objectSetup() {
 
     player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     // test for a whole bunch of objects, for efficiency reasons
-    for (int i = 0; i < 2; i++) {
+    /*
+    for (int i = 0; i < 100; i++) {
         Object obj(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(i), 0.0f, 0.0f), 1.0f);
         objects.push_back(obj); 
     }
+    */
     //objects.push_back(player);
 
     camIdx = 1;
