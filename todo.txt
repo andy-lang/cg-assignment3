@@ -4,3 +4,17 @@
 - Buffer class
 - Normals
 - Texturing
+
+ - multiple shaders
+ - proper commenting & documentation
+
+Riley:
+ - bump mapping textures
+ - multipass method
+ 	- either shadows or a reflective surface
+ - procedural something
+ 	- either
+ 		> procedural texture(/s) like a marble effect floor
+ 		> smoke
+ 		> fire
+ 		> particle simulated liquid flow (eg: lava)

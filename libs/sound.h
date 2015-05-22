@@ -8,8 +8,8 @@
  * @project 	: CG Assignment 3
 **********************************************************************/
 
-#ifndef SOUNDPLAYER
-#define SOUNDPLAYER
+#ifndef SOUNDPLAYER_H
+#define SOUNDPLAYER_H
 
 #include <stdlib.h>
 #include <string>
@@ -30,4 +30,4 @@ void playSound(std::string path)
 	system(execStr.c_str());
 }
 
-#endif // SOUNDPLAYER
+#endif // SOUNDPLAYER_H
