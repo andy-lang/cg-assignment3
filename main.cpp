@@ -49,7 +49,7 @@ int objectSetup() {
 
     objects = generateLevelMap(programID, objects);
 
-    player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+    player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
     // test for a whole bunch of objects, for efficiency reasons
     /*
     for (int i = 0; i < 100; i++) {
@@ -59,7 +59,7 @@ int objectSetup() {
     */
     //objects.push_back(player);
 
-    camIdx = 1;
+    camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player);
     cameras.push_back(firstPerson);
@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // wireframes for now
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
