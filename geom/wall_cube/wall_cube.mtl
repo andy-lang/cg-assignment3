@@ -1,0 +1,31 @@
+# Exported from Wings 3D 1.5.3
+newmtl wall_ceiling
+Ns 100.0
+d 1.0
+illum 2
+Kd 0.46054 0.46054 0.46054
+Ka 0.001 0.001 0.001
+Ks 0.0 0.0 0.0
+Ke 0.0 0.0 0.0
+map_Kd ceiling.bmp2.tga
+
+newmtl wall_floor
+Ns 100.0
+d 1.0
+illum 2
+Kd 0.50716 0.50716 0.50716
+Ka 0.001 0.001 0.001
+Ks 0.001 0.001 0.001
+Ke 0.0 0.0 0.0
+map_Kd floor.bmp2.tga
+
+newmtl wall_side
+Ns 100.0
+d 1.0
+illum 2
+Kd 0.48718000000000006 0.48718000000000006 0.48718000000000006
+Ka 0.001 0.001 0.001
+Ks 0.001 0.001 0.001
+Ke 0.0 0.0 0.0
+map_Kd wall.bmp2.tga
+

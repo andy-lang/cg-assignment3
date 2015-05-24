@@ -1,3 +1,5 @@
+#define GLM_FORCE_RADIANS
+
 #include <GL/glew.h>
 #include "external_files/glm/glm/glm.hpp"
 #include "external_files/glm/glm/gtc/matrix_transform.hpp"
@@ -8,6 +10,7 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "libs/Lib.h"
+#include "LevelMap.hpp"
 
 #include <iostream>
 #include <cstdlib>
@@ -42,6 +45,8 @@ void setCamera() {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
+    objects = generateLevelMap(programIDs[0], objects);
+
 	for (int i = 0; i < programIDs.size(); i++) {
 	    glUseProgram(programIDs.at(i));
 		Object tet(programIDs.at(i), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
@@ -58,7 +63,8 @@ int objectSetup() {
 
 	}
 	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
-    camIdx = 1;
+    camIdx = 0;
+    
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player);
     cameras.push_back(firstPerson);
@@ -225,7 +231,7 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // wireframes for now
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
