@@ -1,124 +1,93 @@
+/***
+
+***/
+
 #include "LevelMap.hpp"
+
+Object create(int programID, const char* file, glm::vec3 rot, glm::vec3 pos, float scale){
+    Object obj(programID, file, rot, pos, scale);
+    return obj;
+}
 
 std::vector<Object> generateLevelMap(int programID, std::vector<Object> objects){
 	std::vector<Object> obj = objects;
 
 	//O0
-	Object obj0(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), 0.5f);
-    obj.push_back(obj0);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), 0.5f));
 	//O1
-	Object obj1(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.5f);
-    obj.push_back(obj1);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.5f));
     //O2
-    Object obj2(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 1.0f), 0.5f);
-    obj.push_back(obj2);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 1.0f), 0.5f));
     //O3
-    Object obj3(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj3);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 2.0f), 0.5f));
     //O4
-    Object obj4(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 3.0f), 0.5f);
-    obj.push_back(obj4);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 3.0f), 0.5f));
     //O5
-    Object obj5(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 4.0f), 0.5f);
-    obj.push_back(obj5);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 4.0f), 0.5f));
     //O6
-    Object obj6(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 0.5f);
-    obj.push_back(obj6);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 0.5f));
     //O7
-    Object obj7(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 6.0f), 0.5f);
-    obj.push_back(obj7);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 6.0f), 0.5f));
     //O8
-    Object obj8(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 7.0f), 0.5f);
-    obj.push_back(obj8);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 7.0f), 0.5f));
     //O9
-    Object obj9(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 8.0f), 0.5f);
-    obj.push_back(obj9);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(1.0f, 0.0f, 8.0f), 0.5f));
     //O10
-    Object obj10(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, 8.0f), 0.5f);
-    obj.push_back(obj10);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, 8.0f), 0.5f));
     //O11
-    Object obj11(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 8.0f), 0.5f);
-    obj.push_back(obj11);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 8.0f), 0.5f));
     //O12
-    Object obj12(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, 9.0f), 0.5f);
-    obj.push_back(obj12);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, 9.0f), 0.5f));
     //O13
-    Object obj13(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, 10.0f), 0.5f);
-    obj.push_back(obj13);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(0.0f, 0.0f, 10.0f), 0.5f));
     //O14
-    Object obj14(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 11.0f), 0.5f);
-    obj.push_back(obj14);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 11.0f), 0.5f));
     //O15
-    Object obj15(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-2.0f, 0.0f, 11.0f), 0.5f);
-    obj.push_back(obj15);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-2.0f, 0.0f, 11.0f), 0.5f));
     //O16
-    Object obj16(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, 0.0f, 11.0f), 0.5f);
-    obj.push_back(obj16);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, 0.0f, 11.0f), 0.5f));
     //O17
-    Object obj17(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-4.0f, 0.0f, 11.0f), 0.5f);
-    obj.push_back(obj17);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-4.0f, 0.0f, 11.0f), 0.5f));
     //O18
-    Object obj18(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 10.0f), 0.5f);
-    obj.push_back(obj18);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 10.0f), 0.5f));
     //O19
-    Object obj19(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 9.0f), 0.5f);
-    obj.push_back(obj19);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 9.0f), 0.5f));
     //O20
-    Object obj20(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-4.0f, 0.0f, 8.0f), 0.5f);
-    obj.push_back(obj20);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-4.0f, 0.0f, 8.0f), 0.5f));
     //O21
-    Object obj21(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 8.0f), 0.5f);
-    obj.push_back(obj21);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 8.0f), 0.5f));
     //O22
-    Object obj22(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-6.0f, 0.0f, 8.0f), 0.5f);
-    obj.push_back(obj22);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-6.0f, 0.0f, 8.0f), 0.5f));
     //O23
-    Object obj23(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 7.0f), 0.5f);
-    obj.push_back(obj23);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 7.0f), 0.5f));
     //O24
-    Object obj24(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 6.0f), 0.5f);
-    obj.push_back(obj24);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 6.0f), 0.5f));
     //O25
-    Object obj25(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-8.0f, 0.0f, 5.0f), 0.5f);
-    obj.push_back(obj25);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-8.0f, 0.0f, 5.0f), 0.5f));
     //O26
-    Object obj26(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 4.0f), 0.5f);
-    obj.push_back(obj26);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 4.0f), 0.5f));
     //O27
-    Object obj27(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 3.0f), 0.5f);
-    obj.push_back(obj27);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-7.0f, 0.0f, 3.0f), 0.5f));
     //O28
-    Object obj28(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-6.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj28);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-6.0f, 0.0f, 2.0f), 0.5f));
     //O29
-    Object obj29(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj29);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-5.0f, 0.0f, 2.0f), 0.5f));
     //O30
-    Object obj30(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-4.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj30);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-4.0f, 0.0f, 2.0f), 0.5f));
     //O31
-    Object obj31(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj31);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, 0.0f, 2.0f), 0.5f));
     //O32
-    Object obj32(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-2.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj32);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-2.0f, 0.0f, 2.0f), 0.5f));
     //O33
-    Object obj33(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 2.0f), 0.5f);
-    obj.push_back(obj33);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 2.0f), 0.5f));
     //O34
-    Object obj34(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f), 0.5f);
-    obj.push_back(obj34);
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f), 0.5f));
     //O35
-    Object obj35(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), 0.5f);
-    obj.push_back(obj35);
-
+    obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), 0.5f));
     //floor
-    Object objf(programID, "geom/floor_cube/floor_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, -0.5f, 5.0f), 0.5f);
-    obj.push_back(objf);
-
+    obj.push_back(create(programID, "geom/floor_cube/floor_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, -0.5f, 5.0f), 0.5f));
     //ceiling
-    Object objc(programID, "geom/ceiling_cube/ceiling_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, 0.5f, 5.0f), 0.5f);
-    obj.push_back(objc);
+    obj.push_back(create(programID, "geom/ceiling_cube/ceiling_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(-3.0f, 0.5f, 5.0f), 0.5f));
 
 	return obj;
 }
