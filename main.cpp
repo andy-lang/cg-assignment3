@@ -16,12 +16,11 @@
 #include <cstdlib>
 //#include <string>
 
-unsigned int programID;
+std::vector<unsigned int> programIDs;
 
 std::vector<Object> objects;
 std::vector<Camera> cameras;
 int camIdx;
-
 Player* player;
 
 double FOV = 45.0;
@@ -32,34 +31,40 @@ void setCamera() {
     glm::mat4 projection;
     projection = glm::infinitePerspective(FOV, double(WINDOW_WIDTH)/double(WINDOW_HEIGHT), 1.0);
 
-    int projHandle = glGetUniformLocation(programID, "projection_matrix");
-    if (projHandle == -1) {
-        std::cerr << "'projection_matrix' is not an active uniform label." << std::endl;
-        exit(1);
-    }
-    glUniformMatrix4fv(projHandle, 1, false, glm::value_ptr(projection));
+	for (int i = 0; i < programIDs.size(); i++) {
+		glUseProgram(programIDs.at(i));
+		int projHandle = glGetUniformLocation(programIDs.at(i), "projection_matrix");
+		if (projHandle == -1) {
+			std::cerr << "'projection_matrix' is not an active uniform label." << std::endl;
+			exit(1);
+		}
+		glUniformMatrix4fv(projHandle, 1, false, glm::value_ptr(projection));
+	}
 }
 
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
+    objects = generateLevelMap(programIDs[0], objects);
 
-    //Object tet(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 10.0f);
-    //objects.push_back(tet);
+	for (int i = 0; i < programIDs.size(); i++) {
+	    glUseProgram(programIDs.at(i));
+		Object tet(programIDs.at(i), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
+		objects.push_back(tet);
 
-    objects = generateLevelMap(programID, objects);
+		// test for a whole bunch of objects - good as a basic check for efficiency
+		/*
+		for (int j = 0; j < 100; j++) {
+			Object obj(programIDs.at(i), "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(j), 0.0f, 0.0f), 1.0f);
+			objects.push_back(obj); 
+		}
+		*/
+		//objects.push_back(player);
 
-    player = new Player(programID, "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
-    // test for a whole bunch of objects, for efficiency reasons
-    /*
-    for (int i = 0; i < 100; i++) {
-        Object obj(programID, "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(i), 0.0f, 0.0f), 1.0f);
-        objects.push_back(obj); 
-    }
-    */
-    //objects.push_back(player);
-
+	}
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
     camIdx = 0;
+    
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player);
     cameras.push_back(firstPerson);
@@ -83,15 +88,17 @@ int setup() {
 
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(programID);
-    glGenerateMipmap(GL_TEXTURE_2D);
+	for (int i = 0; i < programIDs.size(); i++) {
+		glUseProgram(programIDs.at(i));
+		glGenerateMipmap(GL_TEXTURE_2D);
 
-    cameras.at(camIdx).render(programID);
-    player->render(programID);
-    for (int i = 0; i < objects.size(); i++) {
-        objects.at(i).render(programID);
-    }
+		cameras.at(camIdx).render(programIDs.at(i));
+		player->render(programIDs.at(i));
+		for (int j = 0; j < objects.size(); j++) {
+			objects.at(j).render(programIDs.at(i));
+		}
 
+	}
     glutSwapBuffers();
     glFlush();
 }
@@ -196,11 +203,19 @@ int main(int argc, char** argv) {
     }
 
     // load and compile shader files
-    programID = LoadShaders("wireframe.vert", "wireframe.frag");
-    if (programID == 0) {
+    unsigned int programID1 = LoadShaders("wireframe.vert", "wireframe.frag");
+    if (programID1 == 0) {
         return 1;
     }
-    glUseProgram(programID);
+	programIDs.push_back(programID1);
+
+	/*
+	unsigned int programID2 = LoadShaders("wireframe2.vert", "wireframe2.frag");
+	if (programID2 == 0) {
+	    return 1;
+	}
+	programIDs.push_back(programID2);
+	*/
 
     if (setup() != 0) {
         std::cerr << "setup() failed." << std::endl;
