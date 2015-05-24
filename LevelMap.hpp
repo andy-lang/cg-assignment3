@@ -1,3 +1,12 @@
+/**********************************************************************
+ * Level map generation
+ *
+ * @author  : Gavin Meredith
+ * @id      : a1645739
+ * @created     : 2015-05-16
+ * @project     : CG Assignment 3
+**********************************************************************/
+
 #ifndef MAP_HPP
 #define MAP_HPP
 
