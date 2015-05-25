@@ -47,14 +47,13 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
 
         // bind texture
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, &mTextureHandle);
-        mTextureHandle = generateTexture((directory+material.diffuse_texname).c_str());
+        generateTexture((directory+material.diffuse_texname).c_str());
     }
     else {
         // no texture file given, so we create a default
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1, &mTextureHandle);
-        mTextureHandle = generateTexture("");
+        //glGenTextures(1, &mTextureHandle);
+        generateTexture("");
     }
 
     // unbind vertex array
@@ -65,8 +64,24 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
     // and we're done!
 }
 
-int Shape::generateTexture(const char* filename) {
-    //?? TODO: stub
+void Shape::generateTexture(const char* filename) {
+	int x, y, n;
+	unsigned char* img = SOIL_load_image(filename, &x, &y, &n, SOIL_LOAD_RGB);
+
+	glGenTextures(1, &mTextureHandle);
+	glBindTexture(GL_TEXTURE_2D, mTextureHandle);
+	if (n == 3) {
+	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+	}
+	else if (n == 4) {
+	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+	}
+	else {
+		std::cerr << "file " << filename << " is not a valid image file. Creating default image as substitute." << std::endl;
+		unsigned char def[4] = {0, 0, 0, 255};
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, def);
+	}
+	SOIL_free_image_data(img);
 }
 
 void Shape::render(unsigned int programID) {
