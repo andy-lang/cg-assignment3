@@ -65,7 +65,6 @@ int objectSetup() {
 
 	//player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
 	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
-	std::cout << "DONE" << std::endl;
     camIdx = 1;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player);

@@ -61,7 +61,7 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
         mNormalsSize += shapes.at(i).mesh.normals.size();
         mTexCoordsSize += shapes.at(i).mesh.texcoords.size();
 
-		Shape *sh = new Shape(programID, shapes.at(i), materials.at(i), directory);
+		Shape sh(programID, shapes.at(i), materials.at(i), directory);
 		mShapes.push_back(sh);
     }
 
@@ -69,43 +69,6 @@ void Object::objectInit(int programID, const char* objfile, glm::vec3 rotate, gl
     mCentres.y /= (mVerticesSize/VALS_PER_VERT);
     mCentres.z /= (mVerticesSize/VALS_PER_VERT);
 }
-
-/*
-int Object::generateTexture(const char* filename) {
-	int x, y, n;
-	unsigned char* img = SOIL_load_image(filename, &x, &y, &n, SOIL_LOAD_RGB);
-	std::cout << "x = " << x << ", y = " << y << " | n = " << n << std::endl;
-
-	unsigned int textureHandle;
-	glGenTextures(1, &textureHandle);
-
-	glBindTexture(GL_TEXTURE_2D, textureHandle);
-
-	if (n == 3) {
-	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-	}
-	else if (n == 4) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
-	}
-	else {
-		// if n is 0 or some other mad number, we have an error on our hands.
-		// we draw a white image to represent this.
-		std::cerr << "file " << filename << " is not a valid image file. Creating default image as substitute" << std::endl;
-		unsigned char def[4] = {0, 0, 0, 255};
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, def);
-	}
-	SOIL_free_image_data(img);
-
-	// while we're into the swing of things, we also set some texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	return textureHandle;
-}
-*/
 
 void Object::calcModelMatrix() {
     if (mModelMatrixChanged) {
@@ -122,7 +85,6 @@ void Object::calcModelMatrix() {
     }
     mModelMatrixChanged = false; // set flag back to false, so function isn't called again on next render
     // else do nothing
-
 }
 
 void Object::render(unsigned int programID) {
@@ -137,7 +99,7 @@ void Object::render(unsigned int programID) {
     glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(mModelMatrix));
 
 	for (int i = 0; i < mShapes.size(); i++) {
-	    mShapes.at(i)->render(programID);
+	    mShapes.at(i).render(programID);
 	}
 }
 

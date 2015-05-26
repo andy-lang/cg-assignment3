@@ -10,9 +10,9 @@
 static unsigned int WINDOW_WIDTH = 640;
 static unsigned int WINDOW_HEIGHT = 480;
 
+/* Quick and dirty function to output an OpenGL hex error code, if an error has been found. */
 inline void checkGLError() {
 	GLenum err = glGetError();
-	std::cout << "checking gl errors..." << std::endl;
 	if (err != GL_NO_ERROR) {
 	    std::cerr << "GL error: " << std::hex << err << std::endl;
 	}

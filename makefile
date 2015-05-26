@@ -34,25 +34,25 @@ assign3: main.o Shape.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
 	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
-main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o $(PROJ_LIBS)/*
+main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o 
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
-Shader.o: Shader.cpp Shader.hpp $(PROJ_LIBS)/*
+Shader.o: Shader.cpp Shader.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shader.cpp
 
-Camera.o: Camera.cpp Camera.hpp $(PROJ_LIBS)/*
+Camera.o: Camera.cpp Camera.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Camera.cpp
 
-Player.o: Player.cpp Player.hpp Object.o $(PROJ_LIBS)/*
+Player.o: Player.cpp Player.hpp Object.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Player.cpp
 
-Object.o: Object.cpp Object.hpp Shape.o $(PROJ_LIBS)/*
+Object.o: Object.cpp Object.hpp Shape.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Object.cpp
 
-Shape.o: Shape.cpp Shape.hpp $(PROJ_LIBS)/*
+Shape.o: Shape.cpp Shape.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shape.cpp
 
-tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc $(PROJ_LIBS)/*
+tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc
 	$(CC) $(DEFS) -c tiny_obj_loader.cc
 
 clean:
