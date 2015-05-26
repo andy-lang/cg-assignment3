@@ -1,3 +1,15 @@
+/**********************************************************************
+ * Class representing a particular entity in the world of the program.
+ * In reality, all this does is hold a collection of shapes, each of
+ * which are individually buffered and rendered.
+ * However, it is still best to call this class' render() function, rather than creating Shapes individually.
+ *
+ * @author 	: Andrew Lang
+ * @id 		: a1648205
+ * @created 	: 2015-05-07
+ * @project 	: CG Assignment 3
+**********************************************************************/
+
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
