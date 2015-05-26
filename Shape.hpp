@@ -35,7 +35,7 @@ private:
 
     void shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t material, std::string directory);
 
-    void generateTexture(const char* filename);
+    unsigned int generateTexture(const char* filename);
 
     static const unsigned int mBufSize = 4;
     unsigned int mBuffer[mBufSize];

@@ -43,9 +43,10 @@ void setCamera() {
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
 	for (int i = 0; i < programIDs.size(); i++) {
-	    glUseProgram(programIDs.at(i));
+		/*
 		Object tet(programIDs.at(i), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
 		objects.push_back(tet);
+		*/
 
 		// test for a whole bunch of objects - good as a basic check for efficiency
 		/*
@@ -57,14 +58,21 @@ int objectSetup() {
 		//objects.push_back(player);
 
 	}
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
+	glUseProgram(programIDs.at(0));
+
+	Object tet(programIDs.at(0), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
+	objects.push_back(tet);
+
+	//player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
+	std::cout << "DONE" << std::endl;
     camIdx = 1;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player);
     cameras.push_back(firstPerson);
 
     Camera thirdPerson = Camera();
-    thirdPerson.attachToObject(player, glm::vec3(0.0f, 0.6f, -2.0f));
+    thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
     return 0;
@@ -84,7 +92,7 @@ void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (int i = 0; i < programIDs.size(); i++) {
 		glUseProgram(programIDs.at(i));
-		glGenerateMipmap(GL_TEXTURE_2D);
+		//glGenerateMipmap(GL_TEXTURE_2D);
 
 		cameras.at(camIdx).render(programIDs.at(i));
 		player->render(programIDs.at(i));

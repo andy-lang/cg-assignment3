@@ -28,28 +28,31 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
+assign3: main.o Shape.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o
 	mkdir -p ./$(EXTERNAL_FILES)/soil/projects/makefile/obj
 	mkdir -p ./$(EXTERNAL_FILES)/soil/lib
 	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
-main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Object.o Camera.o
+main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o $(PROJ_LIBS)/*
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
-Shader.o: Shader.cpp Shader.hpp
+Shader.o: Shader.cpp Shader.hpp $(PROJ_LIBS)/*
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shader.cpp
 
-Camera.o: Camera.cpp Camera.hpp
+Camera.o: Camera.cpp Camera.hpp $(PROJ_LIBS)/*
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Camera.cpp
 
-Player.o: Player.cpp Player.hpp Object.o
+Player.o: Player.cpp Player.hpp Object.o $(PROJ_LIBS)/*
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Player.cpp
 
-Object.o: Object.cpp Object.hpp
+Object.o: Object.cpp Object.hpp Shape.o $(PROJ_LIBS)/*
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Object.cpp
 
-tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc
+Shape.o: Shape.cpp Shape.hpp $(PROJ_LIBS)/*
+	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shape.cpp
+
+tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc $(PROJ_LIBS)/*
 	$(CC) $(DEFS) -c tiny_obj_loader.cc
 
 clean:
