@@ -17,7 +17,7 @@
 #include "external_files/glm/glm/gtc/matrix_transform.hpp"
 #include "external_files/glm/glm/gtc/type_ptr.hpp"
 
-#include "tiny_obj_loader.h"
+#include "external_files/tiny_obj_loader/tiny_obj_loader.h"
 
 #include <GL/glut.h>
 

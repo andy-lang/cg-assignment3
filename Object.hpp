@@ -19,7 +19,7 @@
 #include "external_files/glm/glm/gtc/type_ptr.hpp"
 
 #include "external_files/soil/src/SOIL.h"
-#include "tiny_obj_loader.h" // obj file reading
+#include "external_files/tiny_obj_loader/tiny_obj_loader.h" // obj file reading
 
 #include <GL/glut.h>
 
