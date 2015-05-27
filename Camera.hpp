@@ -1,3 +1,13 @@
+/**********************************************************************
+ * Class that controls the view matrix for the program.
+ * Camera can either be fixed at a particular location (stationary), or attached to a particular Object.
+ *
+ * @author 	: Andrew Lang
+ * @id 		: a1648205
+ * @created 	: 2015-05-10
+ * @project 	: CG Assignment 3
+**********************************************************************/
+
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 

@@ -1,10 +1,15 @@
 /**********************************************************************
- * An Object is a collection of shapes, and the necessary data associated with those shapes (model matrix, etc).
- * @author	:	Andrew Lang
- * @id		:	a1648205
- * @created :	2015-05-07
- * @project	:	CG assignment 3
+ * Class representing a particular entity in the world of the program.
+ * In reality, all this does is hold a collection of shapes, each of
+ * which are individually buffered and rendered.
+ * However, it is still best to call this class' render() function, rather than creating Shapes individually.
+ *
+ * @author 	: Andrew Lang
+ * @id 		: a1648205
+ * @created 	: 2015-05-07
+ * @project 	: CG Assignment 3
 **********************************************************************/
+
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
@@ -14,7 +19,7 @@
 #include "external_files/glm/glm/gtc/type_ptr.hpp"
 
 #include "external_files/soil/src/SOIL.h"
-#include "tiny_obj_loader.h" // obj file reading
+#include "external_files/tiny_obj_loader/tiny_obj_loader.h" // obj file reading
 
 #include <GL/glut.h>
 

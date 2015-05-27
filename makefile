@@ -1,10 +1,10 @@
 PLATFORM := $(shell uname)
 CC = g++
 
-EXTERNAL_FILES = external_files
+EXT_FILES = external_files
 PROJ_LIBS = libs
 LIB_FLAG = -I
-SOIL_LIBS = ./$(EXTERNAL_FILES)/soil/lib
+SOIL_LIBS = ./$(EXT_FILES)/soil/lib
 
 ifneq (, $(findstring CYGWIN, $(PLATFORM)))
     GL_LIBS = -lopengl32 -lglut32
@@ -28,10 +28,10 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Shape.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o
-	mkdir -p ./$(EXTERNAL_FILES)/soil/projects/makefile/obj
-	mkdir -p ./$(EXTERNAL_FILES)/soil/lib
-	make -C ./$(EXTERNAL_FILES)/soil/projects/makefile/
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o Shape.o
+	mkdir -p ./$(EXT_FILES)/soil/projects/makefile/obj
+	mkdir -p ./$(EXT_FILES)/soil/lib
+	make -C ./$(EXT_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
 main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o LevelMap.o
@@ -55,9 +55,9 @@ LevelMap.o: LevelMap.cpp LevelMap.hpp
 Shape.o: Shape.cpp Shape.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shape.cpp
 
-tiny_obj_loader.o: tiny_obj_loader.h tiny_obj_loader.cc
-	$(CC) $(DEFS) -c tiny_obj_loader.cc
+tiny_obj_loader.o: $(EXT_FILES)/tiny_obj_loader/tiny_obj_loader.h $(EXT_FILES)/tiny_obj_loader/tiny_obj_loader.cc
+	$(CC) $(DEFS) -c $(EXT_FILES)/tiny_obj_loader/tiny_obj_loader.cc
 
 clean:
-	rm -f *.o assign3$(EXT)
-	make clean -C ./$(EXTERNAL_FILES)/soil/projects/makefile
+	rm -f *.o assign3$(EXT) $(EXT_FILES)/tiny_obj_loader/tiny_obj_loader.o
+	make clean -C ./$(EXT_FILES)/soil/projects/makefile
