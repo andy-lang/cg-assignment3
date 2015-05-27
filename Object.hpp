@@ -1,3 +1,10 @@
+/**********************************************************************
+ * An Object is a collection of shapes, and the necessary data associated with those shapes (model matrix, etc).
+ * @author	:	Andrew Lang
+ * @id		:	a1648205
+ * @created :	2015-05-07
+ * @project	:	CG assignment 3
+**********************************************************************/
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
@@ -12,6 +19,7 @@
 #include <GL/glut.h>
 
 #include "libs/Lib.h"
+#include "Shape.hpp"
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -58,6 +66,10 @@ public:
     unsigned int getVerticesSize() const;
     /** Returns total size of index data. */
     unsigned int getIndicesSize() const;
+	/** Returns total size of normal data. */
+	unsigned int getNormalsSize() const;
+	/** Returns total size of texcoords data. */
+	unsigned int getTexCoordsSize() const;
 
     /* Returns the scale factor for the object, as a percentage of its original size. */
     float getScaleFactor() const;
@@ -86,17 +98,11 @@ protected:
     /* Recalculates the object's model matrix, only if new values have been set. */
     void calcModelMatrix();
 
-    static const unsigned int mBufSize = 4; // total number of buffers
-    unsigned int mBuffer[mBufSize]; // the buffers
-    static const unsigned int VERTICES_BUF_POS = 0; // index position of vertices in buffer
-    static const unsigned int INDICES_BUF_POS = 1; // index position of indices in buffer
-    static const unsigned int NORMALS_BUF_POS = 2; // index position of normals in buffer
-    static const unsigned int TEXCOORDS_BUF_POS = 3; // index position of texture coordinates in buffer
-
     unsigned int mVerticesSize; // total number of vertices of the object
     unsigned int mIndicesSize; // total number of indices of the object
     unsigned int mNormalsSize; // total number of normals of the object
     unsigned int mTexCoordsSize; // total number of tex coordinates of the object
+	std::vector<Shape> mShapes;
     glm::vec3 mCentres; // the centre of the object in the X, Y and Z axes.
 
     glm::vec3 mRotate; // rotation factors of the object
@@ -105,11 +111,6 @@ protected:
 
     bool mModelMatrixChanged; // true if any of the values relating to the model matrix have been changed since the last render call.
     glm::mat4 mModelMatrix; // the object's model matrix.
-
-    unsigned int mVertexVaoHandle; // VAO handle for the object's vertices
-    //unsigned int mTextureHandle; // handle for the object's texture image(s)
-    std::vector<unsigned int> mTextureHandle;
-
 };
 
 #endif
