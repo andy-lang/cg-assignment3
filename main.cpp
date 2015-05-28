@@ -106,15 +106,22 @@ void render() {
 void keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
         case 27:
+            exit(1);
+            break;
         case 'q':
-            exit(0);
+            player->strafeLeft();
+            glutPostRedisplay();
+            break;
+        case 'e':
+            player->strafeRight();
+            glutPostRedisplay();
             break;
         case 'a':
-            player->moveLeft();
+            player->rotLeft();
             glutPostRedisplay();
             break;
         case 'd':
-            player->moveRight();
+            player->rotRight();
             glutPostRedisplay();
             break;
         case 'w':
@@ -229,6 +236,9 @@ int main(int argc, char** argv) {
     // enable transparency effects
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //Disable back face rendering
+    glEnable(GL_CULL_FACE);
 
     // wireframes for now
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

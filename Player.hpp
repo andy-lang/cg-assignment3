@@ -21,14 +21,18 @@ public:
     Player(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale);
     ~Player();
 
-    void moveLeft();
-    void moveRight();
+    void strafeLeft();
+    void strafeRight();
+    void rotLeft();
+    void rotRight();
     void moveForward();
     void moveBackward();
 
+    void setInputState(int x, int y);
+    void setCamAngle();
+
 private:
     static const float PLAYER_SPEED = 0.5f;
-
 };
 
 
