@@ -1,3 +1,14 @@
+/**********************************************************************
+ * Derivative class of Object, representing a movable Player.
+ * Thus this class contains a number of methods related to functionality of a Player, such as movement control.
+ * Attach an instance of this class to the Camera, and you can have control over a Player and a Camera that moves with it.
+ *
+ * @author 	: Andrew Lang
+ * @id 		: a1648205
+ * @created 	: 2015-05-11
+ * @project 	: CG Assignment 3
+**********************************************************************/
+
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
@@ -6,7 +17,7 @@
 #include "external_files/glm/glm/gtc/matrix_transform.hpp"
 #include "external_files/glm/glm/gtc/type_ptr.hpp"
 
-#include "tiny_obj_loader.h"
+#include "external_files/tiny_obj_loader/tiny_obj_loader.h"
 
 #include <GL/glut.h>
 

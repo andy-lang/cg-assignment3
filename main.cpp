@@ -31,15 +31,22 @@ void setCamera() {
     glm::mat4 projection;
     projection = glm::infinitePerspective(FOV, double(WINDOW_WIDTH)/double(WINDOW_HEIGHT), 1.0);
 
-	for (int i = 0; i < programIDs.size(); i++) {
-		glUseProgram(programIDs.at(i));
-		int projHandle = glGetUniformLocation(programIDs.at(i), "projection_matrix");
-		if (projHandle == -1) {
-			std::cerr << "'projection_matrix' is not an active uniform label." << std::endl;
-			exit(1);
-		}
-		glUniformMatrix4fv(projHandle, 1, false, glm::value_ptr(projection));
-	}
+    for (int i = 0; i < programIDs.size(); i++) {
+        glUseProgram(programIDs.at(i));
+        int projHandle = glGetUniformLocation(programIDs.at(i), "projection_matrix");
+        if (projHandle == -1) {
+            std::cerr << "'projection_matrix' is not an active uniform label." << std::endl;
+            exit(1);
+        }
+        glUniformMatrix4fv(projHandle, 1, false, glm::value_ptr(projection));
+    }
+}
+
+void reshapeWindow(int x, int y) {
+    WINDOW_WIDTH = x;
+    WINDOW_HEIGHT = y;
+    glViewport(0,0,x,y);
+    setCamera();
 }
 
 /* Set up all required objects etc.
@@ -48,9 +55,10 @@ int objectSetup() {
     objects = generateLevelMap(programIDs[0], objects);
 
 	for (int i = 0; i < programIDs.size(); i++) {
-	    glUseProgram(programIDs.at(i));
+		/*
 		Object tet(programIDs.at(i), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
 		objects.push_back(tet);
+		*/
 
 		// test for a whole bunch of objects - good as a basic check for efficiency
 		/*
@@ -62,15 +70,20 @@ int objectSetup() {
 		//objects.push_back(player);
 
 	}
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 0.5f);
-    camIdx = 0;
-    
+	glUseProgram(programIDs.at(0));
+
+	//Object tet(programIDs.at(0), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
+	//objects.push_back(tet);
+
+	//player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
+    camIdx = 1;
     Camera firstPerson = Camera();
-    firstPerson.attachToObject(player);
+    firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 1.0f));
     cameras.push_back(firstPerson);
 
     Camera thirdPerson = Camera();
-    thirdPerson.attachToObject(player, glm::vec3(0.0f, 0.6f, -2.0f));
+    thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
     return 0;
@@ -90,7 +103,7 @@ void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (int i = 0; i < programIDs.size(); i++) {
 		glUseProgram(programIDs.at(i));
-		glGenerateMipmap(GL_TEXTURE_2D);
+		//glGenerateMipmap(GL_TEXTURE_2D);
 
 		cameras.at(camIdx).render(programIDs.at(i));
 		player->render(programIDs.at(i));
@@ -241,13 +254,14 @@ int main(int argc, char** argv) {
     glEnable(GL_CULL_FACE);
 
     // wireframes for now
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
     glutSpecialFunc(specialFunc);
     glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
+    glutReshapeFunc(reshapeWindow);
 
     std::cout << "WASD keys to move" << std::endl;
     std::cout << "F to switch camera views" << std::endl;
