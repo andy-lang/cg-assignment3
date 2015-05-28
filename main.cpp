@@ -31,15 +31,22 @@ void setCamera() {
     glm::mat4 projection;
     projection = glm::infinitePerspective(FOV, double(WINDOW_WIDTH)/double(WINDOW_HEIGHT), 1.0);
 
-	for (int i = 0; i < programIDs.size(); i++) {
-		glUseProgram(programIDs.at(i));
-		int projHandle = glGetUniformLocation(programIDs.at(i), "projection_matrix");
-		if (projHandle == -1) {
-			std::cerr << "'projection_matrix' is not an active uniform label." << std::endl;
-			exit(1);
-		}
-		glUniformMatrix4fv(projHandle, 1, false, glm::value_ptr(projection));
-	}
+    for (int i = 0; i < programIDs.size(); i++) {
+        glUseProgram(programIDs.at(i));
+        int projHandle = glGetUniformLocation(programIDs.at(i), "projection_matrix");
+        if (projHandle == -1) {
+            std::cerr << "'projection_matrix' is not an active uniform label." << std::endl;
+            exit(1);
+        }
+        glUniformMatrix4fv(projHandle, 1, false, glm::value_ptr(projection));
+    }
+}
+
+void reshapeWindow(int x, int y) {
+    WINDOW_WIDTH = x;
+    WINDOW_HEIGHT = y;
+    glViewport(0,0,x,y);
+    setCamera();
 }
 
 /* Set up all required objects etc.
@@ -112,7 +119,6 @@ void render() {
 void keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
         case 27:
-        case 'q':
             exit(0);
             break;
         case 'a':
@@ -244,6 +250,7 @@ int main(int argc, char** argv) {
     glutSpecialFunc(specialFunc);
     glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
+    glutReshapeFunc(reshapeWindow);
 
     std::cout << "WASD keys to move" << std::endl;
     std::cout << "F to switch camera views" << std::endl;

@@ -7,8 +7,8 @@
 
 #include <iostream>
 
-static unsigned int WINDOW_WIDTH = 640;
-static unsigned int WINDOW_HEIGHT = 480;
+unsigned int WINDOW_WIDTH = 640;
+unsigned int WINDOW_HEIGHT = 480;
 
 /* Quick and dirty function to output an OpenGL hex error code, if an error has been found. */
 inline void checkGLError() {
