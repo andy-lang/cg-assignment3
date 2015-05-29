@@ -77,9 +77,9 @@ int objectSetup() {
 
 	//player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
 	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
-    camIdx = 1;
+    camIdx = 0;
     Camera firstPerson = Camera();
-    firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 1.0f));
+    firstPerson.attachToObject(player);
     cameras.push_back(firstPerson);
 
     Camera thirdPerson = Camera();
