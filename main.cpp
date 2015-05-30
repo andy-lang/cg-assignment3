@@ -84,7 +84,7 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
-	Light light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));  
+	Light light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.5f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
 	lights.push_back(light);
 
     return 0;
@@ -128,6 +128,18 @@ void render() {
 
 		if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1)) {
 			std::cerr << "Could not find light uniform variables." << std::endl;
+			if (posHandle == -1) {
+			    std::cerr << "Error in lightPositions" << std::endl;
+			}
+			if (ambientHandle == -1) {
+			    std::cerr << "Error in lightAmbients" << std::endl;
+			}
+			if (diffuseHandle == -1) {
+			    std::cerr << "Error in lightDiffuses" << std::endl;
+			}
+			if (specularHandle == -1) {
+			    std::cerr << "Error in lightSpeculars" << std::endl;
+			}
 			exit(1);
 		}
 		glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
