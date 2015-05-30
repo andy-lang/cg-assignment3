@@ -72,14 +72,10 @@ int objectSetup() {
 	}
 	glUseProgram(programIDs.at(0));
 
-	//Object tet(programIDs.at(0), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
-	//objects.push_back(tet);
-
-	//player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
-    camIdx = 1;
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
+    camIdx = 0;
     Camera firstPerson = Camera();
-    firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 1.0f));
+    firstPerson.attachToObject(player);
     cameras.push_back(firstPerson);
 
     Camera thirdPerson = Camera();
@@ -119,14 +115,22 @@ void render() {
 void keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
         case 27:
-            exit(0);
+            exit(1);
+            break;
+        case 'q':
+            player->strafeLeft();
+            glutPostRedisplay();
+            break;
+        case 'e':
+            player->strafeRight();
+            glutPostRedisplay();
             break;
         case 'a':
-            player->moveLeft();
+            player->rotLeft();
             glutPostRedisplay();
             break;
         case 'd':
-            player->moveRight();
+            player->rotRight();
             glutPostRedisplay();
             break;
         case 'w':
@@ -241,6 +245,9 @@ int main(int argc, char** argv) {
     // enable transparency effects
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //Disable back face rendering
+    glEnable(GL_CULL_FACE);
 
     // wireframes for now
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

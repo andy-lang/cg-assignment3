@@ -86,6 +86,8 @@ public:
     /* Returns the world position of the object. */
     glm::vec3 getPosition();
 
+	glm::mat4 getModelMatrix();
+
 protected:
     /* We keep the most basic Object creator private, so that it's not erroneously called. */
     Object();
