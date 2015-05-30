@@ -111,7 +111,7 @@ protected:
     unsigned int mTexCoordsSize; // total number of tex coordinates of the object
 	std::vector<Shape> mShapes;
     glm::vec3 mCentres; // the centre of the object in the X, Y and Z axes.
-
+	
     glm::vec3 mRotate; // rotation factors of the object
     float mScale; // the amount to scale the object's initial size by.
     glm::vec3 mTranslate; // translation from the world origin

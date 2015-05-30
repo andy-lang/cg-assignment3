@@ -19,6 +19,12 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
     mNormalsSize = shape.mesh.normals.size();
     mTexCoordsSize = shape.mesh.texcoords.size();
 
+	for (int i = 0; i < VALS_PER_SURFACE; i++) {
+	    mAmbient[i] = material.ambient[i];
+	    mDiffuse[i] = material.diffuse[i];
+	    mSpecular[i] = material.specular[i];
+	}
+
 	// generate the buffer, with appropriate size
     glGenBuffers(mBufSize, mBuffer);
 
@@ -89,7 +95,8 @@ unsigned int Shape::generateTexture(const char* filename) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
 	}
 	else {
-		std::cerr << "file '" << filename << "' is not a valid image file. Creating default image file as substitute." << std::endl;
+		std::string fn = filename;
+		if (!fn.empty()) std::cerr << "file '" << filename << "' is not a valid image file. Creating default image file as substitute." << std::endl;
 		unsigned char def[3] = {0, 255, 0};
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, def);
 	}
@@ -113,15 +120,30 @@ void Shape::render(unsigned int programID) {
 	    std::cerr << "Could not find uniform variable 'tex_map'" << std::endl;
 		exit(1);
 	}
+	int mtlAmbientHandle = glGetUniformLocation(programID, "mtl_ambient");
+	int mtlDiffuseHandle = glGetUniformLocation(programID, "mtl_diffuse");
+	int mtlSpecularHandle = glGetUniformLocation(programID, "mtl_specular");
+	if ((mtlAmbientHandle == -1) || (mtlDiffuseHandle == -1) || (mtlSpecularHandle == -1)) {
+	    std::cerr << "Could not find light material uniform variables." << std::endl;
+		exit(1);
+	}
 
+	// send texture handle
 	glActiveTexture(GL_TEXTURE0);
-	glUniform1i(texMapHandle, 0);
+	glUniform1i(texMapHandle, 0); // sending main texture data to GL_TEXTURE0.
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	// send light material data
+	glUniform3fv(mtlAmbientHandle, 1, mAmbient);
+	glUniform3fv(mtlDiffuseHandle, 1, mDiffuse);
+	glUniform3fv(mtlSpecularHandle, 1, mSpecular);
+
+
+	// buffer the data proper
 	glBindVertexArray(mVertexVaoHandle);
 
     glBindTexture(GL_TEXTURE_2D, mTextureHandle);
