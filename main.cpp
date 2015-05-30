@@ -9,6 +9,7 @@
 #include "Object.hpp"
 #include "Player.hpp"
 #include "Camera.hpp"
+#include "Light.hpp"
 #include "libs/Lib.h"
 #include "LevelMap.hpp"
 
@@ -20,6 +21,7 @@ std::vector<unsigned int> programIDs;
 
 std::vector<Object> objects;
 std::vector<Camera> cameras;
+std::vector<Light> lights; // vector of light sources
 int camIdx;
 Player* player;
 
@@ -82,6 +84,9 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
+	Light light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));  
+	lights.push_back(light);
+
     return 0;
 }
 
@@ -97,9 +102,38 @@ int setup() {
 
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// compile light positions & values into a single vector to be sent to the shader program
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> ambients;
+	std::vector<glm::vec3> diffuses;
+	std::vector<glm::vec3> speculars;
+	for (int i = 0; i < lights.size(); i++) {
+		positions.push_back(lights.at(i).getPosition());
+		ambients.push_back(lights.at(i).getAmbient());
+		diffuses.push_back(lights.at(i).getDiffuse());
+		speculars.push_back(lights.at(i).getSpecular());
+	}
+
+	// get handles for these light values
+
 	for (int i = 0; i < programIDs.size(); i++) {
 		glUseProgram(programIDs.at(i));
 		//glGenerateMipmap(GL_TEXTURE_2D);
+		
+		int posHandle = glGetUniformLocation(programIDs.at(i), "lightPositions");
+		int ambientHandle = glGetUniformLocation(programIDs.at(i), "lightAmbients");
+		int diffuseHandle = glGetUniformLocation(programIDs.at(i), "lightDiffuses");
+		int specularHandle = glGetUniformLocation(programIDs.at(i), "lightSpeculars");
+
+		if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1)) {
+			std::cerr << "Could not find light uniform variables." << std::endl;
+			exit(1);
+		}
+		glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
+		glUniform3fv(ambientHandle, lights.size(), glm::value_ptr(ambients.front()));
+		glUniform3fv(diffuseHandle, lights.size(), glm::value_ptr(diffuses.front()));
+		glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
 
 		cameras.at(camIdx).render(programIDs.at(i));
 		player->render(programIDs.at(i));

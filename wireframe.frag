@@ -1,10 +1,10 @@
 #version 130
 
 const int numberOfLights = 1; // number of light sources
-in vec4 lightPositions[numberOfLights]; // positions of each light source
-in vec4 lightAmbients[numberOfLights]; // ambient values for each light source
-in vec4 lightDiffuses[numberOfLights]; // diffuse values for each light source
-in vec4 lightSpeculars[numberOfLights]; // specular values for each light source
+uniform vec3 lightPositions[numberOfLights]; // positions of each light source
+uniform vec3 lightAmbients[numberOfLights]; // ambient values for each light source
+uniform vec3 lightDiffuses[numberOfLights]; // diffuse values for each light source
+uniform vec3 lightSpeculars[numberOfLights]; // specular values for each light source
 
 uniform vec3 mtl_ambient; // ambient material value
 uniform vec3 mtl_diffuse; // diffuse material value
