@@ -72,11 +72,7 @@ int objectSetup() {
 	}
 	glUseProgram(programIDs.at(0));
 
-	//Object tet(programIDs.at(0), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
-	//objects.push_back(tet);
-
-	//player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f, 0.0f, -5.0f), 1.0f);
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player);

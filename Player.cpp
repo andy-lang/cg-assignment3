@@ -17,12 +17,19 @@ Player::~Player() {
     //?? TODO: stub
 }
 
+/**********************************************************************
+ * Movement functionality
+ *
+ * @author 	: Gavin Meredith
+ * @id 		: a1645739
+**********************************************************************/
 void Player::strafeLeft(){
-	setTranslation(glm::vec3(mTranslate.x+PLAYER_SPEED, mTranslate.y, mTranslate.z));
+	glm::vec3 prevCoord = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
+	setTranslation(glm::vec3(mTranslate.x + (sin(mRotate.y + (90.0*M_PI/180.0))*PLAYER_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y + (90.0*M_PI/180.0))*PLAYER_SPEED)));
 }
 
 void Player::strafeRight(){
-	setTranslation(glm::vec3(mTranslate.x-PLAYER_SPEED, mTranslate.y, mTranslate.z));
+	setTranslation(glm::vec3(mTranslate.x + (sin(mRotate.y - (90.0*M_PI/180.0))*PLAYER_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y - (90.0*M_PI/180.0))*PLAYER_SPEED)));
 }
 
 void Player::rotLeft() {
@@ -34,9 +41,9 @@ void Player::rotRight() {
 }
 
 void Player::moveForward() {
-    setTranslation(glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z+PLAYER_SPEED));
+    setTranslation(glm::vec3(mTranslate.x + (sin(mRotate.y)*PLAYER_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y)*PLAYER_SPEED)));
 }
 
 void Player::moveBackward() {
-    setTranslation(glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z-PLAYER_SPEED));
+    setTranslation(glm::vec3(mTranslate.x - (sin(mRotate.y)*PLAYER_SPEED), mTranslate.y, mTranslate.z - (cos(mRotate.y)*PLAYER_SPEED)));
 }

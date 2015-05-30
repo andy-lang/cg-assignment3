@@ -39,11 +39,8 @@ public:
     void moveForward();
     void moveBackward();
 
-    void setInputState(int x, int y);
-    void setCamAngle();
-
 private:
-    static const float PLAYER_SPEED = 0.5f;
+    static const float PLAYER_SPEED = 0.4f;
 };
 
 
