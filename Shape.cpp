@@ -19,7 +19,7 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
     mNormalsSize = shape.mesh.normals.size();
     mTexCoordsSize = shape.mesh.texcoords.size();
 
-	for (int i = 0; i < VALS_PER_SURFACE; i++) {
+	for (int i = 0; i < VALS_PER_MTL_SURFACE; i++) {
 	    mAmbient[i] = material.ambient[i];
 	    mDiffuse[i] = material.diffuse[i];
 	    mSpecular[i] = material.specular[i];

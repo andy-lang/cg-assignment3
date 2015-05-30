@@ -74,9 +74,9 @@ private:
     static const unsigned int TEXCOORDS_BUF_POS = 3; // position of texcoord data in the buffer
 
 	/* surface lighting data */
-	float mAmbient[VALS_PER_SURFACE];
-	float mDiffuse[VALS_PER_SURFACE];
-	float mSpecular[VALS_PER_SURFACE];
+	float mAmbient[VALS_PER_MTL_SURFACE];
+	float mDiffuse[VALS_PER_MTL_SURFACE];
+	float mSpecular[VALS_PER_MTL_SURFACE];
 
 	/* Sizes of buffered data */
     unsigned int mVerticesSize;
