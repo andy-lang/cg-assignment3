@@ -84,9 +84,15 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
+	// spoopy white point light at centre of map
+	Light l0(glm::vec3(5.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	lights.push_back(l0);
+
 	// purple light at centre of map
+	/*
 	Light l1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.7f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
 	lights.push_back(l1);
+	*/
 
 	// dim red light
 	/*
@@ -272,7 +278,7 @@ int main(int argc, char** argv) {
     }
 
     // load and compile shader files
-    unsigned int programID1 = LoadShaders("wireframe.vert", "wireframe.frag");
+    unsigned int programID1 = LoadShaders("pf-light.vert", "pf-light.frag");
     if (programID1 == 0) {
         return 1;
     }
