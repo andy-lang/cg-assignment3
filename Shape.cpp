@@ -109,8 +109,9 @@ void Shape::render(unsigned int programID) {
 	glUseProgram(programID);
 
 	int texMapHandle = glGetUniformLocation(programID, "tex_map");
-	if (texMapHandle == -1) {
-	    std::cerr << "Could not find uniform variable 'tex_map'" << std::endl;
+	int texNormHandle = glGetUniformLocation(programID, "tex_norm");
+	if (texMapHandle == -1 || texNormHandle == -1) {
+	    std::cerr << "Could not find uniform variable 'tex_map' or 'tex_norm'" << std::endl;
 		exit(1);
 	}
 

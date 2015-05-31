@@ -97,17 +97,16 @@ int setup() {
 
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	for (int i = 0; i < programIDs.size(); i++) {
-		glUseProgram(programIDs.at(i));
-		//glGenerateMipmap(GL_TEXTURE_2D);
+    for (int i = 0; i < programIDs.size(); i++) {
+	glUseProgram(programIDs.at(i));
+	//glGenerateMipmap(GL_TEXTURE_2D);
 
-		cameras.at(camIdx).render(programIDs.at(i));
-		player->render(programIDs.at(i));
-		for (int j = 0; j < objects.size(); j++) {
-			objects.at(j).render(programIDs.at(i));
-		}
-
+	cameras.at(camIdx).render(programIDs.at(i));
+	player->render(programIDs.at(i));
+	for (int j = 0; j < objects.size(); j++) {
+		objects.at(j).render(programIDs.at(i));
 	}
+    }
     glutSwapBuffers();
     glFlush();
 }
@@ -117,19 +116,19 @@ void keyboardFunc(unsigned char key, int x, int y) {
         case 27:
             exit(1);
             break;
-        case 'q':
+        case 'a':
             player->strafeLeft();
             glutPostRedisplay();
             break;
-        case 'e':
+        case 'd':
             player->strafeRight();
             glutPostRedisplay();
             break;
-        case 'a':
+        case 'q':
             player->rotLeft();
             glutPostRedisplay();
             break;
-        case 'd':
+        case 'e':
             player->rotRight();
             glutPostRedisplay();
             break;
@@ -259,7 +258,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(render);
     glutReshapeFunc(reshapeWindow);
 
-    std::cout << "WASD keys to move" << std::endl;
+    std::cout << "WASD keys to move\nQE to rotate\nESC to quit" << std::endl;
     std::cout << "F to switch camera views" << std::endl;
     std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();
