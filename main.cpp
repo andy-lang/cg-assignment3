@@ -84,8 +84,15 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
-	Light light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.5f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
-	lights.push_back(light);
+	// purple light at centre of map
+	Light l1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.5f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
+	lights.push_back(l1);
+
+	// dim red light
+	/*
+	Light l2(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.5f));  
+	lights.push_back(l2);
+	*/
 
     return 0;
 }

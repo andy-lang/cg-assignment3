@@ -109,7 +109,7 @@ protected:
     unsigned int mIndicesSize; // total number of indices of the object
     unsigned int mNormalsSize; // total number of normals of the object
     unsigned int mTexCoordsSize; // total number of tex coordinates of the object
-	std::vector<Shape> mShapes;
+	std::vector<Shape> mShapes; // the shapes that make up the object.
     glm::vec3 mCentres; // the centre of the object in the X, Y and Z axes.
 	
     glm::vec3 mRotate; // rotation factors of the object

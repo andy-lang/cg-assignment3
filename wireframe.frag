@@ -1,6 +1,6 @@
 #version 130
 
-const int numberOfLights = 1; // number of light sources
+const int numberOfLights = 1; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
 const float shininess = 32;
 
 uniform vec3 lightPositions[numberOfLights]; // positions of each light source
