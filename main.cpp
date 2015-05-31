@@ -85,7 +85,7 @@ int objectSetup() {
     cameras.push_back(thirdPerson);
 
 	// purple light at centre of map
-	Light l1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.5f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
+	Light l1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.7f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
 	lights.push_back(l1);
 
 	// dim red light

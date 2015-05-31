@@ -22,9 +22,6 @@
 
 class Light {
 public:
-	/* Basic Light constructor. */
-    Light();
-
 	/*
 	 * Advanced Light constructor.
 	 * Takes in parameters to specify position, and ambient/diffuse/specular colours.
@@ -52,13 +49,14 @@ public:
 	void setDiffuse(glm::vec3 diffuse);
 	void setSpecular(glm::vec3 specular);
 
-
 private:
-	glm::vec3 mPosition; // position of the light in the world space.
-	glm::vec3 mAmbient;
-	glm::vec3 mDiffuse;
-	glm::vec3 mSpecular;
+	/* Basic Light constructor. We make this private because there's no sense in calling it. */
+    Light();
 
+	glm::vec3 mPosition; // position of the light in the world space.
+	glm::vec3 mAmbient; // ambient light
+	glm::vec3 mDiffuse; // diffuse light
+	glm::vec3 mSpecular; // specular light
 };
 
 

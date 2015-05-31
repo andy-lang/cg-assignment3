@@ -1,7 +1,6 @@
 #version 130
 
 const int numberOfLights = 1; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
-const float shininess = 32;
 
 uniform vec3 lightPositions[numberOfLights]; // positions of each light source
 uniform vec3 lightAmbients[numberOfLights]; // ambient values for each light source
@@ -11,6 +10,8 @@ uniform vec3 lightSpeculars[numberOfLights]; // specular values for each light s
 uniform vec3 mtl_ambient; // ambient material value
 uniform vec3 mtl_diffuse; // diffuse material value
 uniform vec3 mtl_specular; // specular material value
+uniform vec3 mtl_emission; // emission colour for the material
+uniform float mtl_shininess;
 
 uniform sampler2D tex_map;
 
@@ -46,7 +47,7 @@ vec3 phongLight(in vec4 position, in vec3 norm, in vec4 light_pos, in vec3 light
     // Specular component
     vec3 spec = vec3(0.0);
     if ( sDotN > 0.0 )
-		spec = light_specular * mtl_specular * pow( max( dot(r,v), 0.0 ), shininess );
+		spec = light_specular * mtl_specular * pow( max( dot(r,v), 0.0 ), mtl_shininess );
     
     return ambient + diffuse + spec;
 }
@@ -59,5 +60,5 @@ void main(void) {
 		fragColour.xyz = phongLight(vertex, normalize(normal), vec4(lightPositions[i],1.0), lightAmbients[i], lightDiffuses[i], lightSpeculars[i]);
 	}
 
-	fragColour = vec4(fragColour.xyz, 1.0f)*texture(tex_map, texCoord);
+	fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f)*texture(tex_map, texCoord);
 }

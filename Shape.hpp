@@ -77,6 +77,8 @@ private:
 	float mAmbient[VALS_PER_MTL_SURFACE];
 	float mDiffuse[VALS_PER_MTL_SURFACE];
 	float mSpecular[VALS_PER_MTL_SURFACE];
+	float mEmission[VALS_PER_MTL_SURFACE];
+	float mShininess;
 
 	/* Sizes of buffered data */
     unsigned int mVerticesSize;
@@ -86,8 +88,6 @@ private:
 
     unsigned int mVertexVaoHandle; // VAO handle for vertices
     unsigned int mTextureHandle; // handle for the texture data
-
-
 };
 
 

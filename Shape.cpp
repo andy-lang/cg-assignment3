@@ -23,7 +23,9 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
 	    mAmbient[i] = material.ambient[i];
 	    mDiffuse[i] = material.diffuse[i];
 	    mSpecular[i] = material.specular[i];
+		mEmission[i] = material.emission[i];
 	}
+	mShininess = material.shininess;
 
 	// generate the buffer, with appropriate size
     glGenBuffers(mBufSize, mBuffer);
@@ -120,13 +122,17 @@ void Shape::render(unsigned int programID) {
 	    std::cerr << "Could not find uniform variable 'tex_map'" << std::endl;
 		exit(1);
 	}
+
 	int mtlAmbientHandle = glGetUniformLocation(programID, "mtl_ambient");
 	int mtlDiffuseHandle = glGetUniformLocation(programID, "mtl_diffuse");
 	int mtlSpecularHandle = glGetUniformLocation(programID, "mtl_specular");
-	if ((mtlAmbientHandle == -1) || (mtlDiffuseHandle == -1) || (mtlSpecularHandle == -1)) {
+	int	mtlEmissionHandle = glGetUniformLocation(programID, "mtl_emission");
+	int mtlShininessHandle = glGetUniformLocation(programID, "mtl_shininess");
+	if ((mtlAmbientHandle == -1) || (mtlDiffuseHandle == -1) || (mtlSpecularHandle == -1) || (mtlEmissionHandle == -1) || (mtlShininessHandle == -1)) {
 	    std::cerr << "Could not find light material uniform variables." << std::endl;
 		exit(1);
 	}
+
 
 	// send texture handle
 	glActiveTexture(GL_TEXTURE0);
@@ -141,6 +147,8 @@ void Shape::render(unsigned int programID) {
 	glUniform3fv(mtlAmbientHandle, 1, mAmbient);
 	glUniform3fv(mtlDiffuseHandle, 1, mDiffuse);
 	glUniform3fv(mtlSpecularHandle, 1, mSpecular);
+	glUniform3fv(mtlEmissionHandle, 1, mEmission);
+	glUniform1f(mtlShininessHandle, mShininess);
 
 
 	// buffer the data proper
