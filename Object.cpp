@@ -141,3 +141,8 @@ glm::vec3 Object::getRotation() {
 glm::vec3 Object::getPosition() {
      return glm::vec3(-mCentres.x+mTranslate.x, -mCentres.y+mTranslate.y, -mCentres.z+mTranslate.z);
 }
+
+glm::mat4 Object::getModelMatrix() {
+	calcModelMatrix();
+	return mModelMatrix;
+}

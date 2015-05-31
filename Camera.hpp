@@ -15,6 +15,7 @@
 #include "external_files/glm/glm/glm.hpp"
 #include "external_files/glm/glm/gtc/matrix_transform.hpp"
 #include "external_files/glm/glm/gtc/type_ptr.hpp"
+#include "external_files/glm/glm/gtx/rotate_vector.hpp"
 
 #include <GL/glut.h>
 

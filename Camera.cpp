@@ -38,10 +38,9 @@ void Camera::render(int programID) {
         mViewMatrix = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     }
     else {
-        // rotate the object
-        mViewMatrix = glm::rotate(mViewMatrix, mObj->getRotation().y, glm::vec3(0.0f, 1.0f, 0.0f));
-        // then translate it a little bit
-        mViewMatrix = glm::lookAt(mObj->getTranslation()+mTranslate, glm::vec3(mObj->getPosition().x, mObj->getPosition().y, mObj->getPosition().z+2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mViewMatrix = glm::translate(mObj->getModelMatrix(), mTranslate); // translate relative to the object's model matrix
+		mViewMatrix = glm::rotate(mViewMatrix, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f)); // rotate by pi. This makes sure it's facing the right direction
+		mViewMatrix = glm::inverse(mViewMatrix); // apparently the thing to do with the view matrix is to set it as the inverse of the model matrix after you've applied transformations. ¯\_(ツ)_/¯
     }
 
     glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(mViewMatrix));
