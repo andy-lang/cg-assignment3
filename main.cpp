@@ -252,7 +252,10 @@ int main(int argc, char** argv) {
     glutDisplayFunc(render);
     glutReshapeFunc(reshapeWindow);
 
-    std::cout << "WASD keys to move" << std::endl;
+    std::cout << "W => move forwards, S => move backwards" << std::endl;
+    std::cout << "Q => strafe left, E => strafe right" << std::endl;
+    std::cout << "A => rotate left, D => rotate right" << std::endl;
+
     std::cout << "F to switch camera views" << std::endl;
     std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();
