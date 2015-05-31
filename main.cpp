@@ -85,7 +85,7 @@ int objectSetup() {
     cameras.push_back(thirdPerson);
 
 	// spoopy white point light at centre of map
-	Light l0(glm::vec3(5.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	Light l0(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lights.push_back(l0);
 
 	// purple light at centre of map
@@ -133,6 +133,12 @@ void render() {
 	for (int i = 0; i < programIDs.size(); i++) {
 		glUseProgram(programIDs.at(i));
 		//glGenerateMipmap(GL_TEXTURE_2D);
+
+		int normMtxHandle = glGetUniformLocation(programIDs.at(i), "normal_matrix");
+		if (normMtxHandle == -1) {
+		    std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+			exit(1);
+		}
 		
 		int posHandle = glGetUniformLocation(programIDs.at(i), "lightPositions");
 		int ambientHandle = glGetUniformLocation(programIDs.at(i), "lightAmbients");
@@ -161,8 +167,11 @@ void render() {
 		glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
 
 		cameras.at(camIdx).render(programIDs.at(i));
+		glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
 		player->render(programIDs.at(i));
 		for (int j = 0; j < objects.size(); j++) {
+			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(objects.at(j).getModelMatrix() * viewMtx))); 
+			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
 			objects.at(j).render(programIDs.at(i));
 		}
 
