@@ -165,17 +165,22 @@ void render() {
 
                 float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
                 float angle = std::atan2(zDiff, xDiff);
+                float internalObjDist;
+                float internalPlayerDist;
 
-                /*
-                if(angle*180.0/M_PI <= 90.0){
-                    float zDisp = (std::tan(angle))/(0.5 + objTranslation.z);
+                //Right or Left quad
+                if(std::abs(angle) <= M_PI/4.0){
+                    internalObjDist = std::abs((0.5)/(std::cos(angle)));
+                    internalPlayerDist = std::abs(std::sqrt(pow(0.25, 2) +  pow(0.25, 2)));
                 }
+                //Top or Bottom quad
                 else{
-                    angle = 90.0 - (angle*180.0/M_PI);
+                    angle = M_PI/2.0 - angle;
+                    internalObjDist = std::abs((0.5)/(std::cos(angle)));
+                    internalPlayerDist = std::abs(std::sqrt(pow(0.25, 2) +  pow(0.25, 2)));
                 }
-                */
 
-                if(absDist < 1.0){
+                if((absDist - internalObjDist - internalPlayerDist) < 0){
                     collisionDetected = true;
                 }
             }
