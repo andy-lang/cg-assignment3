@@ -85,15 +85,18 @@ int objectSetup() {
     cameras.push_back(thirdPerson);
 
 	// spoopy white point light at centre of map
-	Light l0(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+	Light l0(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lights.push_back(l0);
 
-	Light l1(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+	// pinkish-red light
+	Light l1(glm::vec3(1.5f, 0.0f, 0.0f), glm::vec3(0.9f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
 	lights.push_back(l1);
+
 	/*
 	Light l1(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lights.push_back(l1);
 	*/
+
 	// purple light at centre of map
 	/*
 	Light l1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.7f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
@@ -180,7 +183,6 @@ void render() {
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
 			objects.at(j).render(programIDs.at(i));
 		}
-
 	}
     glutSwapBuffers();
     glFlush();
@@ -188,7 +190,7 @@ void render() {
 
 void keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
-        case 27:
+        case 27: // Esc
             exit(1);
             break;
         case 'q':

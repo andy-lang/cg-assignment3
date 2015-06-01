@@ -1,6 +1,6 @@
 #version 130
 
-const int numberOfLights = 1; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
+const int numberOfLights = 2; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
 
 // constants for attenuation calculation
 const float attnConst = 1.0;
@@ -43,19 +43,19 @@ vec3 phongLight(in vec4 position, in vec3 norm, in vec4 light_pos, in vec3 light
     vec3 v = normalize(-position.xyz);
     
     // r is the direction of light reflected from the vertex
-    vec3 r = reflect( -s, norm );
+    vec3 r = reflect(-s, norm);
     
-    vec3 ambient = light_ambient * mtl_ambient;
+    vec3 ambient = clamp(light_ambient * mtl_ambient, 0.0, 1.0);
 	
     // The diffuse component
-    float sDotN = max( dot(s,norm), 0.0 );
+    float sDotN = max( dot(s,norm), 0.0);
     
-    vec3 diffuse = light_diffuse * mtl_diffuse * sDotN;
+    vec3 diffuse = clamp(light_diffuse * mtl_diffuse * sDotN, 0.0, 1.0);
     
     // Specular component
     vec3 spec = vec3(0.0);
     if ( sDotN > 0.0 ) {
-		spec = light_specular * mtl_specular * pow( max( dot(r,v), 0.0 ), mtl_shininess );
+		spec = clamp(light_specular * mtl_specular * pow(max(dot(r,v), 0.0), mtl_shininess), 0.0, 1.0);
 	}
     
 	float dist = distance(position, light_pos); // distance between fragment and light
