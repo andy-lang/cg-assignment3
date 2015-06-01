@@ -22,9 +22,10 @@
 
 #include "libs/Lib.h"
 #include "Object.hpp"
+#include "Light.hpp"
 #include <iostream>
 #include <vector>
 
-void generateLevelMap(int programID, std::vector<Object> &obj);
+void generateLevelMap(int programID, std::vector<Object> &obj, std::vector<Light> &lights);
 
 #endif

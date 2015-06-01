@@ -1,10 +1,10 @@
 #version 130
 
-const int numberOfLights = 2; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
+const int numberOfLights = 6; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
 
 // constants for attenuation calculation
-const float attnConst = 1.0;
-const float attnLinear = 0.075;
+const float attnConst = 0.98;
+const float attnLinear = 0.025;
 const float attnQuad = 0.01;
 
 uniform vec3 lightPositions[numberOfLights]; // positions of each light source
