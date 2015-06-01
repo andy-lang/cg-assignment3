@@ -73,6 +73,13 @@ private:
     static const unsigned int NORMALS_BUF_POS = 2; // position of normal data in the buffer
     static const unsigned int TEXCOORDS_BUF_POS = 3; // position of texcoord data in the buffer
 
+	/* surface lighting data */
+	float mAmbient[VALS_PER_MTL_SURFACE];
+	float mDiffuse[VALS_PER_MTL_SURFACE];
+	float mSpecular[VALS_PER_MTL_SURFACE];
+	float mEmission[VALS_PER_MTL_SURFACE];
+	float mShininess;
+
 	/* Sizes of buffered data */
     unsigned int mVerticesSize;
     unsigned int mIndicesSize;
@@ -81,8 +88,6 @@ private:
 
     unsigned int mVertexVaoHandle; // VAO handle for vertices
     unsigned int mTextureHandle; // handle for the texture data
-
-
 };
 
 

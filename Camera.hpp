@@ -53,11 +53,14 @@ public:
      */
     void render(int programID);
 
+	glm::mat4 getViewMatrix();
+
 private:
     Object* mObj;
     glm::vec3 mTranslate;
     glm::mat4 mViewMatrix;
 
+	void calcViewMatrix();
 };
 
 #endif
