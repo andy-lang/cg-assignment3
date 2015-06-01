@@ -9,6 +9,7 @@
 #include "Object.hpp"
 #include "Player.hpp"
 #include "Camera.hpp"
+#include "Light.hpp"
 #include "libs/Lib.h"
 #include "LevelMap.hpp"
 
@@ -20,6 +21,7 @@ std::vector<unsigned int> programIDs;
 
 std::vector<Object> objects;
 std::vector<Camera> cameras;
+std::vector<Light> lights; // vector of light sources
 int camIdx;
 Player* player;
 
@@ -82,6 +84,31 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
+	// spoopy white point light at centre of map
+	Light l0(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	lights.push_back(l0);
+
+	// pinkish-red light
+	Light l1(glm::vec3(1.5f, 0.0f, 0.0f), glm::vec3(0.9f, 0.2f, 0.2f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+	lights.push_back(l1);
+
+	/*
+	Light l1(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	lights.push_back(l1);
+	*/
+
+	// purple light at centre of map
+	/*
+	Light l1(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.4f, 0.7f), glm::vec3(0.4f, 0.0f, 1.0f), glm::vec3(0.6f, 0.25f, 0.7f));  
+	lights.push_back(l1);
+	*/
+
+	// dim red light
+	/*
+	Light l2(glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 0.5f));  
+	lights.push_back(l2);
+	*/
+
     return 0;
 }
 
@@ -97,16 +124,65 @@ int setup() {
 
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// compile light positions & values into a single vector to be sent to the shader program
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> ambients;
+	std::vector<glm::vec3> diffuses;
+	std::vector<glm::vec3> speculars;
+	for (int i = 0; i < lights.size(); i++) {
+		positions.push_back(lights.at(i).getPosition());
+		ambients.push_back(lights.at(i).getAmbient());
+		diffuses.push_back(lights.at(i).getDiffuse());
+		speculars.push_back(lights.at(i).getSpecular());
+	}
+
+	// get handles for these light values
+
 	for (int i = 0; i < programIDs.size(); i++) {
 		glUseProgram(programIDs.at(i));
 		//glGenerateMipmap(GL_TEXTURE_2D);
 
+		int normMtxHandle = glGetUniformLocation(programIDs.at(i), "normal_matrix");
+		if (normMtxHandle == -1) {
+		    std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+			exit(1);
+		}
+		
+		int posHandle = glGetUniformLocation(programIDs.at(i), "lightPositions");
+		int ambientHandle = glGetUniformLocation(programIDs.at(i), "lightAmbients");
+		int diffuseHandle = glGetUniformLocation(programIDs.at(i), "lightDiffuses");
+		int specularHandle = glGetUniformLocation(programIDs.at(i), "lightSpeculars");
+
+		if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1)) {
+			std::cerr << "Could not find light uniform variables." << std::endl;
+			if (posHandle == -1) {
+			    std::cerr << "Error in lightPositions" << std::endl;
+			}
+			if (ambientHandle == -1) {
+			    std::cerr << "Error in lightAmbients" << std::endl;
+			}
+			if (diffuseHandle == -1) {
+			    std::cerr << "Error in lightDiffuses" << std::endl;
+			}
+			if (specularHandle == -1) {
+			    std::cerr << "Error in lightSpeculars" << std::endl;
+			}
+			exit(1);
+		}
+		glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
+		glUniform3fv(ambientHandle, lights.size(), glm::value_ptr(ambients.front()));
+		glUniform3fv(diffuseHandle, lights.size(), glm::value_ptr(diffuses.front()));
+		glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
+
 		cameras.at(camIdx).render(programIDs.at(i));
+		glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
 		player->render(programIDs.at(i));
 		for (int j = 0; j < objects.size(); j++) {
+			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(objects.at(j).getModelMatrix() * viewMtx))); 
+			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
 			objects.at(j).render(programIDs.at(i));
 		}
-
 	}
     glutSwapBuffers();
     glFlush();
@@ -114,7 +190,7 @@ void render() {
 
 void keyboardFunc(unsigned char key, int x, int y) {
     switch (key) {
-        case 27:
+        case 27: // Esc
             exit(1);
             break;
         case 'q':
@@ -219,7 +295,7 @@ int main(int argc, char** argv) {
     }
 
     // load and compile shader files
-    unsigned int programID1 = LoadShaders("wireframe.vert", "wireframe.frag");
+    unsigned int programID1 = LoadShaders("pf-light.vert", "pf-light.frag");
     if (programID1 == 0) {
         return 1;
     }
