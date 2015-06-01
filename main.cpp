@@ -156,14 +156,29 @@ void render() {
 			objects.at(j).render(programIDs.at(i));
 
             /***** Main Collision dection alg *****/
-            objTranslation = objects.at(j).getTranslation();
-            playerTranslation = player->getTranslation();
+            if(j < 36){
+                objTranslation = objects.at(j).getTranslation();
+                playerTranslation = player->getTranslation();
 
-            float xDiff = playerTranslation.x - objTranslation.x;
-            float zDiff = playerTranslation.z - objTranslation.z;
+                float xDiff = playerTranslation.x - objTranslation.x;
+                float zDiff = playerTranslation.z - objTranslation.z;
 
-            float difference = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
-            float angle = std::atan2(zDiff, xDiff);
+                float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
+                float angle = std::atan2(zDiff, xDiff);
+
+                /*
+                if(angle*180.0/M_PI <= 90.0){
+                    float zDisp = (std::tan(angle))/(0.5 + objTranslation.z);
+                }
+                else{
+                    angle = 90.0 - (angle*180.0/M_PI);
+                }
+                */
+
+                if(absDist < 1.0){
+                    collisionDetected = true;
+                }
+            }
 		}
 
         if(collisionDetected){
