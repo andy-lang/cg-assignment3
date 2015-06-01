@@ -4,11 +4,12 @@ Light::Light() {
 	//?? TODO: stub
 }
 
-Light::Light(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) {
+Light::Light(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float brightness) {
 	setPosition(position);
 	setAmbient(ambient);
 	setDiffuse(diffuse);
 	setSpecular(specular);
+	setBrightness(brightness);
 }
 
 Light::~Light() {
@@ -31,6 +32,10 @@ glm::vec3 Light::getSpecular() {
 	return mSpecular;
 }
 
+float Light::getBrightness() {
+	return mBrightness;
+}
+
 void Light::setPosition(glm::vec3 position) {
 	mPosition = position;
 }
@@ -45,4 +50,8 @@ void Light::setDiffuse(glm::vec3 diffuse) {
 
 void Light::setSpecular(glm::vec3 specular) {
 	mSpecular = specular;
+}
+
+void Light::setBrightness(float brightness) {
+	mBrightness = brightness;
 }

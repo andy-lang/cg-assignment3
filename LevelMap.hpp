@@ -1,8 +1,8 @@
 /**********************************************************************
  * Level map generation
  *
- * @author  : Gavin Meredith
- * @id      : a1645739
+ * @author  : Gavin Meredith, Andrew Lang
+ * @id      : a1645739, a1648205
  * @created     : 2015-05-16
  * @project     : CG Assignment 3
 **********************************************************************/
@@ -22,9 +22,10 @@
 
 #include "libs/Lib.h"
 #include "Object.hpp"
+#include "Light.hpp"
 #include <iostream>
 #include <vector>
 
-std::vector<Object> generateLevelMap(int programID, std::vector<Object> objects);
+void generateLevelMap(int programID, std::vector<Object> &obj, std::vector<Light> &lights);
 
 #endif
