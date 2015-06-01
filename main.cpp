@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <math.h>
 //#include <string>
 
 std::vector<unsigned int> programIDs;
@@ -177,12 +178,32 @@ void render() {
 
 		cameras.at(camIdx).render(programIDs.at(i));
 		glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
-		player->render(programIDs.at(i));
+
+        bool collisionDetected = false;
+        glm::vec3 objTranslation;
+        glm::vec3 playerTranslation;
+
 		for (int j = 0; j < objects.size(); j++) {
 			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(objects.at(j).getModelMatrix() * viewMtx))); 
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
 			objects.at(j).render(programIDs.at(i));
+
+            /***** Main Collision dection alg *****/
+            objTranslation = objects.at(j).getTranslation();
+            playerTranslation = player->getTranslation();
+
+            float xDiff = playerTranslation.x - objTranslation.x;
+            float zDiff = playerTranslation.z - objTranslation.z;
+
+            float difference = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
+            float angle = std::atan2(zDiff, xDiff);
 		}
+
+        if(collisionDetected){
+            player->setPrevPos();
+        }
+
+        player->render(programIDs.at(i));        
 	}
     glutSwapBuffers();
     glFlush();
@@ -193,19 +214,19 @@ void keyboardFunc(unsigned char key, int x, int y) {
         case 27: // Esc
             exit(1);
             break;
-        case 'q':
+        case 'a':
             player->strafeLeft();
             glutPostRedisplay();
             break;
-        case 'e':
+        case 'd':
             player->strafeRight();
             glutPostRedisplay();
             break;
-        case 'a':
+        case 'q':
             player->rotLeft();
             glutPostRedisplay();
             break;
-        case 'd':
+        case 'e':
             player->rotRight();
             glutPostRedisplay();
             break;
@@ -336,8 +357,8 @@ int main(int argc, char** argv) {
     glutReshapeFunc(reshapeWindow);
 
     std::cout << "W => move forwards, S => move backwards" << std::endl;
-    std::cout << "Q => strafe left, E => strafe right" << std::endl;
-    std::cout << "A => rotate left, D => rotate right" << std::endl;
+    std::cout << "A => strafe left, D => strafe right" << std::endl;
+    std::cout << "Q => rotate left, E => rotate right" << std::endl;
 
     std::cout << "F to switch camera views" << std::endl;
     std::cout << "L to switch polygon mode" << std::endl;

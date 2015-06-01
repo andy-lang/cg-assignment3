@@ -39,8 +39,12 @@ public:
     void moveForward();
     void moveBackward();
 
+    void setPrevPos();
+
 private:
     static const float PLAYER_SPEED = 0.4f;
+    glm::vec3 prevTranslation;
+    glm::vec3 prevRotation;
 };
 
 

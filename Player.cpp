@@ -7,6 +7,8 @@ Player::Player(int programID) {
 
 Player::Player(int programID, const char* objfile){
     objectInit(programID, objfile, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
+    prevTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+    prevRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Player::Player(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale){
@@ -24,26 +26,36 @@ Player::~Player() {
  * @id 		: a1645739
 **********************************************************************/
 void Player::strafeLeft(){
-	glm::vec3 prevCoord = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
+	prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
 	setTranslation(glm::vec3(mTranslate.x + (sin(mRotate.y + (90.0*M_PI/180.0))*PLAYER_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y + (90.0*M_PI/180.0))*PLAYER_SPEED)));
 }
 
 void Player::strafeRight(){
+	prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
 	setTranslation(glm::vec3(mTranslate.x + (sin(mRotate.y - (90.0*M_PI/180.0))*PLAYER_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y - (90.0*M_PI/180.0))*PLAYER_SPEED)));
 }
 
 void Player::rotLeft() {
-    setRotation(glm::vec3(mRotate.x, mRotate.y+0.04, mRotate.z));
+	prevRotation = glm::vec3(mRotate.x, mRotate.y, mRotate.z);
+    setRotation(glm::vec3(mRotate.x, mRotate.y+0.05, mRotate.z));
 }
 
 void Player::rotRight() {
-    setRotation(glm::vec3(mRotate.x, mRotate.y-0.04, mRotate.z));
+	prevRotation = glm::vec3(mRotate.x, mRotate.y, mRotate.z);
+    setRotation(glm::vec3(mRotate.x, mRotate.y-0.05, mRotate.z));
 }
 
 void Player::moveForward() {
+	prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
     setTranslation(glm::vec3(mTranslate.x + (sin(mRotate.y)*PLAYER_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y)*PLAYER_SPEED)));
 }
 
 void Player::moveBackward() {
+	prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
     setTranslation(glm::vec3(mTranslate.x - (sin(mRotate.y)*PLAYER_SPEED), mTranslate.y, mTranslate.z - (cos(mRotate.y)*PLAYER_SPEED)));
+}
+
+void Player::setPrevPos(){
+	setTranslation(prevTranslation);
+	setRotation(prevRotation);
 }
