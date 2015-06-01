@@ -19,7 +19,8 @@
 
 std::vector<unsigned int> programIDs;
 
-std::vector<Object> objects;
+std::vector<Object> mainObjects;
+std::vector<Object> floorObjects;
 std::vector<Camera> cameras;
 std::vector<Light> lights; // vector of light sources
 int camIdx;
@@ -28,6 +29,11 @@ Player* player;
 double FOV = 45.0;
 bool lMousePressed;
 bool rMousePressed;
+
+// timer variables
+int currTime;
+int prevTime;
+int elapsed;
 
 void setCamera() {
     glm::mat4 projection;
@@ -51,25 +57,28 @@ void reshapeWindow(int x, int y) {
     setCamera();
 }
 
-/* Set up all required objects etc.
+/* Set up all required mainObjects etc.
  * Returns 0 on success, nonzero otherwise. */
-int objectSetup() {
-    generateLevelMap(programIDs[0], objects, lights);
+int mainObjectsetup() {
+    generateLevelMap(programIDs[0], mainObjects, lights);
+
+    Object floor(programIDs[0], "geom/floor_cube/floor_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, -0.5f, 5.0f), 0.5f);
+    floorObjects.push_back(floor);
 
 	for (int i = 0; i < programIDs.size(); i++) {
 		/*
 		Object tet(programIDs.at(i), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
-		objects.push_back(tet);
+		mainObjects.push_back(tet);
 		*/
 
-		// test for a whole bunch of objects - good as a basic check for efficiency
+		// test for a whole bunch of mainObjects - good as a basic check for efficiency
 		/*
 		for (int j = 0; j < 100; j++) {
 			Object obj(programIDs.at(i), "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(j), 0.0f, 0.0f), 1.0f);
-			objects.push_back(obj); 
+			mainObjects.push_back(obj); 
 		}
 		*/
-		//objects.push_back(player);
+		//mainObjects.push_back(player);
 
 	}
 	glUseProgram(programIDs.at(0));
@@ -87,11 +96,11 @@ int objectSetup() {
     return 0;
 }
 
-/* Sets up all things that will be used frequently by the program - camera, objects, etc.
+/* Sets up all things that will be used frequently by the program - camera, mainObjects, etc.
  * Thus it should be called only once by the application, before any rendering is done. */
 int setup() {
     setCamera();
-    if (objectSetup() != 0) {
+    if (mainObjectsetup() != 0) {
         return 1;
     }
     return 0;
@@ -113,8 +122,6 @@ void render() {
 		speculars.push_back(lights.at(i).getSpecular());
 		brightnesses.push_back(lights.at(i).getBrightness());
 	}
-
-	// get handles for these light values
 
 	for (int i = 0; i < programIDs.size(); i++) {
 		glUseProgram(programIDs.at(i));
@@ -142,13 +149,30 @@ void render() {
 		glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
 		glUniform1fv(brightnessHandle, lights.size(), &brightnesses.front());
 
+		int textureCodeHandle = glGetUniformLocation(programIDs.at(i), "texture_code");
+		int timerHandle = glGetUniformLocation(programIDs.at(i), "program_time");
+		if ((textureCodeHandle == -1) || (timerHandle == -1)) {
+		    std::cerr << "Could not find uniform procedural texture variables" << std::endl;
+			exit(1);
+		}
+		glUniform1i(textureCodeHandle, 0);
+
 		cameras.at(camIdx).render(programIDs.at(i));
 		glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
 		player->render(programIDs.at(i));
-		for (int j = 0; j < objects.size(); j++) {
-			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(objects.at(j).getModelMatrix() * viewMtx))); 
+		for (int j = 0; j < mainObjects.size(); j++) {
+			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
-			objects.at(j).render(programIDs.at(i));
+			mainObjects.at(j).render(programIDs.at(i));
+		}
+
+		// render lava floor
+		glUniform1i(textureCodeHandle, 1);
+		glUniform1i(timerHandle, currTime/70); // if we just have currTime send, the lava animates waaaay too fast
+		for (int j = 0; j < floorObjects.size(); j++) {
+			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(floorObjects.at(j).getModelMatrix() * viewMtx))); 
+			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
+			floorObjects.at(j).render(programIDs.at(i));
 		}
 	}
     glutSwapBuffers();
@@ -247,6 +271,16 @@ void mouseFunc(int button, int state, int x, int y) {
     }
 }
 
+void timer(int value) {
+	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
+
+	prevTime = currTime;
+	currTime = glutGet(GLUT_ELAPSED_TIME);
+	elapsed = currTime - prevTime;
+
+	glutPostRedisplay();
+}
+
 int main(int argc, char** argv) {
     // Set up basic window management stuff.
     glutInit(&argc, argv);
@@ -301,6 +335,9 @@ int main(int argc, char** argv) {
     glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
     glutReshapeFunc(reshapeWindow);
+
+	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
+	currTime = glutGet(GLUT_ELAPSED_TIME);
 
     std::cout << "WASD keys to move" << std::endl;
     std::cout << "F to switch camera views" << std::endl;

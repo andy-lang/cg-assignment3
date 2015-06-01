@@ -6,6 +6,8 @@
 #define VALS_PER_TEXCOORD 2
 #define VALS_PER_MTL_SURFACE 3
 
+#define MS_BETWEEN_FRAMES	20
+
 #include <iostream>
 
 static unsigned int WINDOW_WIDTH = 640;

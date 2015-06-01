@@ -10,6 +10,7 @@ in vec2 a_tex_coord;
 
 out mat4 lightPosMatrix;
 out vec4 vertex;
+out vec4 vert;
 out vec3 normal;
 out vec2 texCoord;
 
@@ -19,6 +20,7 @@ void main(void) {
 	lightPosMatrix = view_matrix;
 	normal = normalize(normal_matrix * a_normal);
 	vertex = view_matrix * model_matrix * vec4(a_vertex, 1.0f);
+	vert = vec4(a_vertex, 1.0f); // used by textural procedural calculations
     gl_Position = projection_matrix * vertex;
 
 }

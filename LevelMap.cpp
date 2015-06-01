@@ -93,8 +93,10 @@ void generateLevelMap(int programID, std::vector<Object> &obj, std::vector<Light
     obj.push_back(createObj(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f), 0.5f));
     //O35
     obj.push_back(createObj(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), 0.5f));
+	/*
     //floor
     obj.push_back(createObj(programID, "geom/floor_cube/floor_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, -0.5f, 5.0f), 0.5f));
+	*/
     //ceiling
     obj.push_back(createObj(programID, "geom/ceiling_cube/ceiling_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.5f, 5.0f), 0.5f));
 
