@@ -15,9 +15,7 @@ Object create(int programID, const char* file, glm::vec3 rot, glm::vec3 pos, flo
     return obj;
 }
 
-std::vector<Object> generateLevelMap(int programID, std::vector<Object> objects){
-	std::vector<Object> obj = objects;
-
+void generateLevelMap(int programID, std::vector<Object> &obj){
 	//O0
     obj.push_back(create(programID, "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), 0.5f));
 	//O1
@@ -107,6 +105,4 @@ std::vector<Object> generateLevelMap(int programID, std::vector<Object> objects)
     obj.push_back(create(programID, "geom/torch/torch.obj", glm::vec3(0.0f, (180.0*M_PI/180.0), 0.0f), glm::vec3(-5.0f, 0.3f, 7.95f), 0.25f));
     //t5
     obj.push_back(create(programID, "geom/torch/torch.obj", glm::vec3(0.0f, (180.0*M_PI/180.0), 0.0f), glm::vec3(-2.5f, 0.3f, 10.95f), 0.25f));
-
-	return obj;
 }

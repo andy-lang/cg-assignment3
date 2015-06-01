@@ -54,7 +54,7 @@ void reshapeWindow(int x, int y) {
 /* Set up all required objects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
-    objects = generateLevelMap(programIDs[0], objects);
+    generateLevelMap(programIDs[0], objects);
 
 	for (int i = 0; i < programIDs.size(); i++) {
 		/*
