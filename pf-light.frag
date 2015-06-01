@@ -20,6 +20,7 @@ uniform float mtl_shininess; // shininess of the material
 
 uniform sampler2D tex_map;
 
+in mat4 lightPosMatrix;
 in vec4 vertex;
 in vec3 normal;
 in vec2 texCoord;
@@ -60,7 +61,7 @@ vec3 phongLight(in vec4 position, in vec3 norm, in vec4 light_pos, in vec3 light
     
 	float dist = distance(position, light_pos); // distance between fragment and light
 
-	float attenuation = 1/ (attnConst + attnLinear*dist + attnQuad*dist*dist); // attenuation factor, so that light fades with distance
+	float attenuation = 1 / (attnConst + attnLinear*dist + attnQuad*dist*dist); // attenuation factor, so that light fades with distance
 
     return ambient + attenuation * (diffuse + spec);
 }
@@ -69,7 +70,7 @@ void main(void) {
 	fragColour = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	for (int i = 0; i < numberOfLights; i++) {
-		fragColour.xyz += phongLight(vertex, normalize(normal), vec4(lightPositions[i], 1.0), lightAmbients[i], lightDiffuses[i], lightSpeculars[i]);
+		fragColour.xyz += phongLight(vertex, normalize(normal), lightPosMatrix*vec4(lightPositions[i], 1.0), lightAmbients[i], lightDiffuses[i], lightSpeculars[i]);
 	}
 
 	fragColour = clamp(vec4(fragColour.xyz + mtl_emission.xyz, 1.0f), 0.0, 1.0)*texture(tex_map, texCoord);
