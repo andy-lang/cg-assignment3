@@ -1,6 +1,6 @@
 #version 130
 
-const int numberOfLights = 6; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
+const int numberOfLights = 8; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
 
 // constants for attenuation calculation
 const float attnConst = 0.98;
@@ -69,6 +69,7 @@ vec3 phongLight(in vec4 position, in vec3 norm, in vec4 light_pos, in vec3 light
     return ambient + attenuation * (diffuse + spec);
 }
 
+// The following functions were appropriated and modified from the proceduralTexture shader code found in lecture 10, originally written by Michael Hemsley and Anthony Dick.
 vec4 mod289(vec4 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
@@ -136,7 +137,8 @@ void main(void) {
 		fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * texture(tex_map, texCoord);
 	}
 	else if (texture_code == 1) {
-		float fxz = (1.0 + sin(vert.x + program_time + (pnoise(vert.x + vec2(vert.zy), vec2(10.0, 50.0)) / 2.0) * 50.0) ) / 2.0;
-		fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * vec4(0.8f+fxz, clamp(fxz, 0.0f, 0.3f), 0.0, 1.0f);
+		float shapeFunc = (1.0 + cos(vert.x + program_time/70 + (pnoise(vert.x + vec2(vert.zy), vec2(10.0, 50.0)) / 2.0) * 50.0) ) / 2.0; // defines the shape of the lava texture
+		float lavaBrightness = (2.0 + cos(program_time/200)); // this defines the lava brightness
+		fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * lavaBrightness * vec4(0.7f+shapeFunc, shapeFunc, 0.0, 1.0f);
 	}
 }

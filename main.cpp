@@ -20,9 +20,10 @@
 std::vector<unsigned int> programIDs;
 
 std::vector<Object> mainObjects;
-std::vector<Object> floorObjects;
+std::vector<Object> lavaObjects;
 std::vector<Camera> cameras;
 std::vector<Light> lights; // vector of light sources
+
 int camIdx;
 Player* player;
 
@@ -62,8 +63,17 @@ void reshapeWindow(int x, int y) {
 int mainObjectsetup() {
     generateLevelMap(programIDs[0], mainObjects, lights);
 
-    Object floor(programIDs[0], "geom/floor_cube/floor_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, -0.5f, 5.0f), 0.5f);
-    floorObjects.push_back(floor);
+    Object lava(programIDs[0], "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
+    lavaObjects.push_back(lava);
+
+	Light lav1(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
+	lights.push_back(lav1);
+	lavaLightPos = lights.size()-1;
+
+	/*
+	Light lav2(glm::vec3(-7.0f, 0.5f, 5.0f), glm::vec3(0.4f, 0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f), 0.1f);
+	lights.push_back(lav2);
+	*/
 
 	for (int i = 0; i < programIDs.size(); i++) {
 		/*
@@ -115,6 +125,8 @@ void render() {
 	std::vector<glm::vec3> diffuses;
 	std::vector<glm::vec3> speculars;
 	std::vector<float> brightnesses;
+
+	lights.at(lavaLightPos).setBrightness(lavaLightInitBrightness + 2*sin(currTime/150));
 	for (int i = 0; i < lights.size(); i++) {
 		positions.push_back(lights.at(i).getPosition());
 		ambients.push_back(lights.at(i).getAmbient());
@@ -153,6 +165,8 @@ void render() {
 		int timerHandle = glGetUniformLocation(programIDs.at(i), "program_time");
 		if ((textureCodeHandle == -1) || (timerHandle == -1)) {
 		    std::cerr << "Could not find uniform procedural texture variables" << std::endl;
+			std::cerr << "textureCodeHandle = " << textureCodeHandle << std::endl;
+			std::cerr << "timerHandle = " << timerHandle << std::endl;
 			exit(1);
 		}
 		glUniform1i(textureCodeHandle, 0);
@@ -168,11 +182,11 @@ void render() {
 
 		// render lava floor
 		glUniform1i(textureCodeHandle, 1);
-		glUniform1i(timerHandle, currTime/70); // if we just have currTime send, the lava animates waaaay too fast
-		for (int j = 0; j < floorObjects.size(); j++) {
-			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(floorObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniform1i(timerHandle, currTime);
+		for (int j = 0; j < lavaObjects.size(); j++) {
+			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
-			floorObjects.at(j).render(programIDs.at(i));
+			lavaObjects.at(j).render(programIDs.at(i));
 		}
 	}
     glutSwapBuffers();
