@@ -65,7 +65,7 @@ private:
 	 * @param 	texCount 	The offset for the active texture, 0 for the regular texture and 1 for the bumpmap of the texture
 	 * @return	A handle to the texture data.
 	 */
-    unsigned int generateTexture(const char* filename);
+    unsigned int generateTexture(const char* filename, const unsigned int texCount);
 
     static const unsigned int mBufSize = 4; // size of the buffer
     unsigned int mBuffer[mBufSize]; // the buffer

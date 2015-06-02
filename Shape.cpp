@@ -58,13 +58,13 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
 		glActiveTexture(GL_TEXTURE0);
 		mTextureHandle = generateTexture((directory+material.diffuse_texname).c_str(), 0);
 		//TODO: Add bumpmap gen code
-		mBumpmapTextureHandle = generateTexture((directory+material.normal_texname), 1);
+		mBumpmapTextureHandle = generateTexture((directory+material.normal_texname).c_str() , 1);
 	}
 	else {
 		// no texture file given, so we create a default
 		glActiveTexture(GL_TEXTURE0);
-		mTextureHandle = generateTexture("");
-		mBumpmapTextureHandle = generateTexture("");
+		mTextureHandle = generateTexture("", 0);
+		mBumpmapTextureHandle = generateTexture("", 1);
 	}
 
 	// unbind vertex array
