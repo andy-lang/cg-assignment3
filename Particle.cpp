@@ -16,6 +16,18 @@ unsigned int Particle::getBirthTime() const {
 	return mBirthTime;
 }
 
+std::vector<float> Particle::getVertexData() const {
+	return mVertices;
+}
+
+std::vector<unsigned int> Particle::getIndexData() const {
+	return mIndices;
+}
+
+glm::vec4 Particle::getColour() {
+	return mColour;
+}
+
 glm::mat4 Particle::updateModelMatrix() {
 	mPosition.y += mSpeed;
 	return getModelMatrix();

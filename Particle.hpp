@@ -40,6 +40,10 @@ public:
 	/* Returns the program time at which the particle was created. */
 	unsigned int getBirthTime() const;
 
+	std::vector<float> getVertexData() const;
+	std::vector<unsigned int> getIndexData() const;
+	glm::vec4 getColour();
+
 	/* Updates the model matrix, relative to the Particle's properties (eg position, speed, etc), then return this model matrix. */
 	glm::mat4 updateModelMatrix();
 
