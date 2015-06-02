@@ -1,12 +1,7 @@
 - Camera class
     - mouse movement
-    - freecam
-- Buffer class
-- Normals
-- Texturing
-
- - multiple shaders
- - proper commenting & documentation
+- multiple shaders
+- proper commenting & documentation
 
 Riley:
  - bump mapping textures

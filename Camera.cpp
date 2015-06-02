@@ -32,7 +32,13 @@ void Camera::render(int programID) {
         exit(1);
     }
 
-    mViewMatrix = glm::mat4(); // reset view matrix
+	calcViewMatrix();
+
+    glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(mViewMatrix));
+}
+
+void Camera::calcViewMatrix() {
+	mViewMatrix = glm::mat4(); // reset view matrix
     if (mObj == NULL) {
         // for the time being, if the camera isn't attached to anything, put it at a static position.
         mViewMatrix = glm::lookAt(glm::vec3(0.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -42,7 +48,9 @@ void Camera::render(int programID) {
 		mViewMatrix = glm::rotate(mViewMatrix, 3.14f, glm::vec3(0.0f, 1.0f, 0.0f)); // rotate by pi. This makes sure it's facing the right direction
 		mViewMatrix = glm::inverse(mViewMatrix); // apparently the thing to do with the view matrix is to set it as the inverse of the model matrix after you've applied transformations. ¯\_(ツ)_/¯
     }
+}
 
-    glUniformMatrix4fv(viewHandle, 1, false, glm::value_ptr(mViewMatrix));
-
+glm::mat4 Camera::getViewMatrix() {
+	calcViewMatrix();
+	return mViewMatrix;
 }
