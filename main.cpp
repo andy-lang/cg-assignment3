@@ -233,6 +233,8 @@ void render() {
         if(collisionDetected){
             player->setPrevPos();
         }
+
+		glUniform1i(textureCodeHandle, 0); // need to render player with regular texturing, not procedural
         player->render(programIDs.at(i));        
 	}
 	lights.erase(lights.end()); // remove the lava light source from the lights again
