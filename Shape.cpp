@@ -57,21 +57,19 @@ void Shape::shapeInit(int programID, tinyobj::shape_t shape, tinyobj::material_t
 		// bind texture
 		glActiveTexture(GL_TEXTURE0);
 		mTextureHandle = generateTexture((directory+material.diffuse_texname).c_str(), 0);
-		//TODO: Add bumpmap gen code
-		mBumpmapTextureHandle = generateTexture((directory+material.normal_texname).c_str() , 1);
+		mTextureNormHandle = generateTexture((directory+material.normal_texname + "normTex.png").c_str() , 1);
 	}
 	else {
 		// no texture file given, so we create a default
 		glActiveTexture(GL_TEXTURE0);
 		mTextureHandle = generateTexture("", 0);
-		mBumpmapTextureHandle = generateTexture("", 1);
+		mTextureNormHandle = generateTexture("", 1);
 	}
 
 	// unbind vertex array
 	glBindVertexArray(0);
 	// unbind the buffer too
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 
 	// and we're done!
 }
@@ -117,23 +115,36 @@ void Shape::render(unsigned int programID) {
 
 	int texMapHandle = glGetUniformLocation(programID, "tex_map");
 	int texNormHandle = glGetUniformLocation(programID, "tex_norm");
-	if (texMapHandle == -1 || texNormHandle == -1) {
-		std::cerr << "Could not find uniform variable 'tex_map' or 'tex_norm'" << std::endl;
+	if (texMapHandle == -1) {
+		std::cerr << "Could not find uniform variable 'tex_map'" << std::endl;
+		exit(1);
+	}
+	if (texNormHandle == -1) {
+		std::cerr << "Could not find uniform variable 'tex_norm'" << std::endl;
 		exit(1);
 	}
 
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(texMapHandle, 0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	glBindTexture(GL_TEXTURE_2D, mTextureHandle);
+
+	glActiveTexture(GL_TEXTURE1);
 	glUniform1i(texNormHandle, 1);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	glBindTexture(GL_TEXTURE_2D, mTextureNormHandle);
 
 	glBindVertexArray(mVertexVaoHandle);
-
-		glBindTexture(GL_TEXTURE_2D, mTextureHandle);
 	glDrawElements(GL_TRIANGLES, mIndicesSize, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0); // unbind VAO

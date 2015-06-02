@@ -82,7 +82,7 @@ private:
 
     unsigned int mVertexVaoHandle; // VAO handle for vertices
     unsigned int mTextureHandle; // handle for the texture data
-    unsigned int mBumpmapTextureHandle; // handle for the bumpmap data for the texture
+    unsigned int mTextureNormHandle; // handle for the bumpmap data for the texture
 };
 
 
