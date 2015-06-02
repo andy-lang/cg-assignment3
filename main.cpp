@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <math.h>
 //#include <string>
 
 std::vector<unsigned int> programIDs;
@@ -179,12 +180,46 @@ void render() {
 
 		cameras.at(camIdx).render(programIDs.at(i));
 		glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
-		player->render(programIDs.at(i));
+
+        bool collisionDetected = false;
+        glm::vec3 objTranslation;
+        glm::vec3 playerTranslation;
+
 		for (int j = 0; j < mainObjects.size(); j++) {
 			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
 			mainObjects.at(j).render(programIDs.at(i));
-		}
+
+            /***** Main Collision dection alg *****/
+            if(j < 36){
+                objTranslation = mainObjects.at(j).getTranslation();
+                playerTranslation = player->getTranslation();
+
+                float xDiff = std::abs(playerTranslation.x - objTranslation.x);
+                float zDiff = std::abs(playerTranslation.z - objTranslation.z);
+
+                float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
+                float angle = std::atan2(zDiff, xDiff);
+                float internalObjDist;
+                float internalPlayerDist;
+
+                //Right or Left quad
+                if(std::abs(angle) <= M_PI/4.0){
+                    internalObjDist = std::abs((0.5)/(std::cos(angle)));
+                    internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
+                }
+                //Top or Bottom quad
+                else{
+                    angle = M_PI/2.0 - angle;
+                    internalObjDist = std::abs((0.5)/(std::cos(angle)));
+                    internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
+                }
+
+                if((absDist - internalObjDist - internalPlayerDist) < 0){
+                    collisionDetected = true;
+                }
+            }
+        }
 
 		// render lava floor
 		glUniform1i(textureCodeHandle, 1);
@@ -194,6 +229,13 @@ void render() {
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
 			lavaObjects.at(j).render(programIDs.at(i));
 		}
+
+        if(collisionDetected){
+            player->setPrevPos();
+        }
+
+		glUniform1i(textureCodeHandle, 0); // need to render player with regular texturing, not procedural
+        player->render(programIDs.at(i));        
 	}
 	lights.erase(lights.end()); // remove the lava light source from the lights again
 
@@ -206,19 +248,19 @@ void keyboardFunc(unsigned char key, int x, int y) {
         case 27: // Esc
             exit(1);
             break;
-        case 'q':
+        case 'a':
             player->strafeLeft();
             glutPostRedisplay();
             break;
-        case 'e':
+        case 'd':
             player->strafeRight();
             glutPostRedisplay();
             break;
-        case 'a':
+        case 'q':
             player->rotLeft();
             glutPostRedisplay();
             break;
-        case 'd':
+        case 'e':
             player->rotRight();
             glutPostRedisplay();
             break;
@@ -358,10 +400,12 @@ int main(int argc, char** argv) {
     glutDisplayFunc(render);
     glutReshapeFunc(reshapeWindow);
 
-	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
-	currTime = glutGet(GLUT_ELAPSED_TIME);
+    glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
+    currTime = glutGet(GLUT_ELAPSED_TIME);
 
-    std::cout << "WASD keys to move" << std::endl;
+    std::cout << "W => move forwards, S => move backwards" << std::endl;
+    std::cout << "A => strafe left, D => strafe right" << std::endl;
+    std::cout << "Q => rotate left, E => rotate right" << std::endl;
     std::cout << "F to switch camera views" << std::endl;
     std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();
