@@ -13,9 +13,6 @@
 static unsigned int WINDOW_WIDTH = 640;
 static unsigned int WINDOW_HEIGHT = 480;
 
-static unsigned int lavaLightPos;
-static unsigned int lavaLightInitBrightness = 4.5;
-
 /* Quick and dirty function to output an OpenGL hex error code, if an error has been found. */
 inline void checkGLError() {
 	GLenum err = glGetError();

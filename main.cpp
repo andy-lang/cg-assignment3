@@ -19,10 +19,16 @@
 
 std::vector<unsigned int> programIDs;
 
+// main section of objects
 std::vector<Object> mainObjects;
-std::vector<Object> lavaObjects;
-std::vector<Camera> cameras;
 std::vector<Light> lights; // vector of light sources
+std::vector<Camera> cameras;
+
+// objects relating to lava. Should just be the one item, but could add more if you like
+std::vector<Object> lavaObjects;
+Light lavaLight;
+
+unsigned int lavaLightInitBrightness = 4.5;
 
 int camIdx;
 Player* player;
@@ -66,9 +72,8 @@ int mainObjectsetup() {
     Object lava(programIDs[0], "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
     lavaObjects.push_back(lava);
 
-	Light lav1(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
-	lights.push_back(lav1);
-	lavaLightPos = lights.size()-1;
+	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
+	//lights.push_back(lav1);
 
 	/*
 	Light lav2(glm::vec3(-7.0f, 0.5f, 5.0f), glm::vec3(0.4f, 0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f), 0.1f);
@@ -126,7 +131,8 @@ void render() {
 	std::vector<glm::vec3> speculars;
 	std::vector<float> brightnesses;
 
-	lights.at(lavaLightPos).setBrightness(lavaLightInitBrightness + 2*sin(currTime/150));
+	lavaLight.setBrightness(lavaLightInitBrightness + 2*sin(currTime/150));
+	lights.push_back(lavaLight);
 	for (int i = 0; i < lights.size(); i++) {
 		positions.push_back(lights.at(i).getPosition());
 		ambients.push_back(lights.at(i).getAmbient());
@@ -189,6 +195,8 @@ void render() {
 			lavaObjects.at(j).render(programIDs.at(i));
 		}
 	}
+	lights.erase(lights.end()); // remove the lava light source from the lights again
+
     glutSwapBuffers();
     glFlush();
 }
