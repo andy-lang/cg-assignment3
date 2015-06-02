@@ -22,6 +22,7 @@ uniform float mtl_shininess; // shininess of the material
 uniform int texture_code;
 uniform int program_time;
 uniform sampler2D tex_map;
+uniform sampler2D tex_norm;
 
 in mat4 lightPosMatrix;
 in vec4 vertex;
@@ -128,8 +129,12 @@ float pnoise(vec2 P, vec2 rep) {
 void main(void) {
 	fragColour = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	
+	// Normal Map
+	vec3 NN = texture(tex_norm, texCoord.st).xyz;
+	vec3 N = normal + normalize(2.0*NN.xyz-1.0);
+
 	for (int i = 0; i < numberOfLights; i++) {
-		fragColour.xyz += phongLight(vertex, normalize(normal), lightPosMatrix*vec4(lightPositions[i], 1.0), lightAmbients[i], lightDiffuses[i], lightSpeculars[i], lightBrightnesses[i]);
+		fragColour.xyz += phongLight(vertex, normalize(N), lightPosMatrix*vec4(lightPositions[i], 1.0), lightAmbients[i], lightDiffuses[i], lightSpeculars[i], lightBrightnesses[i]);
 	}
 
 	if (texture_code == 0) {

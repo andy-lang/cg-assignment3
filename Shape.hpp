@@ -1,9 +1,9 @@
 /**********************************************************************
  * Wrapper for a shape object, and its associated vertex & texture data.
  * This is only likely to be called by the Object class, which is just a collection of Shapes.
- * @author	:	Andrew Lang
- * @id		:	a1648205
- * @created :	2015-05-23
+ * @author	:	Andrew Lang, Riley Chase
+ * @id		:	a1648205, a1647198
+ * @created 	:	2015-05-23
  * @project	:	CG assignment 3
 **********************************************************************/
 
@@ -62,9 +62,10 @@ private:
 
 	/* Generates a new texture, and returns the handle for this texture.
 	 * @param	filename	The filepath, relative to the directory where the executable was called, where the image file can be found.
+	 * @param 	texCount 	The offset for the active texture, 0 for the regular texture and 1 for the bumpmap of the texture
 	 * @return	A handle to the texture data.
 	 */
-    unsigned int generateTexture(const char* filename);
+    unsigned int generateTexture(const char* filename, const unsigned int texCount);
 
     static const unsigned int mBufSize = 4; // size of the buffer
     unsigned int mBuffer[mBufSize]; // the buffer
@@ -88,6 +89,7 @@ private:
 
     unsigned int mVertexVaoHandle; // VAO handle for vertices
     unsigned int mTextureHandle; // handle for the texture data
+    unsigned int mTextureNormHandle; // handle for the bumpmap data for the texture
 };
 
 
