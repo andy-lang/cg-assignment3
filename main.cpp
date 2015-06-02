@@ -160,8 +160,8 @@ void render() {
                 objTranslation = objects.at(j).getTranslation();
                 playerTranslation = player->getTranslation();
 
-                float xDiff = playerTranslation.x - objTranslation.x;
-                float zDiff = playerTranslation.z - objTranslation.z;
+                float xDiff = std::abs(playerTranslation.x - objTranslation.x);
+                float zDiff = std::abs(playerTranslation.z - objTranslation.z);
 
                 float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
                 float angle = std::atan2(zDiff, xDiff);
@@ -171,13 +171,13 @@ void render() {
                 //Right or Left quad
                 if(std::abs(angle) <= M_PI/4.0){
                     internalObjDist = std::abs((0.5)/(std::cos(angle)));
-                    internalPlayerDist = std::abs(std::sqrt(pow(0.25, 2) +  pow(0.25, 2)));
+                    internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
                 }
                 //Top or Bottom quad
                 else{
                     angle = M_PI/2.0 - angle;
                     internalObjDist = std::abs((0.5)/(std::cos(angle)));
-                    internalPlayerDist = std::abs(std::sqrt(pow(0.25, 2) +  pow(0.25, 2)));
+                    internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
                 }
 
                 if((absDist - internalObjDist - internalPlayerDist) < 0){
