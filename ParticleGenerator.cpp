@@ -4,15 +4,15 @@ ParticleGenerator::ParticleGenerator() {
 	//?? TODO: stub
 }
 
-ParticleGenerator::ParticleGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime) {
-	initGenerator(programID, position, programTime);
+ParticleGenerator::ParticleGenerator(unsigned int programID, glm::vec3 position, glm::vec3 rotation, unsigned int programTime) {
+	initGenerator(programID, position, rotation, programTime);
 }
 
 ParticleGenerator::~ParticleGenerator() {
 	//?? TODO: stub
 }
 
-void ParticleGenerator::initGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime) {
+void ParticleGenerator::initGenerator(unsigned int programID, glm::vec3 position, glm::vec3 rotation, unsigned int programTime) {
 	glUseProgram(programID);
 
 	mPosition = position;
@@ -30,31 +30,25 @@ void ParticleGenerator::initGenerator(unsigned int programID, glm::vec3 position
 
 	for (int i = 0; i < NUM_PARTICLES; i++) {
 		float xPosVar = randomFloat(-0.03, 0.03);
-		float zPosVar = randomFloat(-0.01, 0.01);
+		float zPosVar = randomFloat(-0.03, 0.03);
 		float speedVar= randomFloat(-0.001, 0.001);
 		float timeVar = randomFloat(0, 1000);
 		float timeToLiveVar = randomFloat(1000, 4000);
 
-		float r = randomFloat(0.88f, 1.0f);
+		float r = randomFloat(0.95, 1.0f);
 		float g = randomFloat(0.0f, 0.2f);
 
 		glm::vec4 colour = glm::vec4(r, g, 0.0f, 1.0f);
 
 
-	    Particle p(mPosition + glm::vec3(xPosVar, 0.0f, zPosVar), colour, 0.002f+speedVar, programTime+timeVar, indicesOffset, timeToLiveVar);
+	    Particle p(mPosition + glm::vec3(xPosVar, 0.0f, zPosVar), rotation, colour, 0.002f+speedVar, programTime+timeVar, indicesOffset, timeToLiveVar);
 		mParticles.push_back(p);
 
-		for (int j = 0; j < mParticles.at(i).getIndicesSize(); j++) {
-		    std::cout << mParticles.at(i).getIndexData().at(j) << " ";
-		}
-		std::cout << std::endl;
 		indicesOffset += p.getVerticesSize()/VALS_PER_VERT;
 
 		mVerticesSize += p.getVerticesSize();
 		mIndicesSize += p.getIndicesSize();
 	}
-	std::cout << "mParticles size = " << mParticles.size() << std::endl;
-	std::cout << "mVerticesSize = " << mVerticesSize << ", mIndicesSize = " << mIndicesSize << std::endl;
 
 	glGenBuffers(mBufSize, mBuffer);
 
@@ -95,7 +89,6 @@ void ParticleGenerator::initGenerator(unsigned int programID, glm::vec3 position
 void ParticleGenerator::render(unsigned int programID, unsigned int programTime) {
 	for (int i = 0; i < mParticles.size(); i++) {
 	    if (programTime-mParticles.at(i).getBirthTime() >= mParticles.at(i).getTimeToLive()) {
-			//std::cout << "particle " << i << " reset" << std::endl;
 			mParticles.at(i).reset(programTime);
 	    }
 	}

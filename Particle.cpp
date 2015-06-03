@@ -4,8 +4,8 @@ Particle::Particle() {
 	//?? TODO: stub
 }
 
-Particle::Particle(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset, unsigned int timeToLive) {
-	particleInit(position, colour, speed, programTime, indicesOffset, timeToLive);
+Particle::Particle(glm::vec3 position, glm::vec3 rotation, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset, unsigned int timeToLive) {
+	particleInit(position, rotation, colour, speed, programTime, indicesOffset, timeToLive);
 }
 
 Particle::~Particle() {
@@ -60,8 +60,9 @@ void Particle::reset(unsigned int programTime) {
 	calcModelMatrix();
 }
 
-void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset, unsigned int timeToLive) {
+void Particle::particleInit(glm::vec3 position, glm::vec3 rotation, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset, unsigned int timeToLive) {
 	mPosition = position;
+	mRotation = rotation;
 	mInitPos = position;
 	mColour = colour;
 	mSpeed = speed;
@@ -105,5 +106,8 @@ void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, u
 void Particle::calcModelMatrix() {
 	mModelMatrix = glm::mat4();
 	mModelMatrix = glm::translate(mModelMatrix, mPosition);
-	mModelMatrix = glm::scale(mModelMatrix, glm::vec3(0.011f, 0.011f, 0.011f));
+	mModelMatrix = glm::scale(mModelMatrix, glm::vec3(0.012f, 0.012f, 0.012f));
+	mModelMatrix = glm::rotate(mModelMatrix, mRotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	mModelMatrix = glm::rotate(mModelMatrix, mRotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	mModelMatrix = glm::rotate(mModelMatrix, mRotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 }

@@ -30,14 +30,14 @@
 class ParticleGenerator {
 public:
     ParticleGenerator();
-    ParticleGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime);
+    ParticleGenerator(unsigned int programID, glm::vec3 position, glm::vec3 rotation, unsigned int programTime);
     ~ParticleGenerator();
 
 	void render(unsigned int programID, unsigned int programTime);
 
 private:
 
-	void initGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime);
+	void initGenerator(unsigned int programID, glm::vec3 position, glm::vec3 rotation, unsigned int programTime);
 
 	/* Generate a random float between two values. */
 	float randomFloat(float a, float b);

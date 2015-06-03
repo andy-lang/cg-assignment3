@@ -100,6 +100,21 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
+	// create particle generators corresponding to each torch position
+	ParticleGenerator p1(programIDs.at(1), glm::vec3(-3.5f, 0.1f, 2.63f), glm::vec3(0.0f), currTime);
+	fires.push_back(p1);
+
+	ParticleGenerator p2(programIDs.at(1), glm::vec3(1.40f, 0.1f, 5.1f), glm::vec3(0.0f, M_PI/2, 0.0f), currTime);
+	fires.push_back(p2);
+
+	ParticleGenerator p3(programIDs.at(1), glm::vec3(0.0f, 0.1f, 7.42f), glm::vec3(0.0f, 0.0f, 0.0f), currTime);
+	fires.push_back(p3);
+
+	ParticleGenerator p4(programIDs.at(1), glm::vec3(-5.0f, 0.1f, 7.40f), glm::vec3(0.0f), currTime); 
+	fires.push_back(p4);
+
+	ParticleGenerator p5(programIDs.at(1), glm::vec3(-2.5f, 0.1f, 10.40f), glm::vec3(0.0f), currTime);
+	fires.push_back(p5);
 
     return 0;
 }

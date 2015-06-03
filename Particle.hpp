@@ -34,7 +34,7 @@ public:
 	 * @param	programTime	The current time of the program. Used for checking by the ParticleGenerator regarding how long the particle has been alive, and thus whether it should be deleted.
 	 * @param	indicesOffset An offset of the indices, relative to the object's position in the buffer.
 	 */
-    Particle(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset = 0, unsigned int timeToLive = 2000);
+    Particle(glm::vec3 position, glm::vec3 rotation, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset = 0, unsigned int timeToLive = 2000);
     ~Particle();
 
 	/* Returns the program time at which the particle was created. */
@@ -71,7 +71,7 @@ private:
 	 * @param	programTime	The current time of the program. Used for checking by the ParticleGenerator regarding how long the particle has been alive, and thus whether it should be deleted.
 	 * @param	indicesOffset An offset of the indices, relative to the object's position in the buffer.
 	 */
-    void particleInit(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset = 0, unsigned int timeToLive = 2000);
+    void particleInit(glm::vec3 position, glm::vec3 rotation, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset = 0, unsigned int timeToLive = 2000);
 
 	/* Calculates the model matrix. */
 	void calcModelMatrix();
@@ -79,6 +79,7 @@ private:
 	
 	glm::vec3 mInitPos;
 	glm::vec3 mPosition; // position of the particle
+	glm::vec3 mRotation; // rotation in x,y,z directions
 	glm::vec4 mColour; // the particle's colour
 	float mSpeed; // the speed at which the particle is travelling.
 	unsigned int mBirthTime; // the program time at which the particle was created.
