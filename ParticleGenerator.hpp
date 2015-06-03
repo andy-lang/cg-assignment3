@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <cmath>
 
 class ParticleGenerator {
 public:
@@ -38,14 +39,15 @@ private:
 
 	void initGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime);
 
+	/* Generate a random float between two values. */
+	float randomFloat(float a, float b);
+
 	glm::vec3 mPosition;
 
-	static const unsigned int NUM_PARTICLES = 1;
 	std::vector<Particle> mParticles;
 	unsigned int mVerticesSize;
 	unsigned int mIndicesSize;
 
-	static const unsigned int PARTICLE_TIME_TO_LIVE = 2000;
 	static const unsigned int mBufSize = 2;
 	unsigned int mBuffer[mBufSize];
 	static const unsigned int VERTICES_BUF_POS = 0;

@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <math.h>
+#include <time.h>
 //#include <string>
 
 std::vector<unsigned int> programIDs;
@@ -28,7 +28,7 @@ std::vector<Camera> cameras;
 
 bool collisionDetectionOn = true;
 
-ParticleGenerator firePG;
+std::vector<ParticleGenerator> fires;
 
 // objects relating to lava. Should just be the one item, but could add more if you like
 std::vector<Object> lavaObjects;
@@ -100,8 +100,6 @@ int objectSetup() {
     thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
-
-	firePG = ParticleGenerator(programIDs.at(1), glm::vec3(0.0f, 0.0f, 5.0f), currTime);
 
     return 0;
 }
@@ -236,7 +234,10 @@ void render() {
 	// draw particle generator 
 	glUseProgram(programIDs.at(1));
 	cameras.at(camIdx).render(programIDs.at(1));
-	firePG.render(programIDs.at(1), currTime);
+	for (int i = 0; i < fires.size(); i++) {
+		fires.at(i).render(programIDs.at(1), currTime);
+	}
+	
 
     glutSwapBuffers();
     glFlush();
@@ -349,6 +350,8 @@ void timer(int value) {
 }
 
 int main(int argc, char** argv) {
+	srand(time(NULL));
+
     // Set up basic window management stuff.
     glutInit(&argc, argv);
     glutInitWindowPosition(100, 0);
@@ -384,6 +387,7 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //Disable back face rendering
+	//Had to delete this so that simple squares can be rendered.
     //glEnable(GL_CULL_FACE);
 
     // wireframes for now

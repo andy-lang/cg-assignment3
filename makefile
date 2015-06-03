@@ -37,7 +37,7 @@ assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o
 main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o LevelMap.o Light.o Particle.o ParticleGenerator.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
-ParticleGenerator.o: ParticleGenerator.cpp ParticleGenerator.hpp
+ParticleGenerator.o: ParticleGenerator.cpp ParticleGenerator.hpp Particle.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c ParticleGenerator.cpp
 
 Particle.o: Particle.cpp Particle.hpp

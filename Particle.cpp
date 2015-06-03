@@ -4,8 +4,8 @@ Particle::Particle() {
 	//?? TODO: stub
 }
 
-Particle::Particle(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset) {
-	particleInit(position, colour, speed, programTime, indicesOffset);
+Particle::Particle(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset, unsigned int timeToLive) {
+	particleInit(position, colour, speed, programTime, indicesOffset, timeToLive);
 }
 
 Particle::~Particle() {
@@ -14,6 +14,14 @@ Particle::~Particle() {
 
 unsigned int Particle::getBirthTime() const {
 	return mBirthTime;
+}
+
+void Particle::setBirthTime(unsigned int birthTime) {
+	mBirthTime = birthTime;
+}
+
+unsigned int Particle::getTimeToLive() const {
+	return mTimeToLive;
 }
 
 std::vector<float> Particle::getVertexData() const {
@@ -52,27 +60,28 @@ void Particle::reset(unsigned int programTime) {
 	calcModelMatrix();
 }
 
-void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset) {
+void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset, unsigned int timeToLive) {
 	mPosition = position;
 	mInitPos = position;
 	mColour = colour;
 	mSpeed = speed;
 	mBirthTime = programTime;
+	mTimeToLive = timeToLive;
 
 	
 	// create vertices to make a square
 	// top left square
-	mVertices.push_back(0.0f);
-	mVertices.push_back(0.0f);
+	mVertices.push_back(-1.0f);
+	mVertices.push_back(-1.0f);
 	mVertices.push_back(0.0f);
 
 	// top right square
 	mVertices.push_back(1.0f);
-	mVertices.push_back(0.0f);
+	mVertices.push_back(-1.0f);
 	mVertices.push_back(0.0f);
 
 	// bottom left square
-	mVertices.push_back(0.0f);
+	mVertices.push_back(-1.0f);
 	mVertices.push_back(1.0f);
 	mVertices.push_back(0.0f);
 
@@ -96,5 +105,5 @@ void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, u
 void Particle::calcModelMatrix() {
 	mModelMatrix = glm::mat4();
 	mModelMatrix = glm::translate(mModelMatrix, mPosition);
-	mModelMatrix = glm::scale(mModelMatrix, glm::vec3(0.08f, 0.08f, 0.08f)); //?? TODO: change scale amount
+	mModelMatrix = glm::scale(mModelMatrix, glm::vec3(0.011f, 0.011f, 0.011f));
 }
