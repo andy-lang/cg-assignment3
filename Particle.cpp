@@ -24,6 +24,14 @@ std::vector<unsigned int> Particle::getIndexData() const {
 	return mIndices;
 }
 
+unsigned int Particle::getVerticesSize() const {
+	return mVertices.size();
+}
+
+unsigned int Particle::getIndicesSize() const {
+	return mIndices.size();
+}
+
 glm::vec4 Particle::getColour() {
 	return mColour;
 }
@@ -38,8 +46,14 @@ glm::mat4 Particle::getModelMatrix() {
 	return mModelMatrix;
 }
 
+void Particle::reset() {
+	mPosition = mInitPos;
+	calcModelMatrix();
+}
+
 void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, unsigned int programTime, unsigned int indicesOffset) {
 	mPosition = position;
+	mInitPos = position;
 	mColour = colour;
 	mSpeed = speed;
 	mBirthTime = programTime;

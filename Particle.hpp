@@ -42,6 +42,10 @@ public:
 
 	std::vector<float> getVertexData() const;
 	std::vector<unsigned int> getIndexData() const;
+
+	unsigned int getVerticesSize() const;
+	unsigned int getIndicesSize() const;
+
 	glm::vec4 getColour();
 
 	/* Updates the model matrix, relative to the Particle's properties (eg position, speed, etc), then return this model matrix. */
@@ -49,6 +53,9 @@ public:
 
 	/* Returns the model matrix without updating. */
 	glm::mat4 getModelMatrix();
+
+	/* Resets particle's data to defaults. */
+	void reset();
 
 private:
 	/* Doesn't make sense to create an "empty" particle, so we keep this private. */
@@ -68,6 +75,7 @@ private:
 	void calcModelMatrix();
 
 	
+	glm::vec3 mInitPos;
 	glm::vec3 mPosition; // position of the particle
 	glm::vec4 mColour; // the particle's colour
 	float mSpeed; // the speed at which the particle is travelling.
