@@ -21,13 +21,9 @@ void ParticleGenerator::initGenerator(unsigned int programID, glm::vec3 position
 	mIndicesSize = 0;
 
 
-
-	// create individual particles
-	glm::vec4 orange = glm::vec4(1.0f, 0.3f, 0.0f, 1.0f);
-	unsigned int indicesOffset = 0;
-
+	// create fire particles
 	unsigned int NUM_PARTICLES = (unsigned int)randomFloat(20, 50);
-
+	unsigned int indicesOffset = 0;
 	for (int i = 0; i < NUM_PARTICLES; i++) {
 		float xPosVar = randomFloat(-0.03, 0.03);
 		float zPosVar = randomFloat(-0.03, 0.03);
@@ -42,6 +38,30 @@ void ParticleGenerator::initGenerator(unsigned int programID, glm::vec3 position
 
 
 	    Particle p(mPosition + glm::vec3(xPosVar, 0.0f, zPosVar), rotation, colour, 0.002f+speedVar, programTime+timeVar, indicesOffset, timeToLiveVar);
+		mParticles.push_back(p);
+
+		indicesOffset += p.getVerticesSize()/VALS_PER_VERT;
+
+		mVerticesSize += p.getVerticesSize();
+		mIndicesSize += p.getIndicesSize();
+	}
+
+
+	// create smoke particles
+	unsigned int NUM_SMOKE_PARTICLES = (unsigned int)randomFloat(8,15);
+	for (int idx = 0; idx < NUM_SMOKE_PARTICLES; idx++) {
+		float xPosVar = randomFloat(-0.03, 0.03);
+		float zPosVar = randomFloat(-0.03, 0.03);
+		float speedVar= randomFloat(-0.001, 0.001);
+		float timeVar = randomFloat(0, 1000);
+		float timeToLiveVar = randomFloat(1000, 3000);
+
+		float grey = randomFloat(0.0, 0.06);
+
+		glm::vec4 colour = glm::vec4(grey, grey, grey, 1.0f-grey);
+
+
+	    Particle p(mPosition + glm::vec3(xPosVar, 0.0f, zPosVar), rotation, colour, 0.0035f+speedVar, programTime+timeVar, indicesOffset, timeToLiveVar);
 		mParticles.push_back(p);
 
 		indicesOffset += p.getVerticesSize()/VALS_PER_VERT;
