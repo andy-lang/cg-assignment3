@@ -101,6 +101,9 @@ unsigned int Shape::generateTexture(const char* filename, const unsigned int tex
 	if (n == 3) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
 	}
+    else if (n == 4) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+    }
 	else {
 		std::string fn = filename;
 		if (!fn.empty()) std::cerr << "file '" << filename << "' is not a valid image file. Creating default image file as substitute." << std::endl;
