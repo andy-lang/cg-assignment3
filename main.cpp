@@ -97,7 +97,7 @@ int objectSetup() {
     cameras.push_back(firstPerson);
 
     Camera thirdPerson = Camera();
-    thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
+    thirdPerson.attachToObject(player, glm::vec3(0.0f, 1.0f, -5.0f));
     cameras.push_back(thirdPerson);
 
 	// create particle generators corresponding to each torch position
