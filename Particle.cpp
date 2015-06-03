@@ -46,8 +46,9 @@ glm::mat4 Particle::getModelMatrix() {
 	return mModelMatrix;
 }
 
-void Particle::reset() {
+void Particle::reset(unsigned int programTime) {
 	mPosition = mInitPos;
+	mBirthTime = programTime;
 	calcModelMatrix();
 }
 
@@ -95,4 +96,5 @@ void Particle::particleInit(glm::vec3 position, glm::vec4 colour, float speed, u
 void Particle::calcModelMatrix() {
 	mModelMatrix = glm::mat4();
 	mModelMatrix = glm::translate(mModelMatrix, mPosition);
+	mModelMatrix = glm::scale(mModelMatrix, glm::vec3(0.08f, 0.08f, 0.08f)); //?? TODO: change scale amount
 }

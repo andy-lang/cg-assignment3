@@ -28,29 +28,29 @@
 
 class ParticleGenerator {
 public:
+    ParticleGenerator();
     ParticleGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime);
     ~ParticleGenerator();
 
 	void render(unsigned int programID, unsigned int programTime);
 
 private:
-    ParticleGenerator();
 
 	void initGenerator(unsigned int programID, glm::vec3 position, unsigned int programTime);
 
 	glm::vec3 mPosition;
 
-	static const unsigned int NUM_PARTICLES = 10;
+	static const unsigned int NUM_PARTICLES = 1;
 	std::vector<Particle> mParticles;
 	unsigned int mVerticesSize;
 	unsigned int mIndicesSize;
 
+	static const unsigned int PARTICLE_TIME_TO_LIVE = 2000;
 	static const unsigned int mBufSize = 2;
 	unsigned int mBuffer[mBufSize];
 	static const unsigned int VERTICES_BUF_POS = 0;
 	static const unsigned int INDICES_BUF_POS = 1;
 	unsigned int mVertexVaoHandle;
-
 };
 
 

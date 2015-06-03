@@ -39,6 +39,7 @@ public:
 
 	/* Returns the program time at which the particle was created. */
 	unsigned int getBirthTime() const;
+	void setBirthTime(unsigned int birthTime);
 
 	std::vector<float> getVertexData() const;
 	std::vector<unsigned int> getIndexData() const;
@@ -55,7 +56,7 @@ public:
 	glm::mat4 getModelMatrix();
 
 	/* Resets particle's data to defaults. */
-	void reset();
+	void reset(unsigned int programTime);
 
 private:
 	/* Doesn't make sense to create an "empty" particle, so we keep this private. */
