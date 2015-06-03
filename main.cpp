@@ -10,12 +10,13 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
+#include "ParticleGenerator.hpp"
 #include "libs/Lib.h"
 #include "LevelMap.hpp"
 
 #include <iostream>
 #include <cstdlib>
-#include <math.h>
+#include <time.h>
 //#include <string>
 
 std::vector<unsigned int> programIDs;
@@ -24,6 +25,10 @@ std::vector<unsigned int> programIDs;
 std::vector<Object> mainObjects;
 std::vector<Light> lights; // vector of light sources
 std::vector<Camera> cameras;
+
+bool collisionDetectionOn = true;
+
+std::vector<ParticleGenerator> fires;
 
 // objects relating to lava. Should just be the one item, but could add more if you like
 std::vector<Object> lavaObjects;
@@ -67,7 +72,7 @@ void reshapeWindow(int x, int y) {
 
 /* Set up all required mainObjects etc.
  * Returns 0 on success, nonzero otherwise. */
-int mainObjectsetup() {
+int objectSetup() {
     generateLevelMap(programIDs[0], mainObjects, lights);
 
     Object lava(programIDs[0], "geom/wall_cube/wall_cube.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
@@ -75,39 +80,41 @@ int mainObjectsetup() {
 
 	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
 	//lights.push_back(lav1);
+	
+
 
 	/*
 	Light lav2(glm::vec3(-7.0f, 0.5f, 5.0f), glm::vec3(0.4f, 0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f), 0.1f);
 	lights.push_back(lav2);
 	*/
 
-	for (int i = 0; i < programIDs.size(); i++) {
-		/*
-		Object tet(programIDs.at(i), "geom/tetra/tetra.obj", glm::vec3(0.0f, 0.f, 0.0f), glm::vec3(2.0f, 0.0f, 5.0f), 1.0f);
-		mainObjects.push_back(tet);
-		*/
-
-		// test for a whole bunch of mainObjects - good as a basic check for efficiency
-		/*
-		for (int j = 0; j < 100; j++) {
-			Object obj(programIDs.at(i), "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2*float(j), 0.0f, 0.0f), 1.0f);
-			mainObjects.push_back(obj); 
-		}
-		*/
-		//mainObjects.push_back(player);
-
-	}
 	glUseProgram(programIDs.at(0));
 
 	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
     camIdx = 0;
     Camera firstPerson = Camera();
-    firstPerson.attachToObject(player);
+    firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
     cameras.push_back(firstPerson);
 
     Camera thirdPerson = Camera();
-    thirdPerson.attachToObject(player, glm::vec3(0.0f, 2.0f, -5.0f));
+    thirdPerson.attachToObject(player, glm::vec3(0.0f, 1.0f, -5.0f));
     cameras.push_back(thirdPerson);
+
+	// create particle generators corresponding to each torch position
+	ParticleGenerator p1(programIDs.at(1), glm::vec3(-3.5f, 0.1f, 2.63f), glm::vec3(0.0f), currTime);
+	fires.push_back(p1);
+
+	ParticleGenerator p2(programIDs.at(1), glm::vec3(1.40f, 0.1f, 5.1f), glm::vec3(0.0f, M_PI/2, 0.0f), currTime);
+	fires.push_back(p2);
+
+	ParticleGenerator p3(programIDs.at(1), glm::vec3(0.0f, 0.1f, 7.42f), glm::vec3(0.0f, 0.0f, 0.0f), currTime);
+	fires.push_back(p3);
+
+	ParticleGenerator p4(programIDs.at(1), glm::vec3(-5.0f, 0.1f, 7.40f), glm::vec3(0.0f), currTime); 
+	fires.push_back(p4);
+
+	ParticleGenerator p5(programIDs.at(1), glm::vec3(-2.5f, 0.1f, 10.40f), glm::vec3(0.0f), currTime);
+	fires.push_back(p5);
 
     return 0;
 }
@@ -116,7 +123,7 @@ int mainObjectsetup() {
  * Thus it should be called only once by the application, before any rendering is done. */
 int setup() {
     setCamera();
-    if (mainObjectsetup() != 0) {
+    if (objectSetup() != 0) {
         return 1;
     }
     return 0;
@@ -142,84 +149,83 @@ void render() {
 		brightnesses.push_back(lights.at(i).getBrightness());
 	}
 
-	for (int i = 0; i < programIDs.size(); i++) {
-		glUseProgram(programIDs.at(i));
-		//glGenerateMipmap(GL_TEXTURE_2D);
+	// render main objects
+	glUseProgram(programIDs.at(0));
+	//glGenerateMipmap(GL_TEXTURE_2D);
 
-		int normMtxHandle = glGetUniformLocation(programIDs.at(i), "normal_matrix");
-		if (normMtxHandle == -1) {
-		    std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
-			exit(1);
+	int normMtxHandle = glGetUniformLocation(programIDs.at(0), "normal_matrix");
+	if (normMtxHandle == -1) {
+		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+		exit(1);
+	}
+	
+	int posHandle = glGetUniformLocation(programIDs.at(0), "lightPositions");
+	int ambientHandle = glGetUniformLocation(programIDs.at(0), "lightAmbients");
+	int diffuseHandle = glGetUniformLocation(programIDs.at(0), "lightDiffuses");
+	int specularHandle = glGetUniformLocation(programIDs.at(0), "lightSpeculars");
+	int brightnessHandle = glGetUniformLocation(programIDs.at(0), "lightBrightnesses");
+
+	if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1) || (brightnessHandle == -1)) {
+		std::cerr << "Could not find light uniform variables." << std::endl;
+		exit(1);
+	}
+	glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessHandle, lights.size(), &brightnesses.front());
+
+	int textureCodeHandle = glGetUniformLocation(programIDs.at(0), "texture_code");
+	int timerHandle = glGetUniformLocation(programIDs.at(0), "program_time");
+	if ((textureCodeHandle == -1) || (timerHandle == -1)) {
+		std::cerr << "Could not find uniform procedural texture variables" << std::endl;
+		std::cerr << "textureCodeHandle = " << textureCodeHandle << std::endl;
+		std::cerr << "timerHandle = " << timerHandle << std::endl;
+		exit(1);
+	}
+	glUniform1i(textureCodeHandle, 0);
+
+	cameras.at(camIdx).render(programIDs.at(0));
+	glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
+
+	bool collisionDetected = false;
+	glm::vec3 objTranslation;
+	glm::vec3 playerTranslation;
+
+	for (int j = 0; j < mainObjects.size(); j++) {
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
+		mainObjects.at(j).render(programIDs.at(0));
+
+		/***** Main Collision dection alg *****/
+		if ((collisionDetectionOn == true) && (j < 36)){
+			objTranslation = mainObjects.at(j).getTranslation();
+			playerTranslation = player->getTranslation();
+
+			float xDiff = std::abs(playerTranslation.x - objTranslation.x);
+			float zDiff = std::abs(playerTranslation.z - objTranslation.z);
+
+			float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
+			float angle = std::atan2(zDiff, xDiff);
+			float internalObjDist;
+			float internalPlayerDist;
+
+			//Right or Left quad
+			if(std::abs(angle) <= M_PI/4.0){
+				internalObjDist = std::abs((0.5)/(std::cos(angle)));
+				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
+			}
+			//Top or Bottom quad
+			else{
+				angle = M_PI/2.0 - angle;
+				internalObjDist = std::abs((0.5)/(std::cos(angle)));
+				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
+			}
+
+			if((absDist - internalObjDist - internalPlayerDist) < 0){
+				collisionDetected = true;
+			}
 		}
-		
-		int posHandle = glGetUniformLocation(programIDs.at(i), "lightPositions");
-		int ambientHandle = glGetUniformLocation(programIDs.at(i), "lightAmbients");
-		int diffuseHandle = glGetUniformLocation(programIDs.at(i), "lightDiffuses");
-		int specularHandle = glGetUniformLocation(programIDs.at(i), "lightSpeculars");
-		int brightnessHandle = glGetUniformLocation(programIDs.at(i), "lightBrightnesses");
-
-		if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1) || (brightnessHandle == -1)) {
-			std::cerr << "Could not find light uniform variables." << std::endl;
-			exit(1);
-		}
-		glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
-		glUniform3fv(ambientHandle, lights.size(), glm::value_ptr(ambients.front()));
-		glUniform3fv(diffuseHandle, lights.size(), glm::value_ptr(diffuses.front()));
-		glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
-		glUniform1fv(brightnessHandle, lights.size(), &brightnesses.front());
-
-		int textureCodeHandle = glGetUniformLocation(programIDs.at(i), "texture_code");
-		int timerHandle = glGetUniformLocation(programIDs.at(i), "program_time");
-		if ((textureCodeHandle == -1) || (timerHandle == -1)) {
-		    std::cerr << "Could not find uniform procedural texture variables" << std::endl;
-			std::cerr << "textureCodeHandle = " << textureCodeHandle << std::endl;
-			std::cerr << "timerHandle = " << timerHandle << std::endl;
-			exit(1);
-		}
-		glUniform1i(textureCodeHandle, 0);
-
-		cameras.at(camIdx).render(programIDs.at(i));
-		glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
-
-        bool collisionDetected = false;
-        glm::vec3 objTranslation;
-        glm::vec3 playerTranslation;
-
-		for (int j = 0; j < mainObjects.size(); j++) {
-			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
-			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
-			mainObjects.at(j).render(programIDs.at(i));
-
-            /***** Main Collision dection alg *****/
-            if(j < 36){
-                objTranslation = mainObjects.at(j).getTranslation();
-                playerTranslation = player->getTranslation();
-
-                float xDiff = std::abs(playerTranslation.x - objTranslation.x);
-                float zDiff = std::abs(playerTranslation.z - objTranslation.z);
-
-                float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
-                float angle = std::atan2(zDiff, xDiff);
-                float internalObjDist;
-                float internalPlayerDist;
-
-                //Right or Left quad
-                if(std::abs(angle) <= M_PI/4.0){
-                    internalObjDist = std::abs((0.5)/(std::cos(angle)));
-                    internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
-                }
-                //Top or Bottom quad
-                else{
-                    angle = M_PI/2.0 - angle;
-                    internalObjDist = std::abs((0.5)/(std::cos(angle)));
-                    internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
-                }
-
-                if((absDist - internalObjDist - internalPlayerDist) < 0){
-                    collisionDetected = true;
-                }
-            }
-        }
 
 		// render lava floor
 		glUniform1i(textureCodeHandle, 1);
@@ -227,7 +233,7 @@ void render() {
 		for (int j = 0; j < lavaObjects.size(); j++) {
 			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
 			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
-			lavaObjects.at(j).render(programIDs.at(i));
+			lavaObjects.at(j).render(programIDs.at(0));
 		}
 
         if(collisionDetected){
@@ -235,9 +241,18 @@ void render() {
         }
 
 		glUniform1i(textureCodeHandle, 0); // need to render player with regular texturing, not procedural
-        player->render(programIDs.at(i));        
+        player->render(programIDs.at(0));        
 	}
 	lights.erase(lights.end()); // remove the lava light source from the lights again
+
+
+	// draw particle generator 
+	glUseProgram(programIDs.at(1));
+	cameras.at(camIdx).render(programIDs.at(1));
+	for (int i = 0; i < fires.size(); i++) {
+		fires.at(i).render(programIDs.at(1), currTime);
+	}
+	
 
     glutSwapBuffers();
     glFlush();
@@ -294,6 +309,10 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             glutPostRedisplay();
             break;
+		case '\\': // press backslash to toggle collision detection.
+			collisionDetectionOn = !collisionDetectionOn;
+			glutPostRedisplay();
+			break;
 
     }
 }
@@ -346,6 +365,8 @@ void timer(int value) {
 }
 
 int main(int argc, char** argv) {
+	srand(time(NULL));
+
     // Set up basic window management stuff.
     glutInit(&argc, argv);
     glutInitWindowPosition(100, 0);
@@ -366,18 +387,11 @@ int main(int argc, char** argv) {
     }
 	programIDs.push_back(programID1);
 
-	/*
-	unsigned int programID2 = LoadShaders("wireframe2.vert", "wireframe2.frag");
-	if (programID2 == 0) {
+	unsigned int particleProgramID = LoadShaders("particle.vert", "particle.frag");
+	if (particleProgramID == 0) {
 	    return 1;
 	}
-	programIDs.push_back(programID2);
-	*/
-
-    if (setup() != 0) {
-        std::cerr << "setup() failed." << std::endl;
-        return 1;
-    }
+	programIDs.push_back(particleProgramID);
 
     // set background colour
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -388,7 +402,8 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //Disable back face rendering
-    glEnable(GL_CULL_FACE);
+	//Had to delete this so that simple squares can be rendered.
+    //glEnable(GL_CULL_FACE);
 
     // wireframes for now
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -402,6 +417,11 @@ int main(int argc, char** argv) {
 
     glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
     currTime = glutGet(GLUT_ELAPSED_TIME);
+
+    if (setup() != 0) {
+        std::cerr << "setup() failed." << std::endl;
+        return 1;
+    }
 
     std::cout << "W => move forwards, S => move backwards" << std::endl;
     std::cout << "A => strafe left, D => strafe right" << std::endl;
