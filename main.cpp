@@ -251,11 +251,15 @@ void render() {
 
 
 	// draw particle generator 
+	// we need to disable back face culling so that simple 2D squares will be correctly rendered.
+    glDisable(GL_CULL_FACE);
 	glUseProgram(programIDs.at(1));
 	cameras.at(camIdx).render(programIDs.at(1));
+
 	for (int i = 0; i < fires.size(); i++) {
 		fires.at(i).render(programIDs.at(1), currTime);
 	}
+    glEnable(GL_CULL_FACE);
 	
 
     glutSwapBuffers();
@@ -406,8 +410,7 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //Disable back face rendering
-	//Had to delete this so that simple squares can be rendered.
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     // wireframes for now
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
