@@ -79,18 +79,7 @@ int objectSetup() {
     Object statue(programIDs[0], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
     mainObjects.push_back(statue);
 
-    Object lava(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
-    lavaObjects.push_back(lava);
-
 	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
-	//lights.push_back(lav1);
-	
-
-
-	/*
-	Light lav2(glm::vec3(-7.0f, 0.5f, 5.0f), glm::vec3(0.4f, 0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f), 0.1f);
-	lights.push_back(lav2);
-	*/
 
 	glUseProgram(programIDs.at(0));
 
@@ -119,6 +108,10 @@ int objectSetup() {
 
 	ParticleGenerator p5(programIDs.at(1), glm::vec3(-2.5f, 0.1f, 10.40f), glm::vec3(0.0f), currTime);
 	fires.push_back(p5);
+
+	glUseProgram(programIDs.at(2));
+    Object lava(programIDs[2], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
+    lavaObjects.push_back(lava);
 
     return 0;
 }
@@ -157,37 +150,27 @@ void render() {
 	glUseProgram(programIDs.at(0));
 	//glGenerateMipmap(GL_TEXTURE_2D);
 
-	int normMtxHandle = glGetUniformLocation(programIDs.at(0), "normal_matrix");
-	if (normMtxHandle == -1) {
+	int normMtxMainHandle = glGetUniformLocation(programIDs.at(0), "normal_matrix");
+	if (normMtxMainHandle == -1) {
 		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
 		exit(1);
 	}
 	
-	int posHandle = glGetUniformLocation(programIDs.at(0), "lightPositions");
-	int ambientHandle = glGetUniformLocation(programIDs.at(0), "lightAmbients");
-	int diffuseHandle = glGetUniformLocation(programIDs.at(0), "lightDiffuses");
-	int specularHandle = glGetUniformLocation(programIDs.at(0), "lightSpeculars");
-	int brightnessHandle = glGetUniformLocation(programIDs.at(0), "lightBrightnesses");
+	int posMainHandle = glGetUniformLocation(programIDs.at(0), "lightPositions");
+	int ambientMainHandle = glGetUniformLocation(programIDs.at(0), "lightAmbients");
+	int diffuseMainHandle = glGetUniformLocation(programIDs.at(0), "lightDiffuses");
+	int specularMainHandle = glGetUniformLocation(programIDs.at(0), "lightSpeculars");
+	int brightnessMainHandle = glGetUniformLocation(programIDs.at(0), "lightBrightnesses");
 
-	if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1) || (brightnessHandle == -1)) {
+	if ((posMainHandle == -1) || (ambientMainHandle == -1) || (diffuseMainHandle == -1) || (specularMainHandle == -1) || (brightnessMainHandle == -1)) {
 		std::cerr << "Could not find light uniform variables." << std::endl;
 		exit(1);
 	}
-	glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
-	glUniform3fv(ambientHandle, lights.size(), glm::value_ptr(ambients.front()));
-	glUniform3fv(diffuseHandle, lights.size(), glm::value_ptr(diffuses.front()));
-	glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
-	glUniform1fv(brightnessHandle, lights.size(), &brightnesses.front());
-
-	int textureCodeHandle = glGetUniformLocation(programIDs.at(0), "texture_code");
-	int timerHandle = glGetUniformLocation(programIDs.at(0), "program_time");
-	if ((textureCodeHandle == -1) || (timerHandle == -1)) {
-		std::cerr << "Could not find uniform procedural texture variables" << std::endl;
-		std::cerr << "textureCodeHandle = " << textureCodeHandle << std::endl;
-		std::cerr << "timerHandle = " << timerHandle << std::endl;
-		exit(1);
-	}
-	glUniform1i(textureCodeHandle, 0);
+	glUniform3fv(posMainHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientMainHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseMainHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularMainHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessMainHandle, lights.size(), &brightnesses.front());
 
 	cameras.at(camIdx).render(programIDs.at(0));
 	glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
@@ -198,7 +181,7 @@ void render() {
 
 	for (int j = 0; j < mainObjects.size(); j++) {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
-		glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
 		mainObjects.at(j).render(programIDs.at(0));
 
 		/***** Main Collision dection alg *****/
@@ -231,20 +214,10 @@ void render() {
 			}
 		}
 
-		// render lava floor
-		glUniform1i(textureCodeHandle, 1);
-		glUniform1i(timerHandle, currTime);
-		for (int j = 0; j < lavaObjects.size(); j++) {
-			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
-			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
-			lavaObjects.at(j).render(programIDs.at(0));
-		}
-
         if(collisionDetected){
             player->setPrevPos();
         }
 
-		glUniform1i(textureCodeHandle, 0); // need to render player with regular texturing, not procedural
         player->render(programIDs.at(0));        
 	}
 	lights.erase(lights.end()); // remove the lava light source from the lights again
@@ -254,6 +227,7 @@ void render() {
 	// we need to disable back face culling so that simple 2D squares will be correctly rendered.
     glDisable(GL_CULL_FACE);
 	glUseProgram(programIDs.at(1));
+
 	cameras.at(camIdx).render(programIDs.at(1));
 
 	for (int i = 0; i < fires.size(); i++) {
@@ -261,6 +235,43 @@ void render() {
 	}
     glEnable(GL_CULL_FACE);
 	
+
+	// render lava floor
+	glUseProgram(programIDs.at(2));
+	int timerHandle = glGetUniformLocation(programIDs.at(2), "program_time");
+	if (timerHandle == -1) {
+		std::cerr << "Could not find uniform procedural texture variable 'program_time'" << std::endl;
+		exit(1);
+	}
+
+	int normMtxLavaHandle = glGetUniformLocation(programIDs.at(2), "normal_matrix");
+	if (normMtxLavaHandle == -1) {
+		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+		exit(1);
+	}
+	
+	int posLavaHandle = glGetUniformLocation(programIDs.at(2), "lightPositions");
+	int ambientLavaHandle = glGetUniformLocation(programIDs.at(2), "lightAmbients");
+	int diffuseLavaHandle = glGetUniformLocation(programIDs.at(2), "lightDiffuses");
+	int specularLavaHandle = glGetUniformLocation(programIDs.at(2), "lightSpeculars");
+	int brightnessLavaHandle = glGetUniformLocation(programIDs.at(2), "lightBrightnesses");
+
+	if ((posLavaHandle == -1) || (ambientLavaHandle == -1) || (diffuseLavaHandle == -1) || (specularLavaHandle == -1) || (brightnessLavaHandle == -1)) {
+		std::cerr << "Could not find light uniform variables." << std::endl;
+		exit(1);
+	}
+	glUniform3fv(posLavaHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientLavaHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseLavaHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularLavaHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessLavaHandle, lights.size(), &brightnesses.front());
+	cameras.at(camIdx).render(programIDs.at(2));
+	glUniform1i(timerHandle, currTime);
+	for (int j = 0; j < lavaObjects.size(); j++) {
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
+		lavaObjects.at(j).render(programIDs.at(2));
+	}
 
     glutSwapBuffers();
     glFlush();
@@ -400,6 +411,12 @@ int main(int argc, char** argv) {
 	    return 1;
 	}
 	programIDs.push_back(particleProgramID);
+
+	unsigned int lavaProgramID = LoadShaders("lava.vert", "lava.frag");
+	if (lavaProgramID == 0) {
+	    return 1;
+	}
+	programIDs.push_back(lavaProgramID);
 
     // set background colour
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

@@ -107,7 +107,7 @@ unsigned int Shape::generateTexture(const char* filename, const unsigned int tex
 	else {
 		std::string fn = filename;
 		if (!fn.empty()) std::cerr << "file '" << filename << "' is not a valid image file. Creating default image file as substitute." << std::endl;
-		unsigned char def[3] = {0, 255, 0};
+		unsigned char def[3] = {255, 255, 255};
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, def);
 	}
 	SOIL_free_image_data(img);
