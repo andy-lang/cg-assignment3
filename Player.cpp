@@ -90,3 +90,47 @@ void Player::idleMovement(){
 	setTranslation(idleTranslation);
 	setRotation(idleRotation);
 }
+
+bool Player::checkCollision(bool collisionOn, std::vector<Object> objects){
+
+	bool collisionDetected = false;
+	glm::vec3 objTranslation;
+	glm::vec3 playerTranslation;
+	
+	for (int j = 0; j < objects.size(); j++) {
+		/***** Main Collision dection alg *****/
+		if ((collisionOn == true) && (j < 36)){
+			objTranslation = objects.at(j).getTranslation();
+			playerTranslation = getTranslation();
+
+			float xDiff = std::abs(playerTranslation.x - objTranslation.x);
+			float zDiff = std::abs(playerTranslation.z - objTranslation.z);
+
+			float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
+			float angle = std::atan2(zDiff, xDiff);
+			float internalObjDist;
+			float internalPlayerDist;
+
+			//Right or Left quad
+			if(std::abs(angle) <= M_PI/4.0){
+				internalObjDist = std::abs((0.5)/(std::cos(angle)));
+				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
+			}
+			//Top or Bottom quad
+			else{
+				angle = M_PI/2.0 - angle;
+				internalObjDist = std::abs((0.5)/(std::cos(angle)));
+				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
+			}
+
+			if((absDist - internalObjDist - internalPlayerDist) < 0){
+				collisionDetected = true;
+			}
+		}
+
+        if(collisionDetected){
+            return true;
+        }
+	}
+	return false;
+}

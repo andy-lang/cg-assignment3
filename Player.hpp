@@ -60,9 +60,10 @@ public:
 
     /* Stop all player movement. */
     void stopMovement();
-
     /* Idle player momentum. */
     void idleMovement();
+    /* Check for object collision */
+    bool checkCollision(bool collisionOn, std::vector<Object> objects);
 
 private:
     static const float PLAYER_SPEED = 0.3f; // speed of the Player's movement.

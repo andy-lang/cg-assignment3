@@ -231,16 +231,17 @@ void render() {
 	cameras.at(camIdx).render(programIDs.at(0));
 	glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
 
-	bool collisionDetected = false;
-	glm::vec3 objTranslation;
-	glm::vec3 playerTranslation;
+	//bool collisionDetected = false;
+	//glm::vec3 objTranslation;
+	//glm::vec3 playerTranslation;
 
+    
 	for (int j = 0; j < mainObjects.size(); j++) {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
 		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
 		mainObjects.at(j).render(programIDs.at(0));
 
-		/***** Main Collision dection alg *****/
+        /*
 		if ((collisionDetectionOn == true) && (j < 36)){
 			objTranslation = mainObjects.at(j).getTranslation();
 			playerTranslation = player->getTranslation();
@@ -273,9 +274,11 @@ void render() {
         if(collisionDetected){
             player->setPrevPos();
         }
-
-        player->render(programIDs.at(0));        
+        */        
 	}
+
+    player->render(programIDs.at(0));
+
 	lights.erase(lights.end()); // remove the lava light source from the lights again
 
 
@@ -339,34 +342,64 @@ void keyboardFunc(unsigned char key, int x, int y) {
             exit(1);
             break;
         case 'a':
-            movementKeyPressed = true;
-            player->strafeLeft();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->strafeLeft();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+            }
             break;
         case 'd':
-            movementKeyPressed = true;
-            player->strafeRight();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->strafeRight();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+            }
             break;
         case 'q':
-            movementKeyPressed = true;
-            player->rotLeft();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->rotLeft();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+            }
             break;
         case 'e':
-            movementKeyPressed = true;
-            player->rotRight();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->rotRight();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+            }
             break;
         case 'w':
-            movementKeyPressed = true;
-            player->moveForward();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->moveForward();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+            }
             break;
         case 's':
-            movementKeyPressed = true;
-            player->moveBackward();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->moveBackward();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+            }
             break;
         case 'f':
             camIdx = (camIdx+1)%cameras.size();
