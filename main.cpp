@@ -180,20 +180,27 @@ void render() {
 		// TODO: Reflect lighting
 
 		glDisable(GL_DEPTH_TEST);
-		// Draw everything else
+		/*
+		 * Draw everything else
+		 */
+		// Render main objects (walls, floor, ect)
 		for (int j = 0; j < mainObjects.size(); j++)
 		{
-			mainObjects.at(j).render(programIDs.at(0));
-			// draw particle generator 
-			// we need to disable back face culling so that simple 2D squares will be correctly rendered.
-			glDisable(GL_CULL_FACE);
-			glUseProgram(programIDs.at(1));
-			cameras.at(camIdx).render(programIDs.at(1));
-			for (int i = 0; i < fires.size(); i++) {
-				fires.at(i).render(programIDs.at(1), currTime);
-			}
-			glEnable(GL_CULL_FACE);
+			cameras.at(camIdx).render(programIDs[0]);
+			mainObjects.at(j).render(programIDs[0]);
 		}
+		// draw particle generator 
+		// we need to disable back face culling so that simple 2D squares will be correctly rendered.
+		glDisable(GL_CULL_FACE);
+		glUseProgram(programIDs.at(1));
+		cameras.at(camIdx).render(programIDs.at(1));
+		for (int j = 0; j < fires.size(); j++) {
+			fires.at(j).render(programIDs.at(1), currTime);
+		}
+		glEnable(GL_CULL_FACE);
+		/*
+		 * Done rendering everything else
+		 */
 
 		// No more stencilling
 		glEnable(GL_DEPTH_TEST);
