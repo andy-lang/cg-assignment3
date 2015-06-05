@@ -54,3 +54,8 @@ glm::mat4 Camera::getViewMatrix() {
 	calcViewMatrix();
 	return mViewMatrix;
 }
+
+void Camera::setViewMatrix(glm::mat4 newVM) {
+    mViewMatrix = newVM;
+    return;
+}

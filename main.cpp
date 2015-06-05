@@ -1,4 +1,4 @@
-#define GLM_FORCE_RADIANS
+ #define GLM_FORCE_RADIANS
 
 #include <GL/glew.h>
 #include "external_files/glm/glm/glm.hpp"
@@ -35,6 +35,9 @@ std::vector<Object> lavaObjects;
 Light lavaLight;
 
 unsigned int lavaLightInitBrightness = 4.5;
+
+// Mirrored surfaces
+std::vector<Object> mirrors;
 
 int camIdx;
 Player* player;
@@ -78,6 +81,10 @@ int objectSetup() {
     //Add high poly model
     Object statue(programIDs[0], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
     mainObjects.push_back(statue);
+
+    // Add mirror
+    Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    mirrors.push_back(mirror);
 
 	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
 
@@ -127,7 +134,7 @@ int setup() {
 }
 
 void render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// compile light positions & values into a single vector to be sent to the shader program
 	std::vector<glm::vec3> positions;
@@ -144,6 +151,54 @@ void render() {
 		diffuses.push_back(lights.at(i).getDiffuse());
 		speculars.push_back(lights.at(i).getSpecular());
 		brightnesses.push_back(lights.at(i).getBrightness());
+	}
+
+	// Render mirrors
+	for (int i = 0; i < mirrors.size(); i++)
+	{
+		// Debug render to main buffer
+		// mirrors.at(i).render(programIDs[0]);
+
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_ALWAYS, 1, 1);
+		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		mirrors.at(i).render(programIDs[0]);
+
+		// Draw the reflected scene
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDepthMask(GL_TRUE);
+		glStencilFunc(GL_EQUAL, 1, 1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+		// Get inverted camera matrix
+		glm::mat4 savedCamMat = cameras.at(camIdx).getViewMatrix();
+		cameras.at(camIdx).setViewMatrix(glm::scale(savedCamMat, glm::vec3(1.0, -1.0, 1.0)));
+
+		// Position lights in the reflected world
+		// TODO: Reflect lighting
+
+		glDisable(GL_DEPTH_TEST);
+		// Draw everything else
+		for (int j = 0; j < mainObjects.size(); j++)
+		{
+			mainObjects.at(j).render(programIDs.at(0));
+		}
+
+		// No more stencilling
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_STENCIL_TEST);
+
+		// Reset Camera &  Lights
+		cameras.at(camIdx).setViewMatrix(savedCamMat);
+		// TODO: Undo lightning reflection
+
+		// Render reflective surface
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		mirrors.at(i).render(programIDs[0]);
+		glDisable(GL_BLEND);
 	}
 
 	// render main objects
@@ -390,7 +445,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitWindowPosition(100, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_STENCIL);
     glutCreateWindow("Computer Graphics, S1 2015 - Assignment 3");
 
     glewExperimental = true;

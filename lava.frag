@@ -138,5 +138,5 @@ void main(void) {
 
 	float shapeFunc = (1.0 + cos(vert.x + program_time/70 + (pnoise(vert.x + vec2(vert.zy), vec2(10.0, 50.0)) / 2.0) * 50.0) ) / 2.0; // defines the shape of the lava texture
 	float lavaBrightness = (2.0 + cos(program_time/200)); // this defines the lava brightness
-	fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * lavaBrightness * vec4(0.7f+shapeFunc, shapeFunc, 0.0, 1.0f) * texture2D(tex_map, texCoord);
+	fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * lavaBrightness * vec4(0.7f+shapeFunc, shapeFunc, 0.0, 1.0f) * texture(tex_map, texCoord);
 }

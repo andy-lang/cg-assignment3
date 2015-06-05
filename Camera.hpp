@@ -54,6 +54,7 @@ public:
     void render(int programID);
 
 	glm::mat4 getViewMatrix();
+    void setViewMatrix(glm::mat4 newVM);
 
 private:
     Object* mObj;
