@@ -42,7 +42,7 @@ public:
     void setPrevPos();
 
 private:
-    static const float PLAYER_SPEED = 0.4f;
+    static const float PLAYER_SPEED = 0.3f;
     glm::vec3 prevTranslation;
     glm::vec3 prevRotation;
 };
