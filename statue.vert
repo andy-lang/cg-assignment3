@@ -1,5 +1,5 @@
 /**********************************************************************
- * GLSL shader program for procedurally generating a lava-like texture.
+ * GLSL shader program for procedurally generating a marble-like texture, for the statue.
  *
  * @author 	: Andrew Lang, Riley Chase
  * @id 		: a1648205, a1647198
@@ -29,7 +29,7 @@ void main(void) {
 	lightPosMatrix = view_matrix;
 	normal = normalize(normal_matrix * a_normal);
 	vertex = view_matrix * model_matrix * vec4(a_vertex, 1.0f);
-	vert = vec4(a_vertex, 1.0f); // used by textural procedural calculations
+	vert = model_matrix * vec4(a_vertex, 1.0f); // used by textural procedural calculations
     gl_Position = projection_matrix * vertex;
 
 }

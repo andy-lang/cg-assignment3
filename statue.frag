@@ -1,5 +1,5 @@
 /**********************************************************************
- * GLSL shader program for procedurally generating a lava-like texture.
+ * GLSL shader program for procedurally generating a marble-like texture, for the statue.
  *
  * @author 	: Andrew Lang, Riley Chase
  * @id 		: a1648205, a1647198
@@ -28,19 +28,18 @@ uniform vec3 mtl_specular; // specular material value
 uniform vec3 mtl_emission; // emission colour for the material
 uniform float mtl_shininess; // shininess of the material
 
-uniform int program_time; // current time of the program, in milliseconds
-uniform sampler2D tex_map; // map for object's texture
-uniform sampler2D tex_norm; // map for object's normals, for bump mapping
+uniform sampler2D tex_map;
+uniform sampler2D tex_norm;
 
-in mat4 lightPosMatrix; // matrix used for light position calculations
-in vec4 vertex; // vertex data in modelview space, used for lighting calculations
-in vec4 vert; // raw vertex data, used for procedural calculations
-in vec3 normal; // normal for the fragment
-in vec2 texCoord; // texcoord for the fragment
+in mat4 lightPosMatrix;
+in vec4 vertex;
+in vec4 vert;
+in vec3 normal;
+in vec2 texCoord;
 
-out vec4 fragColour; // output colour for the fragment
+out vec4 fragColour;
 
-// This code was used and modified using the example code in lectures 5 & 7.
+// lovingly ripped from example code in lectures 5 & 7
 vec3 phongLight(in vec4 position, in vec3 norm, in vec4 light_pos, in vec3 light_ambient, in vec3 light_diffuse, in vec3 light_specular, float light_brightness) {
     vec3 s;
 
@@ -134,8 +133,6 @@ float pnoise(vec2 P, vec2 rep) {
     return 2.3 * n_xy;
 }
 
-
-
 void main(void) {
 	fragColour = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	
@@ -147,7 +144,17 @@ void main(void) {
 		fragColour.xyz += phongLight(vertex, normalize(N), lightPosMatrix*vec4(lightPositions[i], 1.0), lightAmbients[i], lightDiffuses[i], lightSpeculars[i], lightBrightnesses[i]);
 	}
 
-	float shapeFunc = (1.0 + cos(vert.x + program_time/70 + (pnoise(vert.x + vec2(vert.zy), vec2(10.0, 50.0)) / 2.0) * 50.0) ) / 2.0; // defines the shape of the lava texture
-	float lavaBrightness = (2.0 + cos(program_time/200)); // this defines the lava brightness
-	fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * lavaBrightness * vec4(0.7f+shapeFunc, shapeFunc, 0.0, 1.0f) * texture(tex_map, texCoord);
+	/*
+	float f1 = pnoise(vert.xz, vert.xz);
+	float f2 = pnoise(vert.xz, vert.yz);
+	float f3 = pnoise(vert.yz, vert.zx);
+	float f4 = pnoise(vert.zx, vert.xy);
+
+	float f5 = (f1/f2) + (f3/f4);
+	*/
+
+	/* float shapeFunc = f5; */
+	//float shapeFunc = (1+sin((vert.y + pnoise(5.0*vert.xy, 5.0*vert.yz)/2.0)*20.0))/2.0;
+	float shapeFunc = (1.0 + sin(pnoise(vert.yy, vert.yy)/50.0f)*2.0f)/2.0;
+	fragColour = vec4(fragColour.xyz + mtl_emission.xyz, 1.0f) * vec4(shapeFunc, shapeFunc, shapeFunc, 1.0f) * texture2D(tex_map, texCoord);
 }
