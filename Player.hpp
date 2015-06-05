@@ -27,24 +27,41 @@
 
 class Player : public Object {
 public:
+	/* Basic Player constructor.
+	 * @param	programID	The shader program to which Player data will be rendered.
+	 */
     Player(int programID);
+	/* More advanced Player constructor.
+	 * @param	programID	The shader program to which Player data will be rendered.
+	 * @param	objfile		Filename associated with an OBJ file, from which data will be read.
+	 */
     Player(int programID, const char* objfile);
+	/* Advanced Player constructor.
+	 * @param	programID	The shader program to which Player data will be rendered.
+	 * @param	objfile		Filename associated with an OBJ file, from which data will be read.
+	 * @param	rotate		Amount by which the Player will be rotated, in the x, y and z planes
+	 * @param	translate	Translation amount of the Player (ie its position).
+	 * @param	scale		Amount by which the Player will be scaled.
+	 */
     Player(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale);
+	/* Basic Player destructor. */
     ~Player();
 
+	/* Movement & rotation functions, for ease of input. */
     void strafeLeft();
     void strafeRight();
-    void rotLeft();
-    void rotRight();
     void moveForward();
     void moveBackward();
+    void rotLeft();
+    void rotRight();
 
+	/* Return the Player to its previous position. */
     void setPrevPos();
 
 private:
-    static const float PLAYER_SPEED = 0.4f;
-    glm::vec3 prevTranslation;
-    glm::vec3 prevRotation;
+    static const float PLAYER_SPEED = 0.4f; // speed of the Player's movement.
+    glm::vec3 prevTranslation; // previous position of the Player.
+    glm::vec3 prevRotation; // previous rotation of the Player.
 };
 
 

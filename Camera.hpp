@@ -40,7 +40,7 @@ public:
      * This version of the method allows for a translation to take place, so that the Camera can look somewhere relative to an Object.
      * Useful for third person mode, etc.
      * @param   obj     The object to which the Camera will be attached.
-     * @param   translate The translation vector for the Camera's placement.
+     * @param   translate The translation vector for the Camera's placement, relative to the centre of obj.
      */
     void attachToObject(Object* obj, glm::vec3 translate);
 
@@ -53,7 +53,12 @@ public:
      */
     void render(int programID);
 
+	/* Returns the view matrix of the Camera. */
 	glm::mat4 getViewMatrix();
+
+	/* Set the view matrix of the Camera.
+	 * @param	newVM	The new view matrix of the Camera. 
+	 */
     void setViewMatrix(glm::mat4 newVM);
 
 private:
@@ -61,6 +66,7 @@ private:
     glm::vec3 mTranslate;
     glm::mat4 mViewMatrix;
 
+	/* Recalculate the view matrix from scratch. */
 	void calcViewMatrix();
 };
 
