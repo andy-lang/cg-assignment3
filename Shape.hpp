@@ -40,7 +40,7 @@ public:
 	/* Render the shape and its associated texture data.
 	 * @param	programID	The ID of the program to which the data will be buffered.
 	 */
-    void render(unsigned int programID);
+    void render(unsigned int programID, bool ignoreChecks = false);
 
 	/* Accessors for data sizes */
     unsigned int getVerticesSize() const;

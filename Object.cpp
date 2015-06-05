@@ -87,10 +87,10 @@ void Object::calcModelMatrix() {
     // else do nothing
 }
 
-void Object::render(unsigned int programID) {
+void Object::render(unsigned int programID, bool ignoreChecks) {
 	glUseProgram(programID);
     int modelHandle = glGetUniformLocation(programID, "model_matrix");
-    if (modelHandle == -1) {
+    if (modelHandle == -1 && !ignoreChecks) {
         std::cerr << "Could not find uniform variable 'model_matrix'" << std::endl;
         exit(1);
     }
@@ -99,7 +99,7 @@ void Object::render(unsigned int programID) {
     glUniformMatrix4fv(modelHandle, 1, false, glm::value_ptr(mModelMatrix));
 
 	for (int i = 0; i < mShapes.size(); i++) {
-	    mShapes.at(i).render(programID);
+	    mShapes.at(i).render(programID, ignoreChecks);
 	}
 }
 

@@ -60,7 +60,7 @@ public:
     /** Renders the vertex data associated with this Object.
      * @param   programID   The shader program to buffer the object data to.
      * @param   &viewMatrix Matrix of the player camera's current view. */
-    void render(unsigned int programID);
+    void render(unsigned int programID, bool ignoreChecks = false);
 
     /* Sets values for rotation, scale and translation, and notifies the model matrix so it can be recalculated. */
     void setRotation(glm::vec3 rotation);

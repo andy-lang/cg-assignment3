@@ -122,16 +122,16 @@ unsigned int Shape::generateTexture(const char* filename, const unsigned int tex
 	return texHandle;
 }
 
-void Shape::render(unsigned int programID) {
+void Shape::render(unsigned int programID, bool ignoreChecks) {
 	glUseProgram(programID);
 
 	int texMapHandle = glGetUniformLocation(programID, "tex_map");
 	int texNormHandle = glGetUniformLocation(programID, "tex_norm");
-	if (texMapHandle == -1) {
+	if (texMapHandle == -1 && !ignoreChecks) {
 		std::cerr << "Could not find uniform variable 'tex_map'" << std::endl;
 		exit(1);
 	}
-	if (texNormHandle == -1) {
+	if (texNormHandle == -1 && !ignoreChecks) {
 		std::cerr << "Could not find uniform variable 'tex_norm'" << std::endl;
 		exit(1);
 	}
@@ -141,9 +141,12 @@ void Shape::render(unsigned int programID) {
 	int mtlSpecularHandle = glGetUniformLocation(programID, "mtl_specular");
 	int	mtlEmissionHandle = glGetUniformLocation(programID, "mtl_emission");
 	int mtlShininessHandle = glGetUniformLocation(programID, "mtl_shininess");
-	if ((mtlAmbientHandle == -1) || (mtlDiffuseHandle == -1) || (mtlSpecularHandle == -1) || (mtlEmissionHandle == -1) || (mtlShininessHandle == -1)) {
-	    std::cerr << "Could not find light material uniform variables." << std::endl;
-		exit(1);
+	if (!ignoreChecks)
+	{
+		if ((mtlAmbientHandle == -1) || (mtlDiffuseHandle == -1) || (mtlSpecularHandle == -1) || (mtlEmissionHandle == -1) || (mtlShininessHandle == -1)) {
+			std::cerr << "Could not find light material uniform variables." << std::endl;
+			exit(1);
+		}
 	}
 
 

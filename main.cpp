@@ -197,7 +197,7 @@ void render() {
 		// Render reflective surface
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		mirrors.at(i).render(programIDs[0]);
+		mirrors.at(i).render(programIDs[1], true);
 		glDisable(GL_BLEND);
 	}
 
