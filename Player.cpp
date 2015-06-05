@@ -22,12 +22,6 @@ Player::~Player() {
     //?? TODO: stub
 }
 
-/**********************************************************************
- * Movement functionality
- *
- * @author 	: Gavin Meredith
- * @id 		: a1645739
-**********************************************************************/
 void Player::strafeLeft(){
 	prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
 	idleTranslation = glm::vec3(mTranslate.x + (sin(mRotate.y + (90.0*M_PI/180.0))*IDLE_SPEED), mTranslate.y, mTranslate.z + (cos(mRotate.y + (90.0*M_PI/180.0))*IDLE_SPEED));
@@ -96,33 +90,42 @@ bool Player::checkCollision(bool collisionOn, std::vector<Object> objects){
 	bool collisionDetected = false;
 	glm::vec3 objTranslation;
 	glm::vec3 playerTranslation;
-	
+
 	for (int j = 0; j < objects.size(); j++) {
-		/***** Main Collision dection alg *****/
+		// Currently just checking collision with walls
 		if ((collisionOn == true) && (j < 36)){
 			objTranslation = objects.at(j).getTranslation();
 			playerTranslation = getTranslation();
 
+			//Get the absolute x and z differences (sides of triangle)
 			float xDiff = std::abs(playerTranslation.x - objTranslation.x);
 			float zDiff = std::abs(playerTranslation.z - objTranslation.z);
 
+			//Calculate the absolute distance between the center of the player and object
 			float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
+			//Get the internal angle
 			float angle = std::atan2(zDiff, xDiff);
+
 			float internalObjDist;
 			float internalPlayerDist;
 
-			//Right or Left quad
+			/*Determine which quadrant the player is in relation to the object
+			  This is on a xz plane											  */
 			if(std::abs(angle) <= M_PI/4.0){
+				// The left or right quad (equivalent cases)
+				//Calcualte the internal distances within the square and player
 				internalObjDist = std::abs((0.5)/(std::cos(angle)));
 				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
 			}
-			//Top or Bottom quad
 			else{
+				// The top or bottom quad (equivalent cases)
+				//Switch the angle of reference
 				angle = M_PI/2.0 - angle;
 				internalObjDist = std::abs((0.5)/(std::cos(angle)));
 				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
 			}
 
+			//If the distance is less than 0 must have a collision
 			if((absDist - internalObjDist - internalPlayerDist) < 0){
 				collisionDetected = true;
 			}

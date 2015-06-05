@@ -3,8 +3,8 @@
  * Thus this class contains a number of methods related to functionality of a Player, such as movement control.
  * Attach an instance of this class to the Camera, and you can have control over a Player and a Camera that moves with it.
  *
- * @author 	: Andrew Lang
- * @id 		: a1648205
+ * @author 	: Andrew Lang, Gavin Meredith
+ * @id 		: a1648205, a1645739
  * @created 	: 2015-05-11
  * @project 	: CG Assignment 3
 **********************************************************************/
@@ -57,7 +57,6 @@ public:
 
 	/* Return the Player to its previous position. */
     void setPrevPos();
-
     /* Stop all player movement. */
     void stopMovement();
     /* Idle player momentum. */
@@ -67,12 +66,12 @@ public:
 
 private:
     static const float PLAYER_SPEED = 0.3f; // speed of the Player's movement.
-    static const float IDLE_SPEED = 0.1f; // idle movement Player speed
+    static const float IDLE_SPEED = 0.1f; // speed of the Player's idle movement.
     glm::vec3 prevTranslation; // previous position of the Player.
     glm::vec3 prevRotation; // previous rotation of the Player.
 
-    glm::vec3 idleTranslation;
-    glm::vec3 idleRotation;
+    glm::vec3 idleTranslation;  // current idle translation of Player.
+    glm::vec3 idleRotation;  // current idle rotation of Player.
 };
 
 

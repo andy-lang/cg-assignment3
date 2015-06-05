@@ -91,7 +91,7 @@ int objectSetup() {
 
 	glUseProgram(programIDs.at(0));
 
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.1f);
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.05f);
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
@@ -231,52 +231,11 @@ void render() {
 	cameras.at(camIdx).render(programIDs.at(0));
 	glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
 
-	//bool collisionDetected = false;
-	//glm::vec3 objTranslation;
-	//glm::vec3 playerTranslation;
-
-    
 	for (int j = 0; j < mainObjects.size(); j++) {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
 		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
-		mainObjects.at(j).render(programIDs.at(0));
-
-        /*
-		if ((collisionDetectionOn == true) && (j < 36)){
-			objTranslation = mainObjects.at(j).getTranslation();
-			playerTranslation = player->getTranslation();
-
-			float xDiff = std::abs(playerTranslation.x - objTranslation.x);
-			float zDiff = std::abs(playerTranslation.z - objTranslation.z);
-
-			float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
-			float angle = std::atan2(zDiff, xDiff);
-			float internalObjDist;
-			float internalPlayerDist;
-
-			//Right or Left quad
-			if(std::abs(angle) <= M_PI/4.0){
-				internalObjDist = std::abs((0.5)/(std::cos(angle)));
-				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
-			}
-			//Top or Bottom quad
-			else{
-				angle = M_PI/2.0 - angle;
-				internalObjDist = std::abs((0.5)/(std::cos(angle)));
-				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
-			}
-
-			if((absDist - internalObjDist - internalPlayerDist) < 0){
-				collisionDetected = true;
-			}
-		}
-
-        if(collisionDetected){
-            player->setPrevPos();
-        }
-        */        
+		mainObjects.at(j).render(programIDs.at(0));    
 	}
-
     player->render(programIDs.at(0));
 
 	lights.erase(lights.end()); // remove the lava light source from the lights again
