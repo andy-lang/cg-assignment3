@@ -149,7 +149,6 @@ void Shape::render(unsigned int programID, bool ignoreChecks) {
 		}
 	}
 
-
 	// send texture handle
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(texMapHandle, 0); // sending main texture data to GL_TEXTURE0.
