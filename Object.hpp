@@ -59,8 +59,9 @@ public:
 
     /** Renders the vertex data associated with this Object.
      * @param   programID   The shader program to buffer the object data to.
-     * @param   &viewMatrix Matrix of the player camera's current view. */
-    void render(unsigned int programID);
+	 * @param	ignoreChecks True if checks for sending texture data etc to the GLSL shaders should be ignored.
+	 */
+    void render(unsigned int programID, bool ignoreChecks = false);
 
     /* Sets values for rotation, scale and translation, and notifies the model matrix so it can be recalculated. */
     void setRotation(glm::vec3 rotation);
@@ -82,10 +83,10 @@ public:
     glm::vec3 getTranslation();
     /* Returns the rotation of the object. */
     glm::vec3 getRotation();
-
     /* Returns the world position of the object. */
     glm::vec3 getPosition();
 
+	/* Returns the model matrix for the object. */
 	glm::mat4 getModelMatrix();
 
 protected:
@@ -96,9 +97,9 @@ protected:
      * Thus it should be called ONLY ONCE, and will be done by all constructors.
      * @param   programID   The shader program to buffer the object data to.
      * @param   objfile     The filename of where the data of an OBJ file is stored. 
-     * @param   rotate   The amount in the x, y, and z planes that the object will be rotated by.
-     * @param   translate The amount in the x, y, and z planes that the object will be translated, relative to the origin of the world.
-     * @param   scale Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
+     * @param   rotate		The amount in the x, y, and z planes that the object will be rotated by.
+     * @param   translate	The amount in the x, y, and z planes that the object will be translated, relative to the origin of the world.
+     * @param   scale		Amount to scale the object by, as a percentage of its original size. Defaults to its initial size if not specified.
      */
     void objectInit(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale);
 
@@ -116,7 +117,7 @@ protected:
     float mScale; // the amount to scale the object's initial size by.
     glm::vec3 mTranslate; // translation from the world origin
 
-    bool mModelMatrixChanged; // true if any of the values relating to the model matrix have been changed since the last render call.
+    bool mModelMatrixChanged; // true if any of the values relating to the model matrix have been changed since the last render call. Used to minimise the number of calls to calcModelMatrix() that must be made.
     glm::mat4 mModelMatrix; // the object's model matrix.
 };
 

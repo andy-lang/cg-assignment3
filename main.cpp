@@ -1,4 +1,4 @@
-#define GLM_FORCE_RADIANS
+ #define GLM_FORCE_RADIANS
 
 #include <GL/glew.h>
 #include "external_files/glm/glm/glm.hpp"
@@ -27,6 +27,7 @@ std::vector<Light> lights; // vector of light sources
 std::vector<Camera> cameras;
 
 bool collisionDetectionOn = true;
+bool movementKeyPressed = false;
 
 std::vector<ParticleGenerator> fires;
 
@@ -35,6 +36,9 @@ std::vector<Object> lavaObjects;
 Light lavaLight;
 
 unsigned int lavaLightInitBrightness = 4.5;
+
+// Mirrored surfaces
+std::vector<Object> mirrors;
 
 int camIdx;
 Player* player;
@@ -79,18 +83,11 @@ int objectSetup() {
     Object statue(programIDs[0], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
     mainObjects.push_back(statue);
 
-    Object lava(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
-    lavaObjects.push_back(lava);
+    // Add mirror
+    Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    mirrors.push_back(mirror);
 
 	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
-	//lights.push_back(lav1);
-	
-
-
-	/*
-	Light lav2(glm::vec3(-7.0f, 0.5f, 5.0f), glm::vec3(0.4f, 0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f), 0.1f);
-	lights.push_back(lav2);
-	*/
 
 	glUseProgram(programIDs.at(0));
 
@@ -120,6 +117,10 @@ int objectSetup() {
 	ParticleGenerator p5(programIDs.at(1), glm::vec3(-2.5f, 0.1f, 10.40f), glm::vec3(0.0f), currTime);
 	fires.push_back(p5);
 
+	glUseProgram(programIDs.at(2));
+    Object lava(programIDs[2], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
+    lavaObjects.push_back(lava);
+
     return 0;
 }
 
@@ -134,7 +135,7 @@ int setup() {
 }
 
 void render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	// compile light positions & values into a single vector to be sent to the shader program
 	std::vector<glm::vec3> positions;
@@ -153,41 +154,79 @@ void render() {
 		brightnesses.push_back(lights.at(i).getBrightness());
 	}
 
+	// Render mirrors
+	for (int i = 0; i < mirrors.size(); i++)
+	{
+		// Debug render to main buffer
+		// mirrors.at(i).render(programIDs[0]);
+
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+		glDepthMask(GL_FALSE);
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_ALWAYS, 1, 1);
+		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		mirrors.at(i).render(programIDs[0]);
+
+		// Draw the reflected scene
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDepthMask(GL_TRUE);
+		glStencilFunc(GL_EQUAL, 1, 1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+		// Get inverted camera matrix
+		glm::mat4 savedCamMat = cameras.at(camIdx).getViewMatrix();
+		cameras.at(camIdx).setViewMatrix(glm::scale(savedCamMat, glm::vec3(1.0, -1.0, 1.0)));
+
+		// Position lights in the reflected world
+		// TODO: Reflect lighting
+
+		glDisable(GL_DEPTH_TEST);
+		// Draw everything else
+		for (int j = 0; j < mainObjects.size(); j++)
+		{
+			mainObjects.at(j).render(programIDs.at(0));
+		}
+
+		// No more stencilling
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_STENCIL_TEST);
+
+		// Reset Camera &  Lights
+		cameras.at(camIdx).setViewMatrix(savedCamMat);
+		// TODO: Undo lightning reflection
+
+		// Render reflective surface
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		mirrors.at(i).render(programIDs[1], true);
+		glDisable(GL_BLEND);
+	}
+
 	// render main objects
 	glUseProgram(programIDs.at(0));
 	//glGenerateMipmap(GL_TEXTURE_2D);
 
-	int normMtxHandle = glGetUniformLocation(programIDs.at(0), "normal_matrix");
-	if (normMtxHandle == -1) {
+	int normMtxMainHandle = glGetUniformLocation(programIDs.at(0), "normal_matrix");
+	if (normMtxMainHandle == -1) {
 		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
 		exit(1);
 	}
 	
-	int posHandle = glGetUniformLocation(programIDs.at(0), "lightPositions");
-	int ambientHandle = glGetUniformLocation(programIDs.at(0), "lightAmbients");
-	int diffuseHandle = glGetUniformLocation(programIDs.at(0), "lightDiffuses");
-	int specularHandle = glGetUniformLocation(programIDs.at(0), "lightSpeculars");
-	int brightnessHandle = glGetUniformLocation(programIDs.at(0), "lightBrightnesses");
+	int posMainHandle = glGetUniformLocation(programIDs.at(0), "lightPositions");
+	int ambientMainHandle = glGetUniformLocation(programIDs.at(0), "lightAmbients");
+	int diffuseMainHandle = glGetUniformLocation(programIDs.at(0), "lightDiffuses");
+	int specularMainHandle = glGetUniformLocation(programIDs.at(0), "lightSpeculars");
+	int brightnessMainHandle = glGetUniformLocation(programIDs.at(0), "lightBrightnesses");
 
-	if ((posHandle == -1) || (ambientHandle == -1) || (diffuseHandle == -1) || (specularHandle == -1) || (brightnessHandle == -1)) {
+	if ((posMainHandle == -1) || (ambientMainHandle == -1) || (diffuseMainHandle == -1) || (specularMainHandle == -1) || (brightnessMainHandle == -1)) {
 		std::cerr << "Could not find light uniform variables." << std::endl;
 		exit(1);
 	}
-	glUniform3fv(posHandle, lights.size(), glm::value_ptr(positions.front()));
-	glUniform3fv(ambientHandle, lights.size(), glm::value_ptr(ambients.front()));
-	glUniform3fv(diffuseHandle, lights.size(), glm::value_ptr(diffuses.front()));
-	glUniform3fv(specularHandle, lights.size(), glm::value_ptr(speculars.front()));
-	glUniform1fv(brightnessHandle, lights.size(), &brightnesses.front());
-
-	int textureCodeHandle = glGetUniformLocation(programIDs.at(0), "texture_code");
-	int timerHandle = glGetUniformLocation(programIDs.at(0), "program_time");
-	if ((textureCodeHandle == -1) || (timerHandle == -1)) {
-		std::cerr << "Could not find uniform procedural texture variables" << std::endl;
-		std::cerr << "textureCodeHandle = " << textureCodeHandle << std::endl;
-		std::cerr << "timerHandle = " << timerHandle << std::endl;
-		exit(1);
-	}
-	glUniform1i(textureCodeHandle, 0);
+	glUniform3fv(posMainHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientMainHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseMainHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularMainHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessMainHandle, lights.size(), &brightnesses.front());
 
 	cameras.at(camIdx).render(programIDs.at(0));
 	glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
@@ -198,7 +237,7 @@ void render() {
 
 	for (int j = 0; j < mainObjects.size(); j++) {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
-		glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
 		mainObjects.at(j).render(programIDs.at(0));
 
 		/***** Main Collision dection alg *****/
@@ -231,32 +270,64 @@ void render() {
 			}
 		}
 
-		// render lava floor
-		glUniform1i(textureCodeHandle, 1);
-		glUniform1i(timerHandle, currTime);
-		for (int j = 0; j < lavaObjects.size(); j++) {
-			glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
-			glUniformMatrix3fv(normMtxHandle, 1, false, glm::value_ptr(normMtx));
-			lavaObjects.at(j).render(programIDs.at(0));
-		}
-
         if(collisionDetected){
             player->setPrevPos();
         }
 
-		glUniform1i(textureCodeHandle, 0); // need to render player with regular texturing, not procedural
         player->render(programIDs.at(0));        
 	}
 	lights.erase(lights.end()); // remove the lava light source from the lights again
 
 
 	// draw particle generator 
+	// we need to disable back face culling so that simple 2D squares will be correctly rendered.
+    glDisable(GL_CULL_FACE);
 	glUseProgram(programIDs.at(1));
+
 	cameras.at(camIdx).render(programIDs.at(1));
+
 	for (int i = 0; i < fires.size(); i++) {
 		fires.at(i).render(programIDs.at(1), currTime);
 	}
+    glEnable(GL_CULL_FACE);
 	
+
+	// render lava floor
+	glUseProgram(programIDs.at(2));
+	int timerHandle = glGetUniformLocation(programIDs.at(2), "program_time");
+	if (timerHandle == -1) {
+		std::cerr << "Could not find uniform procedural texture variable 'program_time'" << std::endl;
+		exit(1);
+	}
+
+	int normMtxLavaHandle = glGetUniformLocation(programIDs.at(2), "normal_matrix");
+	if (normMtxLavaHandle == -1) {
+		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+		exit(1);
+	}
+	
+	int posLavaHandle = glGetUniformLocation(programIDs.at(2), "lightPositions");
+	int ambientLavaHandle = glGetUniformLocation(programIDs.at(2), "lightAmbients");
+	int diffuseLavaHandle = glGetUniformLocation(programIDs.at(2), "lightDiffuses");
+	int specularLavaHandle = glGetUniformLocation(programIDs.at(2), "lightSpeculars");
+	int brightnessLavaHandle = glGetUniformLocation(programIDs.at(2), "lightBrightnesses");
+
+	if ((posLavaHandle == -1) || (ambientLavaHandle == -1) || (diffuseLavaHandle == -1) || (specularLavaHandle == -1) || (brightnessLavaHandle == -1)) {
+		std::cerr << "Could not find light uniform variables." << std::endl;
+		exit(1);
+	}
+	glUniform3fv(posLavaHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientLavaHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseLavaHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularLavaHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessLavaHandle, lights.size(), &brightnesses.front());
+	cameras.at(camIdx).render(programIDs.at(2));
+	glUniform1i(timerHandle, currTime);
+	for (int j = 0; j < lavaObjects.size(); j++) {
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
+		lavaObjects.at(j).render(programIDs.at(2));
+	}
 
     glutSwapBuffers();
     glFlush();
@@ -268,26 +339,32 @@ void keyboardFunc(unsigned char key, int x, int y) {
             exit(1);
             break;
         case 'a':
+            movementKeyPressed = true;
             player->strafeLeft();
             glutPostRedisplay();
             break;
         case 'd':
+            movementKeyPressed = true;
             player->strafeRight();
             glutPostRedisplay();
             break;
         case 'q':
+            movementKeyPressed = true;
             player->rotLeft();
             glutPostRedisplay();
             break;
         case 'e':
+            movementKeyPressed = true;
             player->rotRight();
             glutPostRedisplay();
             break;
         case 'w':
+            movementKeyPressed = true;
             player->moveForward();
             glutPostRedisplay();
             break;
         case 's':
+            movementKeyPressed = true;
             player->moveBackward();
             glutPostRedisplay();
             break;
@@ -317,7 +394,35 @@ void keyboardFunc(unsigned char key, int x, int y) {
 			collisionDetectionOn = !collisionDetectionOn;
 			glutPostRedisplay();
 			break;
+    }
+}
 
+void keyboardUpFunc(unsigned char key, int x, int y){
+    switch(key){
+        case 'w':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;        
+        case 'a':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 's':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 'd':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 'q':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 'e':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
     }
 }
 
@@ -361,6 +466,8 @@ void mouseFunc(int button, int state, int x, int y) {
 void timer(int value) {
 	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
 
+    player->idleMovement();
+
 	prevTime = currTime;
 	currTime = glutGet(GLUT_ELAPSED_TIME);
 	elapsed = currTime - prevTime;
@@ -375,7 +482,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitWindowPosition(100, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_STENCIL);
     glutCreateWindow("Computer Graphics, S1 2015 - Assignment 3");
 
     glewExperimental = true;
@@ -397,6 +504,12 @@ int main(int argc, char** argv) {
 	}
 	programIDs.push_back(particleProgramID);
 
+	unsigned int lavaProgramID = LoadShaders("lava.vert", "lava.frag");
+	if (lavaProgramID == 0) {
+	    return 1;
+	}
+	programIDs.push_back(lavaProgramID);
+
     // set background colour
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -406,14 +519,14 @@ int main(int argc, char** argv) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //Disable back face rendering
-	//Had to delete this so that simple squares can be rendered.
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     // wireframes for now
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
+    glutKeyboardUpFunc(keyboardUpFunc);
     glutSpecialFunc(specialFunc);
     glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
@@ -429,7 +542,8 @@ int main(int argc, char** argv) {
 
     std::cout << "W => move forwards, S => move backwards" << std::endl;
     std::cout << "A => strafe left, D => strafe right" << std::endl;
-    std::cout << "Q => rotate left, E => rotate right" << std::endl;
+    std::cout << "Q => rotate left, E => rotate right" << std::endl << std::endl;
+    std::cout << "Use \\ to disable collision detection" << std::endl << std::endl;
     std::cout << "F to switch camera views" << std::endl;
     std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();
