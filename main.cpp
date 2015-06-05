@@ -12,6 +12,7 @@
 #include "Light.hpp"
 #include "ParticleGenerator.hpp"
 #include "libs/Lib.h"
+#include "libs/sound.h"
 #include "LevelMap.hpp"
 
 #include <iostream>
@@ -308,6 +309,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
+                playSound("sounds/bong.wav");
             }
             break;
         case 'd':
@@ -318,6 +320,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
+                playSound("sounds/bong.wav");
             }
             break;
         case 'q':
@@ -328,6 +331,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
+                playSound("sounds/bong.wav");
             }
             break;
         case 'e':
@@ -338,6 +342,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
+                playSound("sounds/bong.wav");
             }
             break;
         case 'w':
@@ -348,6 +353,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
+                playSound("sounds/bong.wav");
             }
             break;
         case 's':
@@ -358,6 +364,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
+                playSound("sounds/bong.wav");
             }
             break;
         case 'f':
