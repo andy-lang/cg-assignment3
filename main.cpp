@@ -92,7 +92,7 @@ int objectSetup() {
 
 	glUseProgram(programIDs.at(0));
 
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.05f);
+	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.1f);
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
