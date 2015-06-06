@@ -78,6 +78,7 @@ void reshapeWindow(int x, int y) {
 /* Set up all required mainObjects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
+    //Generate all level objects
     generateLevelMap(programIDs[0], mainObjects, lights);
 
     //Add high poly model
