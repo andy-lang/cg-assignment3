@@ -73,11 +73,16 @@ void Player::moveBackward() {
 void Player::setPrevPos(){
 	setTranslation(prevTranslation);
 	setRotation(prevRotation);
+
+	stopMovement();
 }
 
 void Player::stopMovement(){
 	setTranslation(glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z));
 	setRotation(glm::vec3(mRotate.x, mRotate.y, mRotate.z));
+
+	idleTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
+	idleRotation = glm::vec3(mRotate.x, mRotate.y, mRotate.z);
 }
 
 void Player::idleMovement(){
