@@ -1,4 +1,4 @@
- #define GLM_FORCE_RADIANS
+#define GLM_FORCE_RADIANS
 
 #include <GL/glew.h>
 #include "external_files/glm/glm/glm.hpp"
@@ -10,9 +10,10 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
-#include "ParticleGenerator.hpp"
-#include "libs/Lib.h"
 #include "LevelMap.hpp"
+#include "ParticleGenerator.hpp"
+#include "Quad2D.hpp"
+#include "libs/Lib.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -37,7 +38,7 @@ Light lavaLight;
 unsigned int lavaLightInitBrightness = 4.5;
 
 // Mirrored surfaces
-std::vector<Object> mirrors;
+std::vector<Quad2D> mirrors;
 
 int camIdx;
 Player* player;
@@ -83,7 +84,8 @@ int objectSetup() {
     mainObjects.push_back(statue);
 
     // Add mirror
-    Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    // Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    Quad2D mirror(glm::vec3(-3.0, 0.0f, 7.0f), glm::vec3(0,0,0), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 0.5f, programIDs[1]);
     mirrors.push_back(mirror);
 
 	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
@@ -156,15 +158,12 @@ void render() {
 	// Render mirrors
 	for (int i = 0; i < mirrors.size(); i++)
 	{
-		// Debug render to main buffer
-		// mirrors.at(i).render(programIDs[0]);
-
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 		glDepthMask(GL_FALSE);
 		glEnable(GL_STENCIL_TEST);
 		glStencilFunc(GL_ALWAYS, 1, 1);
 		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-		mirrors.at(i).render(programIDs[0]);
+		mirrors.at(i).render();
 
 		// Draw the reflected scene
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -174,7 +173,7 @@ void render() {
 
 		// Get inverted camera matrix
 		glm::mat4 savedCamMat = cameras.at(camIdx).getViewMatrix();
-		cameras.at(camIdx).setViewMatrix(glm::scale(savedCamMat, glm::vec3(1.0, -1.0, 1.0)));
+		cameras.at(camIdx).setViewMatrix(glm::scale(cameras.at(camIdx).getViewMatrix(), glm::vec3(1.0, 1.0, -1.0)));
 
 		// Position lights in the reflected world
 		// TODO: Reflect lighting
@@ -184,9 +183,9 @@ void render() {
 		 * Draw everything else
 		 */
 		// Render main objects (walls, floor, ect)
+		cameras.at(camIdx).render(programIDs[0]);
 		for (int j = 0; j < mainObjects.size(); j++)
 		{
-			cameras.at(camIdx).render(programIDs[0]);
 			mainObjects.at(j).render(programIDs[0]);
 		}
 		// draw particle generator 
@@ -213,7 +212,7 @@ void render() {
 		// Render reflective surface
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		mirrors.at(i).render(programIDs[1], true);
+		mirrors.at(i).render();
 		glDisable(GL_BLEND);
 	}
 
