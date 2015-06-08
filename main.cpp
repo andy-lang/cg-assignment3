@@ -80,11 +80,11 @@ int objectSetup() {
     generateLevelMap(programIDs[0], mainObjects, lights);
 
     //Add high poly model
-    Object statue(programIDs[0], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
+    Object statue(programIDs[0], "external_files/geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
     mainObjects.push_back(statue);
 
     // Add mirror
-    // Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    // Object mirror(programIDs[0], "external_files/geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
     Quad2D mirror(glm::vec3(-3.0, 0.0f, 7.0f), glm::vec3(0,0,0), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 0.5f, programIDs[1]);
     mirrors.push_back(mirror);
 
@@ -92,7 +92,7 @@ int objectSetup() {
 
 	glUseProgram(programIDs.at(0));
 
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
+	player = new Player(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
@@ -119,7 +119,7 @@ int objectSetup() {
 	fires.push_back(p5);
 
 	glUseProgram(programIDs.at(2));
-    Object lava(programIDs[2], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
+    Object lava(programIDs[2], "external_files/geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
     lavaObjects.push_back(lava);
 
     return 0;
