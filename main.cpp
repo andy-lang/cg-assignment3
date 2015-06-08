@@ -39,6 +39,9 @@ unsigned int lavaLightInitBrightness = 4.5;
 // Mirrored surfaces
 std::vector<Object> mirrors;
 
+// Statue/marble surfaces
+std::vector<Object> statueObjects;
+
 int camIdx;
 Player* player;
 
@@ -78,10 +81,6 @@ void reshapeWindow(int x, int y) {
 int objectSetup() {
     generateLevelMap(programIDs[0], mainObjects, lights);
 
-    //Add high poly model
-    Object statue(programIDs[0], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
-    mainObjects.push_back(statue);
-
     // Add mirror
     Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
     mirrors.push_back(mirror);
@@ -119,6 +118,11 @@ int objectSetup() {
 	glUseProgram(programIDs.at(2));
     Object lava(programIDs[2], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
     lavaObjects.push_back(lava);
+
+	glUseProgram(programIDs.at(3));
+    //Add high poly model
+    Object statue(programIDs[3], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
+	statueObjects.push_back(statue);
 
     return 0;
 }
@@ -328,6 +332,38 @@ void render() {
 		lavaObjects.at(j).render(programIDs.at(2));
 	}
 
+
+	glUseProgram(programIDs.at(3));
+
+	// render statue
+	int normMtxStatueHandle = glGetUniformLocation(programIDs.at(3), "normal_matrix");
+	if (normMtxStatueHandle == -1) {
+		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+		exit(1);
+	}
+	
+	int posStatueHandle = glGetUniformLocation(programIDs.at(3), "lightPositions");
+	int ambientStatueHandle = glGetUniformLocation(programIDs.at(3), "lightAmbients");
+	int diffuseStatueHandle = glGetUniformLocation(programIDs.at(3), "lightDiffuses");
+	int specularStatueHandle = glGetUniformLocation(programIDs.at(3), "lightSpeculars");
+	int brightnessStatueHandle = glGetUniformLocation(programIDs.at(3), "lightBrightnesses");
+
+	if ((posStatueHandle == -1) || (ambientStatueHandle == -1) || (diffuseStatueHandle == -1) || (specularStatueHandle == -1) || (brightnessStatueHandle == -1)) {
+		std::cerr << "Could not find light uniform variables." << std::endl;
+		exit(1);
+	}
+	glUniform3fv(posStatueHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientStatueHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseStatueHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularStatueHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessStatueHandle, lights.size(), &brightnesses.front());
+	cameras.at(camIdx).render(programIDs.at(3));
+	for (int j = 0; j < statueObjects.size(); j++) {
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(statueObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
+		statueObjects.at(j).render(programIDs.at(3));
+	}
+
     glutSwapBuffers();
     glFlush();
 }
@@ -455,11 +491,11 @@ int main(int argc, char** argv) {
     }
 
     // load and compile shader files
-    unsigned int programID1 = LoadShaders("pf-light.vert", "pf-light.frag");
-    if (programID1 == 0) {
+    unsigned int mainProgramID = LoadShaders("pf-light.vert", "pf-light.frag");
+    if (mainProgramID == 0) {
         return 1;
     }
-	programIDs.push_back(programID1);
+	programIDs.push_back(mainProgramID);
 
 	unsigned int particleProgramID = LoadShaders("particle.vert", "particle.frag");
 	if (particleProgramID == 0) {
@@ -472,6 +508,12 @@ int main(int argc, char** argv) {
 	    return 1;
 	}
 	programIDs.push_back(lavaProgramID);
+
+	unsigned int statueProgramID = LoadShaders("statue.vert", "statue.frag");
+	if (statueProgramID == 0) {
+	    return 1;
+	}
+	programIDs.push_back(statueProgramID);
 
     // set background colour
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
