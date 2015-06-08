@@ -1,3 +1,13 @@
+/**********************************************************************
+ * GLSL shader program to calculate per-fragment lights using the Phong shading model.
+ * This is the 'default' shader program that most objects are rendered to.
+ *
+ * @author 	: Andrew Lang, Riley Chase
+ * @id 		: a1648205, a1647198
+ * @created 	: 2015-05-07
+ * @project 	: CG Assignment 3
+**********************************************************************/
+
 #version 130
 uniform mat4 projection_matrix;
 uniform mat4 model_matrix;

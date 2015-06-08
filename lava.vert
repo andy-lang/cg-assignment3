@@ -1,3 +1,12 @@
+/**********************************************************************
+ * GLSL shader program for procedurally generating a lava-like texture.
+ *
+ * @author 	: Andrew Lang, Riley Chase
+ * @id 		: a1648205, a1647198
+ * @created 	: 2015-06-01
+ * @project 	: CG Assignment 3
+**********************************************************************/
+
 #version 130
 uniform mat4 projection_matrix;
 uniform mat4 model_matrix;

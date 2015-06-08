@@ -1,3 +1,12 @@
+/**********************************************************************
+ * GLSL shader program for procedurally generating a lava-like texture.
+ *
+ * @author 	: Andrew Lang, Riley Chase
+ * @id 		: a1648205, a1647198
+ * @created 	: 2015-06-01
+ * @project 	: CG Assignment 3
+**********************************************************************/
+
 #version 130
 
 const int numberOfLights = 8; // number of light sources. CHANGE THIS IF YOU ADD MORE LIGHTS.
@@ -19,19 +28,19 @@ uniform vec3 mtl_specular; // specular material value
 uniform vec3 mtl_emission; // emission colour for the material
 uniform float mtl_shininess; // shininess of the material
 
-uniform int program_time;
-uniform sampler2D tex_map;
-uniform sampler2D tex_norm;
+uniform int program_time; // current time of the program, in milliseconds
+uniform sampler2D tex_map; // map for object's texture
+uniform sampler2D tex_norm; // map for object's normals, for bump mapping
 
-in mat4 lightPosMatrix;
-in vec4 vertex;
-in vec4 vert;
-in vec3 normal;
-in vec2 texCoord;
+in mat4 lightPosMatrix; // matrix used for light position calculations
+in vec4 vertex; // vertex data in modelview space, used for lighting calculations
+in vec4 vert; // raw vertex data, used for procedural calculations
+in vec3 normal; // normal for the fragment
+in vec2 texCoord; // texcoord for the fragment
 
-out vec4 fragColour;
+out vec4 fragColour; // output colour for the fragment
 
-// lovingly ripped from example code in lectures 5 & 7
+// This code was used and modified using the example code in lectures 5 & 7.
 vec3 phongLight(in vec4 position, in vec3 norm, in vec4 light_pos, in vec3 light_ambient, in vec3 light_diffuse, in vec3 light_specular, float light_brightness) {
     vec3 s;
 
@@ -124,6 +133,8 @@ float pnoise(vec2 P, vec2 rep) {
     float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
     return 2.3 * n_xy;
 }
+
+
 
 void main(void) {
 	fragColour = vec4(0.0f, 0.0f, 0.0f, 1.0f);
