@@ -14,11 +14,8 @@
 #include "ParticleGenerator.hpp"
 #include "Quad2D.hpp"
 #include "libs/Lib.h"
-<<<<<<< HEAD
 #include "libs/sound.h"
 #include "LevelMap.hpp"
-=======
->>>>>>> master
 
 #include <iostream>
 #include <cstdlib>
@@ -98,11 +95,8 @@ int objectSetup() {
 
 	glUseProgram(programIDs.at(0));
 
-<<<<<<< HEAD
-	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
-=======
-	player = new Player(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
->>>>>>> master
+	player = new Player(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
@@ -369,7 +363,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
-                playSound("sounds/bong.wav");
+                playSound("external_files/sounds/bong.wav");
             }
             break;
         case 'd':
@@ -380,7 +374,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
-                playSound("sounds/bong.wav");
+                playSound("external_files/sounds/bong.wav");
             }
             break;
         case 'q':
@@ -391,7 +385,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
-                playSound("sounds/bong.wav");
+                playSound("external_files/sounds/bong.wav");
             }
             break;
         case 'e':
@@ -402,7 +396,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
-                playSound("sounds/bong.wav");
+                playSound("external_files/sounds/bong.wav");
             }
             break;
         case 'w':
@@ -413,7 +407,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
-                playSound("sounds/bong.wav");
+                playSound("external_files/sounds/bong.wav");
             }
             break;
         case 's':
@@ -424,7 +418,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
             }
             else{
                 player->setPrevPos();
-                playSound("sounds/bong.wav");
+                playSound("external_files/sounds/bong.wav");
             }
             break;
         case 'f':
