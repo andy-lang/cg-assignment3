@@ -1,4 +1,4 @@
- #define GLM_FORCE_RADIANS
+#define GLM_FORCE_RADIANS
 
 #include <GL/glew.h>
 #include "external_files/glm/glm/glm.hpp"
@@ -10,10 +10,15 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
+#include "LevelMap.hpp"
 #include "ParticleGenerator.hpp"
+#include "Quad2D.hpp"
 #include "libs/Lib.h"
+<<<<<<< HEAD
 #include "libs/sound.h"
 #include "LevelMap.hpp"
+=======
+>>>>>>> master
 
 #include <iostream>
 #include <cstdlib>
@@ -39,7 +44,10 @@ Light lavaLight;
 unsigned int lavaLightInitBrightness = 4.5;
 
 // Mirrored surfaces
-std::vector<Object> mirrors;
+std::vector<Quad2D> mirrors;
+
+// Statue/marble surfaces
+std::vector<Object> statueObjects;
 
 int camIdx;
 Player* player;
@@ -81,19 +89,20 @@ int objectSetup() {
     //Generate all level objects
     generateLevelMap(programIDs[0], mainObjects, lights);
 
-    //Add high poly model
-    Object statue(programIDs[0], "geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
-    mainObjects.push_back(statue);
-
     // Add mirror
-    Object mirror(programIDs[0], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    // Object mirror(programIDs[0], "external_files/geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
+    Quad2D mirror(glm::vec3(-3.0, 0.0f, 7.0f), glm::vec3(0,0,0), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 0.5f, programIDs[1]);
     mirrors.push_back(mirror);
 
 	lavaLight = Light(glm::vec3(-7.5f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.3f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), lavaLightInitBrightness);
 
 	glUseProgram(programIDs.at(0));
 
+<<<<<<< HEAD
 	player = new Player(programIDs.at(0), "geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+=======
+	player = new Player(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
+>>>>>>> master
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
@@ -120,8 +129,13 @@ int objectSetup() {
 	fires.push_back(p5);
 
 	glUseProgram(programIDs.at(2));
-    Object lava(programIDs[2], "geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
+    Object lava(programIDs[2], "external_files/geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-7.0f, -0.8f, 5.0f), 0.5f);
     lavaObjects.push_back(lava);
+
+	glUseProgram(programIDs.at(3));
+    //Add high poly model
+    Object statue(programIDs[3], "external_files/geom/statue/statue.obj", glm::vec3(0.0f, M_PI/2.0, 0.0f), glm::vec3(-7.0f, 0.0f, 4.9f), 0.7f);
+	statueObjects.push_back(statue);
 
     return 0;
 }
@@ -159,15 +173,12 @@ void render() {
 	// Render mirrors
 	for (int i = 0; i < mirrors.size(); i++)
 	{
-		// Debug render to main buffer
-		// mirrors.at(i).render(programIDs[0]);
-
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 		glDepthMask(GL_FALSE);
 		glEnable(GL_STENCIL_TEST);
 		glStencilFunc(GL_ALWAYS, 1, 1);
 		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-		mirrors.at(i).render(programIDs[0]);
+		mirrors.at(i).render();
 
 		// Draw the reflected scene
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -177,17 +188,33 @@ void render() {
 
 		// Get inverted camera matrix
 		glm::mat4 savedCamMat = cameras.at(camIdx).getViewMatrix();
-		cameras.at(camIdx).setViewMatrix(glm::scale(savedCamMat, glm::vec3(1.0, -1.0, 1.0)));
+		cameras.at(camIdx).setViewMatrix(glm::scale(cameras.at(camIdx).getViewMatrix(), glm::vec3(1.0, 1.0, -1.0)));
 
 		// Position lights in the reflected world
 		// TODO: Reflect lighting
 
 		glDisable(GL_DEPTH_TEST);
-		// Draw everything else
+		/*
+		 * Draw everything else
+		 */
+		// Render main objects (walls, floor, ect)
+		cameras.at(camIdx).render(programIDs[0]);
 		for (int j = 0; j < mainObjects.size(); j++)
 		{
-			mainObjects.at(j).render(programIDs.at(0));
+			mainObjects.at(j).render(programIDs[0]);
 		}
+		// draw particle generator 
+		// we need to disable back face culling so that simple 2D squares will be correctly rendered.
+		glDisable(GL_CULL_FACE);
+		glUseProgram(programIDs.at(1));
+		cameras.at(camIdx).render(programIDs.at(1));
+		for (int j = 0; j < fires.size(); j++) {
+			fires.at(j).render(programIDs.at(1), currTime);
+		}
+		glEnable(GL_CULL_FACE);
+		/*
+		 * Done rendering everything else
+		 */
 
 		// No more stencilling
 		glEnable(GL_DEPTH_TEST);
@@ -200,7 +227,7 @@ void render() {
 		// Render reflective surface
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		mirrors.at(i).render(programIDs[1], true);
+		mirrors.at(i).render();
 		glDisable(GL_BLEND);
 	}
 
@@ -291,6 +318,38 @@ void render() {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(lavaObjects.at(j).getModelMatrix() * viewMtx))); 
 		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
 		lavaObjects.at(j).render(programIDs.at(2));
+	}
+
+
+	glUseProgram(programIDs.at(3));
+
+	// render statue
+	int normMtxStatueHandle = glGetUniformLocation(programIDs.at(3), "normal_matrix");
+	if (normMtxStatueHandle == -1) {
+		std::cerr << "Could not find uniform variable 'normal_matrix'" << std::endl;
+		exit(1);
+	}
+	
+	int posStatueHandle = glGetUniformLocation(programIDs.at(3), "lightPositions");
+	int ambientStatueHandle = glGetUniformLocation(programIDs.at(3), "lightAmbients");
+	int diffuseStatueHandle = glGetUniformLocation(programIDs.at(3), "lightDiffuses");
+	int specularStatueHandle = glGetUniformLocation(programIDs.at(3), "lightSpeculars");
+	int brightnessStatueHandle = glGetUniformLocation(programIDs.at(3), "lightBrightnesses");
+
+	if ((posStatueHandle == -1) || (ambientStatueHandle == -1) || (diffuseStatueHandle == -1) || (specularStatueHandle == -1) || (brightnessStatueHandle == -1)) {
+		std::cerr << "Could not find light uniform variables." << std::endl;
+		exit(1);
+	}
+	glUniform3fv(posStatueHandle, lights.size(), glm::value_ptr(positions.front()));
+	glUniform3fv(ambientStatueHandle, lights.size(), glm::value_ptr(ambients.front()));
+	glUniform3fv(diffuseStatueHandle, lights.size(), glm::value_ptr(diffuses.front()));
+	glUniform3fv(specularStatueHandle, lights.size(), glm::value_ptr(speculars.front()));
+	glUniform1fv(brightnessStatueHandle, lights.size(), &brightnesses.front());
+	cameras.at(camIdx).render(programIDs.at(3));
+	for (int j = 0; j < statueObjects.size(); j++) {
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(statueObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
+		statueObjects.at(j).render(programIDs.at(3));
 	}
 
     glutSwapBuffers();
@@ -492,11 +551,11 @@ int main(int argc, char** argv) {
     }
 
     // load and compile shader files
-    unsigned int programID1 = LoadShaders("pf-light.vert", "pf-light.frag");
-    if (programID1 == 0) {
+    unsigned int mainProgramID = LoadShaders("pf-light.vert", "pf-light.frag");
+    if (mainProgramID == 0) {
         return 1;
     }
-	programIDs.push_back(programID1);
+	programIDs.push_back(mainProgramID);
 
 	unsigned int particleProgramID = LoadShaders("particle.vert", "particle.frag");
 	if (particleProgramID == 0) {
@@ -509,6 +568,12 @@ int main(int argc, char** argv) {
 	    return 1;
 	}
 	programIDs.push_back(lavaProgramID);
+
+	unsigned int statueProgramID = LoadShaders("statue.vert", "statue.frag");
+	if (statueProgramID == 0) {
+	    return 1;
+	}
+	programIDs.push_back(statueProgramID);
 
     // set background colour
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
