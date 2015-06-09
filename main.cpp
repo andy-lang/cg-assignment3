@@ -11,6 +11,7 @@
 #include "Camera.hpp"
 #include "Light.hpp"
 #include "LevelMap.hpp"
+#include "Enemy.hpp"
 #include "ParticleGenerator.hpp"
 #include "Quad2D.hpp"
 #include "libs/Lib.h"
@@ -26,6 +27,7 @@ std::vector<unsigned int> programIDs;
 
 // main section of objects
 std::vector<Object> mainObjects;
+std::vector<Enemy> enemies;
 std::vector<Light> lights; // vector of light sources
 std::vector<Camera> cameras;
 
@@ -85,6 +87,10 @@ void reshapeWindow(int x, int y) {
 int objectSetup() {
     //Generate all level objects
     generateLevelMap(programIDs[0], mainObjects, lights);
+
+    //Create enemies
+    Enemy enemy(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-2.5f, -0.2f, 9.5f), 0.1f);
+    enemies.push_back(enemy);
 
     // Add mirror
     // Object mirror(programIDs[0], "external_files/geom/cube-simple/cube-simple.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-3.0f, 0.0f, 7.0f), 0.5f);
@@ -193,10 +199,13 @@ void render() {
 		 */
 		// Render main objects (walls, floor, ect)
 		cameras.at(camIdx).render(programIDs[0]);
-		for (int j = 0; j < mainObjects.size(); j++)
-		{
+		for (int j = 0; j < mainObjects.size(); j++){
 			mainObjects.at(j).render(programIDs[0]);
 		}
+
+        for(int j = 0; j < enemies.size(); j++){
+            enemies.at(j).render(programIDs[0]);
+        }
 		// draw particle generator 
 		// we need to disable back face culling so that simple 2D squares will be correctly rendered.
 		glDisable(GL_CULL_FACE);
@@ -258,6 +267,11 @@ void render() {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
 		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
 		mainObjects.at(j).render(programIDs.at(0));    
+	}
+	for(int j = 0; j < enemies.size(); j++){
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
+		enemies.at(j).render(programIDs[0]);
 	}
     player->render(programIDs.at(0));
 
@@ -520,6 +534,10 @@ void timer(int value) {
 	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
 
     player->idleMovement();
+
+    for(unsigned i = 0; i < enemies.size(); i++){
+        enemies.at(i).update(collisionDetectionOn, mainObjects);
+    }
 
 	prevTime = currTime;
 	currTime = glutGet(GLUT_ELAPSED_TIME);

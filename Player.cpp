@@ -16,6 +16,11 @@ Player::Player(int programID, const char* objfile){
 
 Player::Player(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 translate, float scale){
     objectInit(programID, objfile, rotate, translate, scale);
+    prevTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+    prevRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    idleTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
+    idleRotation = glm::vec3(mRotate.x, mRotate.y, mRotate.z);
 }
 
 Player::~Player() {
