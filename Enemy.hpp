@@ -46,13 +46,27 @@ public:
 	/* Basic Enemy destructor. */
     ~Enemy();
 
-	/* Movement & rotation functions */
+    /* Update the Enemy position */
+    void update(bool collisionOn, std::vector<Object> objects);
 
-	/* Return the Enemy to its previous position. */
+	/* Return the Player to its previous position. */
     void setPrevPos();
+    /* Stop all player movement. */
+    void stopMovement();
+    /* Idle player momentum. */
+    void idleMovement();
+    /* Check for object collision */
+    bool checkCollision(bool collisionOn, std::vector<Object> objects);
+
+    /* Switch the facing direction */
+    void switchDirection();
 
 private:
-    static const float PLAYER_SPEED = 0.4f; // speed of the Enemy's movement.
+    static const float SPEED = 0.1f; // speed of the Enemy's movement.
+
+    glm::vec3 translationVector;
+    bool translationDirection;
+
     glm::vec3 prevTranslation; // previous position of the Enemy.
     glm::vec3 prevRotation; // previous rotation of the Enemy.
 };

@@ -29,13 +29,13 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o Shape.o Light.o Particle.o ParticleGenerator.o Quad2D.o
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o Enemy.o Shape.o Light.o Particle.o ParticleGenerator.o Quad2D.o
 	mkdir -p ./$(EXT_FILES)/soil/projects/makefile/obj
 	mkdir -p ./$(EXT_FILES)/soil/lib
 	make -C ./$(EXT_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
-main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o LevelMap.o Light.o Particle.o ParticleGenerator.o Quad2D.o
+main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o LevelMap.o Enemy.o Light.o Particle.o ParticleGenerator.o Quad2D.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
 
 Quad2D.o: Quad2D.hpp Quad2D.cpp
@@ -64,6 +64,9 @@ Object.o: Object.cpp Object.hpp Shape.o
 
 LevelMap.o: LevelMap.cpp LevelMap.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c LevelMap.cpp
+
+Enemy.o: Enemy.cpp Enemy.hpp
+	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Enemy.cpp
 
 Shape.o: Shape.cpp Shape.hpp
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Shape.cpp
