@@ -17,6 +17,7 @@ ifneq (, $(findstring Linux, $(PLATFORM)))
 	GL_LIBS += -L/usr/lib/nvidia-304 # Needed for some linux drivers
 	EXT = 
     DEFS = -I../glm-0.9.4.0/
+    #DEFS = -l/external_files/glm/
 endif
 
 ifneq (, $(findstring Darwin, $(PLATFORM)))
@@ -28,14 +29,17 @@ endif
 
 all: assign3$(EXT)
 
-assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o Shape.o Light.o Particle.o ParticleGenerator.o
+assign3: main.o Object.o Player.o Shader.o tiny_obj_loader.o Camera.o LevelMap.o Shape.o Light.o Particle.o ParticleGenerator.o Quad2D.o
 	mkdir -p ./$(EXT_FILES)/soil/projects/makefile/obj
 	mkdir -p ./$(EXT_FILES)/soil/lib
 	make -C ./$(EXT_FILES)/soil/projects/makefile/
 	$(CC) $(DEFS) -o assign3 $^ $(GL_LIBS) -L$(SOIL_LIBS) -lSOIL
 
-main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o LevelMap.o Light.o Particle.o ParticleGenerator.o
+main.o: main.cpp Player.o Shader.o tiny_obj_loader.o Shape.o Object.o Camera.o LevelMap.o Light.o Particle.o ParticleGenerator.o Quad2D.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c main.cpp
+
+Quad2D.o: Quad2D.hpp Quad2D.cpp
+	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c Quad2D.cpp
 
 ParticleGenerator.o: ParticleGenerator.cpp ParticleGenerator.hpp Particle.o
 	$(CC) $(DEFS) $(LIB_FLAG) $(PROJ_LIBS) -c ParticleGenerator.cpp
