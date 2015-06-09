@@ -268,6 +268,11 @@ void render() {
 		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
 		mainObjects.at(j).render(programIDs.at(0));    
 	}
+	for(int j = 0; j < enemies.size(); j++){
+		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
+		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
+		enemies.at(j).render(programIDs[0]);
+	}
     player->render(programIDs.at(0));
 
 	lights.erase(lights.end()); // remove the lava light source from the lights again
