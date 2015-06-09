@@ -14,6 +14,8 @@
 #include "ParticleGenerator.hpp"
 #include "Quad2D.hpp"
 #include "libs/Lib.h"
+#include "libs/sound.h"
+#include "LevelMap.hpp"
 
 #include <iostream>
 #include <cstdlib>
@@ -28,6 +30,7 @@ std::vector<Light> lights; // vector of light sources
 std::vector<Camera> cameras;
 
 bool collisionDetectionOn = true;
+bool movementKeyPressed = false;
 
 std::vector<ParticleGenerator> fires;
 
@@ -80,6 +83,7 @@ void reshapeWindow(int x, int y) {
 /* Set up all required mainObjects etc.
  * Returns 0 on success, nonzero otherwise. */
 int objectSetup() {
+    //Generate all level objects
     generateLevelMap(programIDs[0], mainObjects, lights);
 
     // Add mirror
@@ -91,7 +95,8 @@ int objectSetup() {
 
 	glUseProgram(programIDs.at(0));
 
-	player = new Player(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.25f);
+	player = new Player(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f);
+
     camIdx = 0;
     Camera firstPerson = Camera();
     firstPerson.attachToObject(player, glm::vec3(0.0f, 0.0f, 0.01f));
@@ -249,51 +254,13 @@ void render() {
 	cameras.at(camIdx).render(programIDs.at(0));
 	glm::mat4 viewMtx = cameras.at(camIdx).getViewMatrix();
 
-	bool collisionDetected = false;
-	glm::vec3 objTranslation;
-	glm::vec3 playerTranslation;
-
 	for (int j = 0; j < mainObjects.size(); j++) {
 		glm::mat3 normMtx = glm::transpose(glm::inverse(glm::mat3(mainObjects.at(j).getModelMatrix() * viewMtx))); 
 		glUniformMatrix3fv(normMtxMainHandle, 1, false, glm::value_ptr(normMtx));
-		mainObjects.at(j).render(programIDs.at(0));
-
-		/***** Main Collision dection alg *****/
-		if ((collisionDetectionOn == true) && (j < 36)){
-			objTranslation = mainObjects.at(j).getTranslation();
-			playerTranslation = player->getTranslation();
-
-			float xDiff = std::abs(playerTranslation.x - objTranslation.x);
-			float zDiff = std::abs(playerTranslation.z - objTranslation.z);
-
-			float absDist = std::sqrt(std::pow(xDiff, 2.0) + std::pow(zDiff, 2.0));
-			float angle = std::atan2(zDiff, xDiff);
-			float internalObjDist;
-			float internalPlayerDist;
-
-			//Right or Left quad
-			if(std::abs(angle) <= M_PI/4.0){
-				internalObjDist = std::abs((0.5)/(std::cos(angle)));
-				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
-			}
-			//Top or Bottom quad
-			else{
-				angle = M_PI/2.0 - angle;
-				internalObjDist = std::abs((0.5)/(std::cos(angle)));
-				internalPlayerDist = std::abs(std::sqrt(pow(0.3, 2) +  pow(0.3, 2)));
-			}
-
-			if((absDist - internalObjDist - internalPlayerDist) < 0){
-				collisionDetected = true;
-			}
-		}
-
-        if(collisionDetected){
-            player->setPrevPos();
-        }
-
-        player->render(programIDs.at(0));        
+		mainObjects.at(j).render(programIDs.at(0));    
 	}
+    player->render(programIDs.at(0));
+
 	lights.erase(lights.end()); // remove the lava light source from the lights again
 
 
@@ -389,28 +356,70 @@ void keyboardFunc(unsigned char key, int x, int y) {
             exit(1);
             break;
         case 'a':
-            player->strafeLeft();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->strafeLeft();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+                playSound("external_files/sounds/bong.wav");
+            }
             break;
         case 'd':
-            player->strafeRight();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->strafeRight();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+                playSound("external_files/sounds/bong.wav");
+            }
             break;
         case 'q':
-            player->rotLeft();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->rotLeft();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+                playSound("external_files/sounds/bong.wav");
+            }
             break;
         case 'e':
-            player->rotRight();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->rotRight();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+                playSound("external_files/sounds/bong.wav");
+            }
             break;
         case 'w':
-            player->moveForward();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->moveForward();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+                playSound("external_files/sounds/bong.wav");
+            }
             break;
         case 's':
-            player->moveBackward();
-            glutPostRedisplay();
+            if(!player->checkCollision(collisionDetectionOn, mainObjects)){
+                movementKeyPressed = true;
+                player->moveBackward();
+                glutPostRedisplay();
+            }
+            else{
+                player->setPrevPos();
+                playSound("external_files/sounds/bong.wav");
+            }
             break;
         case 'f':
             camIdx = (camIdx+1)%cameras.size();
@@ -438,7 +447,35 @@ void keyboardFunc(unsigned char key, int x, int y) {
 			collisionDetectionOn = !collisionDetectionOn;
 			glutPostRedisplay();
 			break;
+    }
+}
 
+void keyboardUpFunc(unsigned char key, int x, int y){
+    switch(key){
+        case 'w':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;        
+        case 'a':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 's':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 'd':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 'q':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
+        case 'e':
+            movementKeyPressed = false;
+            player->stopMovement();
+            break;
     }
 }
 
@@ -482,10 +519,12 @@ void mouseFunc(int button, int state, int x, int y) {
 void timer(int value) {
 	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
 
+    player->idleMovement();
+
 	prevTime = currTime;
 	currTime = glutGet(GLUT_ELAPSED_TIME);
 	elapsed = currTime - prevTime;
-
+ 
 	glutPostRedisplay();
 }
 
@@ -546,6 +585,7 @@ int main(int argc, char** argv) {
     
     // set up GLUT functions with associated application functions
     glutKeyboardFunc(keyboardFunc);
+    glutKeyboardUpFunc(keyboardUpFunc);
     glutSpecialFunc(specialFunc);
     glutMouseFunc(mouseFunc);
     glutDisplayFunc(render);
@@ -561,7 +601,8 @@ int main(int argc, char** argv) {
 
     std::cout << "W => move forwards, S => move backwards" << std::endl;
     std::cout << "A => strafe left, D => strafe right" << std::endl;
-    std::cout << "Q => rotate left, E => rotate right" << std::endl;
+    std::cout << "Q => rotate left, E => rotate right" << std::endl << std::endl;
+    std::cout << "Use \\ to disable collision detection" << std::endl << std::endl;
     std::cout << "F to switch camera views" << std::endl;
     std::cout << "L to switch polygon mode" << std::endl;
     glutMainLoop();

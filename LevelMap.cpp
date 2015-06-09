@@ -1,12 +1,3 @@
-/**********************************************************************
- * Level map generation
- *
- * @author  : Gavin Meredith
- * @id      : a1645739
- * @createObjd     : 2015-05-16
- * @project     : CG Assignment 3
-**********************************************************************/
-
 #include "LevelMap.hpp"
 #include <math.h>
 
