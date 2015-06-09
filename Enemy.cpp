@@ -9,6 +9,7 @@ Enemy::Enemy(int programID, const char* objfile){
     objectInit(programID, objfile, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
     prevTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
     prevRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    BOUNCE_SPEED = -0.1f;
     translationDirection = true;
 }
 
@@ -16,6 +17,7 @@ Enemy::Enemy(int programID, const char* objfile, glm::vec3 rotate, glm::vec3 tra
     objectInit(programID, objfile, rotate, translate, scale);
     prevTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
     prevRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    BOUNCE_SPEED = -0.1f;
     translationDirection = true;
 }
 
@@ -24,13 +26,20 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(bool collisionOn, std::vector<Object> objects){
+	if(mTranslate.y < -0.23){
+		BOUNCE_SPEED = 0.05f;
+	}
+	else if(mTranslate.y > 0.0){
+		BOUNCE_SPEED = -0.05f;
+	}
+
 	if(translationDirection){
 		prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
-		setTranslation(glm::vec3(mTranslate.x + SPEED, mTranslate.y, mTranslate.z));
+		setTranslation(glm::vec3(mTranslate.x + SPEED, mTranslate.y + BOUNCE_SPEED, mTranslate.z));
 	}
 	else{
 		prevTranslation = glm::vec3(mTranslate.x, mTranslate.y, mTranslate.z);
-		setTranslation(glm::vec3(mTranslate.x - SPEED, mTranslate.y, mTranslate.z));
+		setTranslation(glm::vec3(mTranslate.x - SPEED, mTranslate.y + BOUNCE_SPEED, mTranslate.z));
 	}
 
 	if(checkCollision(collisionOn, objects)){

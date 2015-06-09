@@ -89,7 +89,7 @@ int objectSetup() {
     generateLevelMap(programIDs[0], mainObjects, lights);
 
     //Create enemies
-    Enemy enemy(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-2.5f, 0.0f, 9.5f), 0.1f);
+    Enemy enemy(programIDs.at(0), "external_files/geom/cube-tex/cube-tex.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-2.5f, -0.2f, 9.5f), 0.1f);
     enemies.push_back(enemy);
 
     // Add mirror
@@ -534,6 +534,10 @@ void timer(int value) {
 	glutTimerFunc(MS_BETWEEN_FRAMES, timer, 0);
 
     player->idleMovement();
+
+    for(unsigned i = 0; i < enemies.size(); i++){
+        enemies.at(i).update(collisionDetectionOn, mainObjects);
+    }
 
 	prevTime = currTime;
 	currTime = glutGet(GLUT_ELAPSED_TIME);

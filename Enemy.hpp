@@ -63,6 +63,7 @@ public:
 
 private:
     static const float SPEED = 0.1f; // speed of the Enemy's movement.
+    float BOUNCE_SPEED; //speed of Enemy's height movement.
 
     glm::vec3 translationVector;
     bool translationDirection;
