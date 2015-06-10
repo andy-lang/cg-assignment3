@@ -4,8 +4,8 @@
  * which are individually buffered and rendered.
  * However, it is still best to call this class' render() function, rather than creating Shapes individually.
  *
- * @author 	: Andrew Lang
- * @id 		: a1648205
+ * @author 	: Andrew Lang, Riley Chase
+ * @id 		: a1648205, a1647198
  * @created 	: 2015-05-07
  * @project 	: CG Assignment 3
 **********************************************************************/
